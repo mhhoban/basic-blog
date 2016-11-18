@@ -2,11 +2,6 @@ body {
     background: white;
 }
 
-* {
-    margin-left: 5% margin-right: 5%;
-}
-
-
 
 .top-logo {
 
@@ -25,6 +20,8 @@ body {
 
 .user-controls {
 
+    min-height: 75px;
+    max-height: 200px;
     margin-top: 2em;
     border-style: solid;
     border-color: green;
@@ -32,8 +29,7 @@ body {
     color: black;
     background: white;
     height: 7vw;
-    min-height: 75px;
-    max-height: 200px;
+    
 
 }
 
@@ -42,18 +38,38 @@ body {
 }
 
 .content-pane {
+    margin-top: 5px;
+    height: 35vw;
+    overflow: scroll;
+
+}
+
+.content-box {
+
     margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
     border-radius: 10px;
-    color: white;
+    color: black;
     font-weight: bold;
     min-height: 150px;
-    max-height: 500px;
+    max-height: 800px;
     height: 100%;
     border-style:solid;
     border-color: black
 }
 
-.col-md-12 .bot {
+.footer-content {
+
+    margin-top: 1%;
+    background: green;
+    border-radius: 10px;
+
+    min-height: 30px;
+    max-height: 100px;
+    height: 5vw;
+
+    color: white;
 
 }
 
