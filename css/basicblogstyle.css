@@ -1,0 +1,69 @@
+body {
+    background: white;
+}
+* {
+    margin-left: 5% margin-right: 5%;
+}
+
+
+.top {
+    color: white;
+    background: white;
+    text-align: center;
+    border-radius: 10px;
+
+    height: 7vw;
+    min-height: 75px;
+    max-height: 200px;
+    padding: 0;
+
+}
+
+.top-logo {
+
+    border-style: solid;
+    border-color: black;
+    border-radius:10px;
+    color: white;
+    background: black;
+    height: 7vw;
+    min-height: 75px;
+    max-height: 200px;
+
+    margin-right: 0;
+}
+
+.user-controls {
+    border-style: solid;
+    border-color: black;
+    border-radius:10px;
+    color: black;
+    background: white;
+    height: 7vw;
+    min-height: 75px;
+    max-height: 200px;
+
+    margin-left: 0;
+
+}
+
+.bottom{
+    background:black
+}
+
+.content-pane {
+    margin-top: 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    min-height: 150px;
+    max-height: 500px;
+    height: 100%;
+    border-style:solid;
+    border-color: black
+}
+
+.col-md-12 .bot {
+
+}
+
