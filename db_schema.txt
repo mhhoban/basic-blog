@@ -1,0 +1,22 @@
+
+(Kind) Users:
+
+    (Entity): User
+
+        (Field): Name
+        (Field): email
+        (Field): password
+        (ID): email
+
+
+(Kind) Posts:
+
+    (Entity): Post
+
+        (Field): Title
+        (Field): Content
+        (Parent): User
+
+
+
+
