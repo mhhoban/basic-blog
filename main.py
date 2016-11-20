@@ -29,26 +29,39 @@ class Thing(ndb.Model):
 
     name = ndb.StringProperty()
 
+
 class Descendant_of_Thing(ndb.Model):
     """Models a descendant of THING!!!!"""
 
     name = ndb.StringProperty()
 
 
+class Cookie_baker(Handler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.headers.add_header('Set-Cookie', 'user-id=John Doe')
+        self.write("Cookie Set!")
+
+
 class MainPage(Handler):
     def get(self):
 
-        a_thing = Thing(name='THINGGG')
-        a_thing.key = ndb.Key('Thing', 'bert')
-        a_thing.put()
+        # a_thing = Thing(name='THINGGG')
+        # a_thing.key = ndb.Key('Thing', 'bert')
+        # a_thing.put()
+        #
+        # b = a_thing.key.get()
 
-        b = a_thing.key.get()
+        # self.response.headers['Content-Type'] = 'text/plain'
 
-        self.render('front_page.html', name=b.name)
+        user = self.request.cookies.get('user-id', 'None')
+
+        self.render('front_page.html', user=user)
 
     def post(self):
         self.response.out.write("bar")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/cookie.html', Cookie_baker),
     ], debug=True)

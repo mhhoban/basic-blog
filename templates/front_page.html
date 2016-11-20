@@ -3,47 +3,54 @@
 
 {% block login_block %}
 
-<form>
+	{% if user != 'None' %}
 
-	<div class="row">
+		<h3> {{ user }} </h3>
 
-		<div class="col-md-6">
+	{% else %}
 
-			<div class="login-form">
-				<label for="email-input"> email: </label>
-				<input type="email" class="form-control" id="email-input" aria-describedby="email-subtext" placeholder="email">
+		<form>
 
-			</div>
+			<div class="row">
 
-		</div>
+				<div class="col-md-6">
 
-		<div class="col-md-6">
+					<div class="login-form">
+						<label for="email-input"> email: </label>
+						<input type="email" class="form-control" id="email-input" aria-describedby="email-subtext" placeholder="email">
 
-			<div class="login-form">
-			<label for="password-input"> password: </label>
-			<input type="password" class="form-control" id="password-input" placeholder="password">
-			</div>
+					</div>
 
-		</div>
+				</div>
 
-	</div>
+				<div class="col-md-6">
 
-	<div class="row">
+					<div class="login-form">
+					<label for="password-input"> password: </label>
+					<input type="password" class="form-control" id="password-input" placeholder="password">
+					</div>
 
-		<div class="col-md-12">
-
-			<div class="login-form">
-
-			<button type="submit" class="btn btn-primary"> Submit! </button>
+				</div>
 
 			</div>
 
-		</div>
+			<div class="row">
 
-	</div>
+				<div class="col-md-12">
 
+					<div class="login-form">
 
-</form>
+					<button type="submit" class="btn btn-primary"> Submit! </button>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</form>
+
+	{% endif %}
 
 {% endblock %}
 
