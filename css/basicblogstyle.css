@@ -15,9 +15,9 @@ body {
     border-radius:10px;
     color: white;
     background: black;
-    height: 7vw;
+    height: 9vw;
     min-height: 75px;
-    max-height: 200px;
+    max-height: 225px;
     text-align: center;
 
 }
@@ -25,15 +25,26 @@ body {
 .user-controls {
 
     min-height: 75px;
-    max-height: 200px;
+    max-height: 225px;
     margin-top: 2em;
     border-style: solid;
     border-color: green;
     border-radius:10px;
     color: black;
     background: green;
-    height: 7vw;
+    height: 9vw;
     
+
+}
+
+.form-control{
+
+
+}
+
+.btn {
+
+    margin-top: 3px;
 
 }
 

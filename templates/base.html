@@ -31,7 +31,9 @@
 
                     <div class="user-controls">
 
-                        <h3>login stuff here</h3>
+                        {% block login_block %}
+
+                        {% endblock %}
 
                     </div>
 
@@ -50,92 +52,11 @@
 
                 <div class="content-pane">
 
-            <!-- Begin Individual Posts -->
+                    {% block posts_block %}
 
-            <!-- Begin Individual Post -->
+                    {% endblock %}
 
-                    <div class="row">
-
-                        <div class="col-md-12">
-
-                            <div class="content-box">
-
-                                <div class="row">
-
-                                    <div class="col-md-8">
-
-                                        <div class="post-title">
-
-                                            <h3> Generic Title </h3>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-md-4">
-
-                                        <div class="post-author">
-
-                                            <h3> Generic Author </h3>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-md-12">
-
-                                        <div class="post-content">
-
-                                             <p> Not The Top </p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <!-- End Individual Post -->  
-
-
-
-                     <!-- burner div -->   
-                     <div class="row">
-
-                        <div class="col-md-12">
-
-                            <div class="content-box">
-
-                                <p> Not The Top </p>
-
-                            </div>
-
-                        </div>
-
-                    </div> 
-
-                    <!-- burner div -->   
-                     <div class="row">
-
-                        <div class="col-md-12">
-
-                            <div class="content-box">
-
-                                <p> Not The Top </p>
-
-                            </div>
-
-                        </div>
-
-                    </div> 
+            
 
                 </div>
 

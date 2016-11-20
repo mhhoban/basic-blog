@@ -44,7 +44,7 @@ class MainPage(Handler):
 
         b = a_thing.key.get()
 
-        self.render('base.html', name=b.name)
+        self.render('front_page.html', name=b.name)
 
     def post(self):
         self.response.out.write("bar")
