@@ -44,6 +44,12 @@ class Cookie_baker(Handler):
         self.write("Cookie Set!")
 
 
+class Register(Handler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.write("Registration Time!")
+
+
 class MainPage(Handler):
     def get(self):
 
@@ -74,4 +80,5 @@ class MainPage(Handler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/cookie.html', Cookie_baker),
+    ('/register.html', Register),
     ], debug=True)

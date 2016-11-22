@@ -48,6 +48,15 @@ body {
 
 }
 
+.signup-link {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.signup-link a {
+    color: red;
+}
+
 
 .content-pane {
     margin-top: 5px;

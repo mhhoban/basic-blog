@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import Cookie_baker, MainPage
+from main import Cookie_baker, MainPage, Register
 
 
 class Web_Tests(unittest.TestCase):
@@ -13,6 +13,7 @@ class Web_Tests(unittest.TestCase):
         """Sets up to mock app for unit tests"""
         # create mock web app for testing
         app = webapp2.WSGIApplication([('/', MainPage),
+                                       ('/register.html', Register),
                                        ('/cookie', Cookie_baker)])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
@@ -41,6 +42,14 @@ class Web_Tests(unittest.TestCase):
 
         response = self.testapp.get('/')
         assert_that(response.body, contains_string('test-hash'))
+
+    def testRegistrationPage(self):
+        """
+        tests behavior of registration page
+        :return:
+        """
+        response = self.testapp.get('/register.html')
+        self.assertEqual(response.status_int, 200)
 
 
 if __name__ == '__main__':
