@@ -25,6 +25,12 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
+class Register(Handler):
+    def get(self):
+
+        self.render('registration_page.html')
+
+
 class Thing(ndb.Model):
     """ Models a Thing called THING!!!!"""
 
@@ -42,12 +48,6 @@ class Cookie_baker(Handler):
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
         self.write("Cookie Set!")
-
-
-class Register(Handler):
-    def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.write("Registration Time!")
 
 
 class MainPage(Handler):

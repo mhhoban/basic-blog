@@ -51,6 +51,8 @@ class Web_Tests(unittest.TestCase):
         response = self.testapp.get('/register.html')
         self.assertEqual(response.status_int, 200)
 
+        assert_that(response.body, contains_string('Register For Basic Blog!'))
+
 
 if __name__ == '__main__':
     unittest.main()

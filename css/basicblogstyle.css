@@ -51,10 +51,18 @@ body {
 .signup-link {
     margin-top: 10px;
     font-weight: bold;
+    font-size: 1.5em;
 }
 
 .signup-link a {
-    color: red;
+    color: blue;
+}
+
+.signup-form {
+    color: white;
+    width: 50%;
+    margin-top: 1vw;
+    margin-left: 25%;
 }
 
 
