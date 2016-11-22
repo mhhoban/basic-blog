@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from cookie_hasher import encode_cookie, verify_cookie
 
 import os
 import jinja2
@@ -39,7 +40,7 @@ class Descendant_of_Thing(ndb.Model):
 class Cookie_baker(Handler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.headers.add_header('Set-Cookie', 'user-id=John Doe')
+        self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
         self.write("Cookie Set!")
 
 
@@ -54,9 +55,18 @@ class MainPage(Handler):
 
         # self.response.headers['Content-Type'] = 'text/plain'
 
-        user = self.request.cookies.get('user-id', 'None')
+        user_hash = self.request.cookies.get('user-id', 'None')
+        user_id = 'None'
 
-        self.render('front_page.html', user=user)
+        if user_hash != 'None':
+            hashed_login = user_hash.split(',')
+            if verify_cookie(hashed_login):
+                user_id = hashed_login[0]
+
+        hashed_cookie = 'test-hash' + ',' + encode_cookie()
+        # self.response.headers.add_header('Set-Cookie', 'hashed-cookie='+hashed_cookie)
+
+        self.render('front_page.html', user=user_id)
 
     def post(self):
         self.response.out.write("bar")

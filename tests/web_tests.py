@@ -3,7 +3,6 @@ from hamcrest import assert_that, contains_string
 import unittest
 import webapp2
 import webtest
-import re
 
 from main import Cookie_baker, MainPage
 
@@ -32,30 +31,17 @@ class Web_Tests(unittest.TestCase):
         response = self.testapp.get('/')
         assert_that(response.body, contains_string('login-form'))
 
-    def testMainPageLoggedInResponse(self):
+    def testCookieHashing(self):
         """
-        tests that main page recognizes a user that is logged in
+        tests that visiting the main page detects cookies appropriately
         :return:
         """
-        self.testapp.set_cookie('user-id', 'John Doe')
+
+        self.testapp.set_cookie('user-id', 'test-hash,420ad9ff2d6c88f4782ebbd7a4f03a82')
+
         response = self.testapp.get('/')
-        assert_that(response.body, contains_string('John Doe'))
+        assert_that(response.body, contains_string('test-hash'))
 
 
 if __name__ == '__main__':
     unittest.main()
-
-
-# from hamcrest import *
-# import unittest
-#
-# class BiscuitTest(unittest.TestCase):
-#     def testEquals(self):
-#
-#         a = 'bllllllarg'
-#         b = 'bllll'
-#
-#         assert_that(a, contains_string(b))
-#
-# if __name__ == '__main__':
-#     unittest.main()
