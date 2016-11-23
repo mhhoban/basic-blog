@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import Cookie_baker, MainPage, Register
+from main import Cookie_baker, MainPage, Register, RegisterParse
 
 
 class Web_Tests(unittest.TestCase):
@@ -14,6 +14,7 @@ class Web_Tests(unittest.TestCase):
         # create mock web app for testing
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
+                                       ('/registration-parse.html', RegisterParse),
                                        ('/cookie', Cookie_baker)])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
@@ -52,6 +53,19 @@ class Web_Tests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('Register For Basic Blog!'))
+
+    def testRegistrationInputValidation(self):
+        """
+        tests that the page that receives and processes signup input is working
+        :return:
+        """
+
+        # test that function can handle incomplete form
+        response = self.testapp.post('/registration-parse.html', {'email': 'blarg'})
+        assert response
+
+        # test that function can check that passwords match
+
 
 
 if __name__ == '__main__':

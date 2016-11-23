@@ -31,6 +31,36 @@ class Register(Handler):
         self.render('registration_page.html')
 
 
+class RegisterParse(Handler):
+
+    def post(self):
+
+        # try/except clauses to catch missing input
+        try:
+            user_email = self.request.POST['email']
+
+        except KeyError:
+            user_email = False
+
+        try:
+            password = self.request.POST['password']
+
+        except KeyError:
+            password = False
+
+        try:
+            password_rep = self.request.POST['password_rep']
+
+        except KeyError:
+            password_rep = False
+
+        if user_email and password and password_rep:
+            self.write("Form Complete")
+
+        else:
+            self.write("Form Incomplete")
+
+
 class Thing(ndb.Model):
     """ Models a Thing called THING!!!!"""
 
@@ -81,4 +111,5 @@ app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/cookie.html', Cookie_baker),
     ('/register.html', Register),
+    ('/registration-parse.html', RegisterParse)
     ], debug=True)
