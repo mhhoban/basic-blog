@@ -66,13 +66,19 @@
 
 	            </div>
 
-	             <div class="row">
+	            <div class="row">
 
 	            	<div class="col-md-12">
 
 	            		<div class="signup-form">
 
 							<button type="submit" class="btn btn-primary"> Submit! </button>
+
+							{% if error %}
+
+								<h3>{{ error }}<h3>
+
+							{% endif %}
 
 	            		</div>
 

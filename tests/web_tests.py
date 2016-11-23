@@ -60,12 +60,18 @@ class Web_Tests(unittest.TestCase):
         :return:
         """
 
-        # test that function can handle incomplete form
-        response = self.testapp.post('/registration-parse.html', {'email': 'blarg'})
+        # test that route to registration-parse is working
+        response = self.testapp.post('/registration-parse.html')
         assert response
 
-        # test that function can check that passwords match
+        # test that function can handle incomplete form correctly
+        response = self.testapp.post('/registration-parse.html', {'email': 'thing'})
+        assert response.status_int == 302
+        assert_that(response.headers['Location'], contains_string('register.html?email=notnull&errors=errors'))
 
+        response = self.testapp.get('/register.html?email=notnull&errors=errors')
+
+        assert_that(response.body, contains_string('redirection fun!'))
 
 
 if __name__ == '__main__':

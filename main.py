@@ -28,7 +28,27 @@ class Handler(webapp2.RequestHandler):
 class Register(Handler):
     def get(self):
 
-        self.render('registration_page.html')
+        # start off assuming no arguments
+        email = False
+        errors = False
+
+        if len(self.request.get('email')) > 0:
+            email = self.request.get('email')
+
+        if len(self.request.get('errors')) > 0:
+            errors = self.request.get('errors').split(',')
+
+        if email and errors:
+            self.render('registration_page.html', error='redirection fun!')
+
+        else:
+            self.render('registration_page.html')
+
+    def post(self):
+
+        kwargs = self.request.POST
+
+        self.render('registration_page.html', **kwargs)
 
 
 class RegisterParse(Handler):
@@ -55,10 +75,11 @@ class RegisterParse(Handler):
             password_rep = False
 
         if user_email and password and password_rep:
-            self.write("Form Complete")
+            # self.redirect('/register.html', {'error': 'post-redirecting-works!'})
+            self.write('form complete')
 
         else:
-            self.write("Form Incomplete")
+            self.redirect('/register.html?email=notnull&errors=errors')
 
 
 class Thing(ndb.Model):
