@@ -1,4 +1,4 @@
-
+"""
 (Kind) Users:
 
     (Entity): User
@@ -16,6 +16,16 @@
         (Field): Title
         (Field): Content
         (Parent): User
+
+
+"""
+from google.appengine.ext import ndb
+
+
+class Users(ndb.Model):
+
+    email = ndb.StringProperty()
+    password = ndb.StringProperty()
 
 
 

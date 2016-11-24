@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from cookie_hasher import encode_cookie, verify_cookie
-from regform_checks import all_fields_complete, valid_email_check, passwords_match_check
+from regform_checks import all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check
+from register import registration
 
 import os
 import jinja2
@@ -67,13 +68,19 @@ class RegisterParse(Handler):
 
             if valid_email_check(fields['email']):
 
-                if passwords_match_check(fields['password'], fields['password_rep']):
+                if duplicate_email_check(fields['email']):
 
-                    self.write('registration complete!')
+                    if passwords_match_check(fields['password'], fields['password_rep']):
+
+                        registration(fields['email'], fields['password'])
+                        self.write('registration complete!')
+
+                    else:
+
+                        errors = 'mismatched_passwords'
 
                 else:
-
-                    errors = 'mismatched_passwords'
+                    errors = 'duplicate_email'
 
             else:
 
@@ -86,18 +93,6 @@ class RegisterParse(Handler):
         if len(errors) > 0:
 
             self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
-
-
-class Thing(ndb.Model):
-    """ Models a Thing called THING!!!!"""
-
-    name = ndb.StringProperty()
-
-
-class Descendant_of_Thing(ndb.Model):
-    """Models a descendant of THING!!!!"""
-
-    name = ndb.StringProperty()
 
 
 class Cookie_baker(Handler):
