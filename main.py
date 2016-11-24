@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from cookie_hasher import encode_cookie, verify_cookie
+from regform_checks import all_fields_complete, valid_email_check, passwords_match_check
 
 import os
 import jinja2
@@ -36,10 +37,13 @@ class Register(Handler):
             email = self.request.get('email')
 
         if len(self.request.get('errors')) > 0:
-            errors = self.request.get('errors').split(',')
+            errors = self.request.get('errors')
 
         if email and errors:
-            self.render('registration_page.html', error='redirection fun!')
+            self.render('registration_page.html', email=email, error=errors)
+
+        elif errors:
+            self.render('registration_page.html', error=errors)
 
         else:
             self.render('registration_page.html')
@@ -55,31 +59,33 @@ class RegisterParse(Handler):
 
     def post(self):
 
-        # try/except clauses to catch missing input
-        try:
-            user_email = self.request.POST['email']
+        errors = ''
 
-        except KeyError:
-            user_email = False
+        fields = all_fields_complete(self.request.POST)
 
-        try:
-            password = self.request.POST['password']
+        if fields['fields_present'] is True:
 
-        except KeyError:
-            password = False
+            if valid_email_check(fields['email']):
 
-        try:
-            password_rep = self.request.POST['password_rep']
+                if passwords_match_check(fields['password'], fields['password_rep']):
 
-        except KeyError:
-            password_rep = False
+                    self.write('registration complete!')
 
-        if user_email and password and password_rep:
-            # self.redirect('/register.html', {'error': 'post-redirecting-works!'})
-            self.write('form complete')
+                else:
+
+                    errors = 'mismatched_passwords'
+
+            else:
+
+                errors = 'invalid_email'
 
         else:
-            self.redirect('/register.html?email=notnull&errors=errors')
+
+            errors = 'incomplete'
+
+        if len(errors) > 0:
+
+            self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
 
 
 class Thing(ndb.Model):
