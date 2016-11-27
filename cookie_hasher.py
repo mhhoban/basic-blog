@@ -1,14 +1,25 @@
 import hmac
 
 
-def encode_cookie():
+def encode_cookie(user):
+    """
+    hash the username for cookie encoding
+    :param user:
+    :return:
+    """
 
-    cookie_hash = hmac.new("arbitrary-secret", "test-hash").hexdigest()
+    hash = hmac.new("arbitrary-secret", user).hexdigest()
+    hashed_cookie = user + ',' + hash
 
-    return cookie_hash
+    return hashed_cookie
 
 
 def verify_cookie(hashed_cookie):
+    """
+    verify the hash matches the data.
+    :param hashed_cookie: String List, [0] is user_name, [1] is hash
+    :return:
+    """
 
     hash = hmac.new('arbitrary-secret', hashed_cookie[0]).hexdigest()
 

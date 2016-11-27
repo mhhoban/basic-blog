@@ -103,11 +103,11 @@ class RegisterParse(Handler):
             self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
 
 
-class Cookie_baker(Handler):
-    def get(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
-        self.write("Cookie Set!")
+# class Cookie_baker(Handler):
+#     def get(self):
+#         self.response.headers['Content-Type'] = 'text/plain'
+#         self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
+#         self.write("Cookie Set!")
 
 
 class MainPage(Handler):
@@ -129,7 +129,7 @@ class MainPage(Handler):
             if verify_cookie(hashed_login):
                 user_id = hashed_login[0]
 
-        hashed_cookie = 'test-hash' + ',' + encode_cookie()
+        # hashed_cookie = 'test-hash' + ',' + encode_cookie()
         # self.response.headers.add_header('Set-Cookie', 'hashed-cookie='+hashed_cookie)
 
         self.render('front_page.html', user=user_id)
@@ -139,7 +139,6 @@ class MainPage(Handler):
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/cookie.html', Cookie_baker),
     ('/register.html', Register),
     ('/registration-parse.html', RegisterParse)
     ], debug=True)

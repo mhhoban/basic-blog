@@ -4,9 +4,10 @@ import unittest
 import webapp2
 import webtest
 
-from main import Cookie_baker, MainPage, Register, RegisterParse
+from main import MainPage, Register, RegisterParse
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
+from cookie_hasher import encode_cookie, verify_cookie
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
@@ -32,7 +33,7 @@ class DbTests(unittest.TestCase):
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
                                        ('/registration-parse.html', RegisterParse),
-                                       ('/cookie', Cookie_baker)])
+                                       ])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
 
@@ -198,6 +199,28 @@ class DbTests(unittest.TestCase):
         self.assertEqual(nom_de_plume_available('thing'), False, 'Not detecting duplicate pennames')
 
         delete_registration('thing@thing')
+
+    def testUserCookieHashing(self):
+        """
+        Verify user cookie encodes and decodes correctly
+        :return:
+        """
+
+        hashed_cookie = encode_cookie('thing@thing')
+
+        hashed_cookie = hashed_cookie.split(',')
+        correct_hash = verify_cookie(hashed_cookie)
+
+        self.assertEqual(correct_hash, True, 'False Negative on hash decoding')
+
+        hashed_cookie = encode_cookie('thingz@thing')
+
+        hashed_cookie = hashed_cookie.split(',')
+        hashed_cookie[0] = 'blarg'
+
+        correct_hash = verify_cookie(hashed_cookie)
+
+        self.assertEqual(correct_hash, False, 'False positive on hash decoding')
 
 if __name__ == '__main__':
     unittest.main()
