@@ -26,6 +26,8 @@ class Users(ndb.Model):
 
     email = ndb.StringProperty()
     password = ndb.StringProperty()
+    penname = ndb.StringProperty()
+
 
 
 

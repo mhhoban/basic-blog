@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from cookie_hasher import encode_cookie, verify_cookie
-from regform_checks import all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check
+from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
+                            nom_de_plume_available)
 from register import registration
 
 import os
@@ -68,19 +69,26 @@ class RegisterParse(Handler):
 
             if valid_email_check(fields['email']):
 
-                if duplicate_email_check(fields['email']):
+                if nom_de_plume_available(fields['penname']):
 
-                    if passwords_match_check(fields['password'], fields['password_rep']):
+                    if duplicate_email_check(fields['email']):
 
-                        registration(fields['email'], fields['password'])
-                        self.write('registration complete!')
+                        if passwords_match_check(fields['password'], fields['password_rep']):
+
+                            registration(fields['email'], fields['password'],
+                                         fields['penname'])
+
+                            self.write('registration complete!')
+
+                        else:
+
+                            errors = 'mismatched_passwords'
 
                     else:
-
-                        errors = 'mismatched_passwords'
+                        errors = 'duplicate_email'
 
                 else:
-                    errors = 'duplicate_email'
+                    errors = 'nom de plume taken'
 
             else:
 

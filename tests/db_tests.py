@@ -5,7 +5,8 @@ import webapp2
 import webtest
 
 from main import Cookie_baker, MainPage, Register, RegisterParse
-from regform_checks import duplicate_email_check
+from register import registration, delete_registration
+from regform_checks import duplicate_email_check, nom_de_plume_available
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
@@ -51,46 +52,152 @@ class DbTests(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
 
-    def testThing(self):
+    def testMainPageLoads(self):
+        """tests that main page loads successfully"""
+        response = self.testapp.get('/')
+        self.assertEqual(response.status_int, 200)
 
-        a_thing = Thing(name='THINGGG')
-        a_thing.key = ndb.Key('Thing', 'bert')
-        a_thing.put()
+    def testMainPageNotLoggedInResponse(self):
+        """
+        tests that main page shows login fields when a visitor is not
+        logged in as a user
 
-        b = a_thing.key.get()
-        assert b.name == 'THINGGG'
+        """
+        response = self.testapp.get('/')
+        assert_that(response.body, contains_string('login-form'))
 
-    def testUser(self):
+    def testRegistrationPage(self):
+        """
+        tests behavior of registration page
+        :return:
+        """
+        response = self.testapp.get('/register.html')
+        self.assertEqual(response.status_int, 200)
 
-        a_user = Users(email='blarg@blarg.blarg', password='blargz')
-        a_user.key = ndb.Key('Users', a_user.email)
-        a_user.put()
+        assert_that(response.body, contains_string('Register For Basic Blog!'))
 
-        b_user = Users(email='blargz@blarg.blarg', password='blargzzz')
-        b_user.key = ndb.Key('Users', b_user.email)
-        b_user.put()
+    def testRegistrationConnection(self):
+        """
+        tests that the page that receives and processes signup input is working
+        :return:
+        """
 
-        # query = Users.query(Users.email == 'blah')
+        # test that route to registration-parse is working
+        response = self.testapp.post('/registration-parse.html')
+        assert response
 
-        query = Users.query()
+    def testRegistrationNoPenNameorPassword(self):
 
-        for user in query:
-            print ndb.Key('Users', user.email)
+        # test that function can handle incomplete form correctly
+        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing'})
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
+                                                                  '&errors=incomplete'))
+
+        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=incomplete')
+
+        assert_that(response.body, contains_string('thing@thing.thing'))
+        assert_that(response.body, contains_string('incomplete'))
+
+    def testRegistrationNoPenName(self):
+
+        # test that function can handle incomplete form correctly
+        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing',
+                                                                  'password': 'thing',
+                                                                  'password_rep': 'thing',
+                                                                  })
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
+                                                                  '&errors=incomplete'))
+
+        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=incomplete')
+
+        assert_that(response.body, contains_string('thing@thing.thing'))
+        assert_that(response.body, contains_string('incomplete'))
+
+    def testRegistrationInvalidEmail(self):
+
+        # test that registration-parse detects invalid email
+        response = self.testapp.post('/registration-parse.html', {'email': 'thing',
+                                                                  'password': 'thing',
+                                                                  'password_rep': 'thing',
+                                                                  'penname': 'thing'
+                                                                  })
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('register.html?email=thing' +
+                                                                  '&errors=invalid_email'))
+
+        response = self.testapp.get('/register.html?email=thing&errors=invalid_email')
+
+        assert_that(response.body, contains_string('thing'))
+        assert_that(response.body, contains_string('invalid_email'))
+
+    def testRegistrationPasswordMisMatch(self):
+
+        # test that registration-parse detects mismatched passwords in form
+
+        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing',
+                                                                  'password': 'thing',
+                                                                  'password_rep': 'things',
+                                                                  'penname': 'thing',
+                                                                  })
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
+                                                                  '&errors=mismatched_passwords'))
+
+        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=mismatched_passwords')
+
+        assert_that(response.body, contains_string('thing@thing.thing'))
+        assert_that(response.body, contains_string('mismatched_passwords'))
+
+
+    # def testThing(self):
+    #
+    #     a_thing = Thing(name='THINGGG')
+    #     a_thing.key = ndb.Key('Thing', 'bert')
+    #     a_thing.put()
+    #
+    #     b = a_thing.key.get()
+    #     assert b.name == 'THINGGG'
+
+    # def testUser(self):
+    #
+    #     a_user = Users(email='blarg@blarg.blarg', password='blargz')
+    #     a_user.key = ndb.Key('Users', a_user.email)
+    #     a_user.put()
+    #
+    #     b_user = Users(email='blargz@blarg.blarg', password='blargzzz')
+    #     b_user.key = ndb.Key('Users', b_user.email)
+    #     b_user.put()
+    #
+    #     # query = Users.query(Users.email == 'blah')
+    #
+    #     query = Users.query()
+    #
+    #     for user in query:
+    #         print ndb.Key('Users', user.email)
 
     def testDuplicateEmailCheck(self):
 
-        a_user = Users(email='thing@thing', password='secret')
-        a_user.put()
+        registration('thing@thing', 'secret', 'thing')
 
-        query = Users.query()
+        self.assertEqual(duplicate_email_check('thing@thingz'), True, 'False positive detecting duplicate emails')
+        self.assertEqual(duplicate_email_check('thing@thing'), False, 'Not detecting duplicate email addresses')
 
-        print 'thing count:'
-        print len(query.fetch())
+        delete_registration('thing@thing')
 
-        duplicate = duplicate_email_check('thing@thingz')
+    def testDuplicatePenName(self):
 
-        assert duplicate
+        registration('thing@thing', 'secret', 'thing')
 
+        self.assertEqual(nom_de_plume_available('thingz'), True, 'False positive detecting duplicate pennames')
+        self.assertEqual(nom_de_plume_available('thing'), False, 'Not detecting duplicate pennames')
+
+        delete_registration('thing@thing')
 
 if __name__ == '__main__':
     unittest.main()

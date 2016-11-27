@@ -19,14 +19,15 @@ def all_fields_complete(post_data):
     user_email = reg_fields[0]
     password = reg_fields[1]
     password_rep = reg_fields[2]
+    penname = reg_fields[3]
 
-    if len(user_email) > 0 and len(password) > 0 and len(password_rep) > 0:
+    if len(user_email) > 0 and len(password) > 0 and len(password_rep) > 0 and len(penname) > 0:
         return {'fields_present': True, 'email': user_email, 'password': password,
-                'password_rep': password_rep}
+                'password_rep': password_rep, 'penname': penname}
 
     else:
         return {'fields_present': False, 'email': user_email, 'password': password,
-                'password_rep': password_rep}
+                'password_rep': password_rep, 'penname': penname}
 
 
 def get_reg_fields(post_data):
@@ -44,6 +45,11 @@ def get_reg_fields(post_data):
         user_email = ''
 
     try:
+        penname = post_data['penname']
+    except KeyError:
+        penname = ''
+
+    try:
         password = post_data['password']
     except KeyError:
         password = ''
@@ -53,7 +59,7 @@ def get_reg_fields(post_data):
     except KeyError:
         password_rep = ''
 
-    return [user_email, password, password_rep]
+    return [user_email, password, password_rep, penname]
 
 
 def valid_email_check(email):
@@ -70,6 +76,22 @@ def duplicate_email_check(email):
     """
 
     query = Users.query(Users.email == email)
+
+    if len(query.fetch()) > 0:
+        return False
+
+    else:
+        return True
+
+
+def nom_de_plume_available(penname):
+    """
+    checks that nom_de_plume is still available
+    :param penname:
+    :return: True if available, false if not
+    """
+
+    query = Users.query(Users.penname == penname)
 
     if len(query.fetch()) > 0:
         return False
