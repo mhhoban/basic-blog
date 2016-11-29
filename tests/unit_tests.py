@@ -182,6 +182,18 @@ class DbTests(unittest.TestCase):
     #     for user in query:
     #         print ndb.Key('Users', user.email)
 
+
+    # def testCookieHashing(self):
+    #     """
+    #     tests that visiting the main page detects cookies appropriately
+    #     :return:
+    #     """
+    #
+    #     self.testapp.set_cookie('user-id', 'test-hash,420ad9ff2d6c88f4782ebbd7a4f03a82')
+    #
+    #     response = self.testapp.get('/')
+    #     assert_that(response.body, contains_string('test-hash'))
+
     def testDuplicateEmailCheck(self):
 
         registration('thing@thing', 'secret', 'thing')
