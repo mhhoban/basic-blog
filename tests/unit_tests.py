@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, RegisterParse
+from main import MainPage, Register, RegisterParse, LoginParse, LoginPage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
@@ -33,6 +33,7 @@ class DbTests(unittest.TestCase):
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
                                        ('/registration-parse.html', RegisterParse),
+                                       ('/login-parse.html', LoginParse),
                                        ])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
@@ -233,6 +234,30 @@ class DbTests(unittest.TestCase):
         correct_hash = verify_cookie(hashed_cookie)
 
         self.assertEqual(correct_hash, False, 'False positive on hash decoding')
+
+    def testIncompleteLoginFields(self):
+
+        response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing.thing'})
+
+        assert_that(response.body, contains_string('really incomplete'))
+
+    def testInvalidEmail(self):
+
+        response = self.testapp.post('/login-parse.html', {'user_id': 'thingz@thing.thing', 'password': 'blarg'})
+
+        assert_that(response.body, contains_string('invalid'))
+
+    def testIncorrectPassword(self):
+
+        registration('thing@thing', 'secret', 'thing')
+
+        response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing', 'password': 'secretz'})
+
+        assert_that(response.body, contains_string('wrong password'))
+
+    def testValidLogin(self):
+        #
+        pass
 
 if __name__ == '__main__':
     unittest.main()

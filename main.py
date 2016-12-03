@@ -1,7 +1,8 @@
 from cookie_hasher import encode_cookie, verify_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
-from user_tools import fetch_penname
+from login_checks import login_fields_complete, valid_user_id_check
+from user_tools import fetch_penname, check_password
 from register import registration
 
 import os
@@ -78,6 +79,8 @@ class RegisterParse(Handler):
                             registration(fields['email'], fields['password'],
                                          fields['penname'])
 
+                            # TODO replace with single 'login' function
+
                             user_hash = encode_cookie(fields['email'])
                             self.response.set_cookie('user-id', str(user_hash))
                             self.redirect('/')
@@ -105,32 +108,44 @@ class RegisterParse(Handler):
             self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
 
 
-# class Cookie_baker(Handler):
-#     def get(self):
-#         self.response.headers['Content-Type'] = 'text/plain'
-#         self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
-#         self.write("Cookie Set!")
+class LoginParse(Handler):
+    def post(self):
 
-# class LoginPage(Handler):
-#     def post(self):
-#         user_email = self.request.POST
-#
-#         if (login_exists()):
-#             # do things
-#
-#         else:
+        login_parse = login_fields_complete(self.request.POST)
+
+        if (login_parse['complete']):
+            self.write('totally complete')
+
+            valid_user_id = valid_user_id_check(login_parse['user_id'])
+
+            if valid_user_id:
+                self.write('ID found')
+
+                correct_password = check_password(login_parse['user_id'], login_parse['password'])
+
+                if correct_password:
+                    #login
+                    pass
+
+                else:
+                    self.write('wrong password')
+
+            else:
+                self.write('invalid')
+
+
+        else:
+            self.redirect('/login.html?error=incomplete')
+            self.write('really incomplete')
+
+
+class LoginPage(Handler):
+    def get(self):
+        pass
 
 
 class MainPage(Handler):
     def get(self):
-
-        # a_thing = Thing(name='THINGGG')
-        # a_thing.key = ndb.Key('Thing', 'bert')
-        # a_thing.put()
-        #
-        # b = a_thing.key.get()
-
-        # self.response.headers['Content-Type'] = 'text/plain'
 
         user_hash = self.request.cookies.get('user-id', 'None')
 
@@ -153,5 +168,7 @@ class MainPage(Handler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
-    ('/registration-parse.html', RegisterParse)
+    ('/registration-parse.html', RegisterParse),
+    ('/login-parse.html', LoginParse),
+    ('/login.html', LoginPage)
     ], debug=True)

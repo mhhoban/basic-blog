@@ -30,3 +30,11 @@ def verify_cookie(hashed_cookie):
         return False
 
 
+# def verify_password(password):
+#     """
+#     hash the password the user provided to ensure it matches the hash in the database
+#     :param password:
+#     :return:
+#     """
+
+

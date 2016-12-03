@@ -15,6 +15,3 @@ def registration(username, password, penname):
 def delete_registration(username):
     key = ndb.Key('Users', username)
     key.delete()
-
-    import pdb
-    pdb.set_trace()
