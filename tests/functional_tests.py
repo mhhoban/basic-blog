@@ -1,5 +1,7 @@
 from selenium import webdriver
 from hamcrest import assert_that, contains_string
+from register import delete_registration
+from time import sleep
 
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
@@ -12,7 +14,11 @@ import unittest
 class NewUserSignUpTest(unittest.TestCase):
 
     def setUp(self):
-        self.browser = webdriver.Chrome()
+
+        chrome_opts = webdriver.ChromeOptions()
+        chrome_opts.add_argument("--incognito")
+
+        self.browser = webdriver.Chrome(chrome_options=chrome_opts)
         self.browser.set_window_size(1300, 1300)
 
     def tearDown(self):
@@ -22,6 +28,11 @@ class NewUserSignUpTest(unittest.TestCase):
 
         # User visits the blog, which loads successfully
         self.browser.get('http://localhost:8080')
+
+        sleep(2)
+
+        import pdb
+        pdb.set_trace()
 
         # Then sees a field for an email input
         try:
@@ -131,6 +142,21 @@ class NewUserSignUpTest(unittest.TestCase):
 
         register_submit_button.click()
 
+        # successfully completing the sign up process, the user is re-directed to the homepage and is welcomed
+        # by their nom de plume
+
+        try:
+            penname = self.browser.find_element_by_xpath("//*/div[@class='user-greeting']/h3")
+        except NoSuchElementException:
+            penname = False
+
+        import pdb
+        pdb.set_trace()
+
+        self.assertTrue(penname, 'User name not showing after registration')
+        assert_that(penname.text, contains_string('thing'))
+
+        # delete_registration('a@a.a')
 
 if __name__ == '__main__':
     unittest.main()

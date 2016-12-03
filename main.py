@@ -1,7 +1,7 @@
-from google.appengine.ext import ndb
 from cookie_hasher import encode_cookie, verify_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
+from user_tools import fetch_penname
 from register import registration
 
 import os
@@ -78,7 +78,9 @@ class RegisterParse(Handler):
                             registration(fields['email'], fields['password'],
                                          fields['penname'])
 
-                            self.write('registration complete!')
+                            user_hash = encode_cookie(fields['email'])
+                            self.response.set_cookie('user-id', str(user_hash))
+                            self.redirect('/')
 
                         else:
 
@@ -109,6 +111,15 @@ class RegisterParse(Handler):
 #         self.response.headers.add_header('Set-Cookie', 'user-id-test=John Doe')
 #         self.write("Cookie Set!")
 
+# class LoginPage(Handler):
+#     def post(self):
+#         user_email = self.request.POST
+#
+#         if (login_exists()):
+#             # do things
+#
+#         else:
+
 
 class MainPage(Handler):
     def get(self):
@@ -122,17 +133,19 @@ class MainPage(Handler):
         # self.response.headers['Content-Type'] = 'text/plain'
 
         user_hash = self.request.cookies.get('user-id', 'None')
-        user_id = 'None'
+
+        # default visitor to not logged in
+        penname = 'None'
 
         if user_hash != 'None':
-            hashed_login = user_hash.split(',')
-            if verify_cookie(hashed_login):
-                user_id = hashed_login[0]
 
-        # hashed_cookie = 'test-hash' + ',' + encode_cookie()
-        # self.response.headers.add_header('Set-Cookie', 'hashed-cookie='+hashed_cookie)
+            user_hash = user_hash.split(',')
 
-        self.render('front_page.html', user=user_id)
+            if verify_cookie(user_hash):
+                user_id = user_hash[0]
+                penname = fetch_penname(user_id)
+
+        self.render('front_page.html', user=penname)
 
     def post(self):
         self.response.out.write("bar")
