@@ -111,6 +111,9 @@ class RegisterParse(Handler):
 class LoginParse(Handler):
     def post(self):
 
+        import pdb
+        pdb.set_trace()
+
         login_parse = login_fields_complete(self.request.POST)
 
         if (login_parse['complete']):
@@ -124,8 +127,10 @@ class LoginParse(Handler):
                 correct_password = check_password(login_parse['user_id'], login_parse['password'])
 
                 if correct_password:
-                    #login
-                    pass
+                    # login
+                    user_hash = encode_cookie(login_parse['user_id'])
+                    self.response.set_cookie('user-id', str(user_hash))
+                    self.redirect('/')
 
                 else:
                     self.write('wrong password')
