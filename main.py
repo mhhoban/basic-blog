@@ -3,6 +3,7 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import fetch_penname, check_password
+from blog_post_tools import get_all_posts
 from register import registration
 
 import os
@@ -111,18 +112,16 @@ class RegisterParse(Handler):
 class LoginParse(Handler):
     def post(self):
 
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
         login_parse = login_fields_complete(self.request.POST)
 
         if (login_parse['complete']):
-            self.write('totally complete')
 
             valid_user_id = valid_user_id_check(login_parse['user_id'])
 
             if valid_user_id:
-                self.write('ID found')
 
                 correct_password = check_password(login_parse['user_id'], login_parse['password'])
 
@@ -133,25 +132,31 @@ class LoginParse(Handler):
                     self.redirect('/')
 
                 else:
-                    self.write('wrong password')
+                    self.redirect('/login.html?error=invalid')
 
             else:
-                self.write('invalid')
-
+                self.redirect('/login.html?error=invalid')
 
         else:
             self.redirect('/login.html?error=incomplete')
-            self.write('really incomplete')
 
 
 class LoginPage(Handler):
     def get(self):
-        pass
+
+        if len(self.request.get('error')) > 0:
+            error = self.request.get('error')
+
+        else:
+            error = False
+
+        self.render('login_page.html', error=error)
 
 
 class MainPage(Handler):
     def get(self):
 
+        # determine if a visitor is logged in
         user_hash = self.request.cookies.get('user-id', 'None')
 
         # default visitor to not logged in
@@ -165,7 +170,20 @@ class MainPage(Handler):
                 user_id = user_hash[0]
                 penname = fetch_penname(user_id)
 
-        self.render('front_page.html', user=penname)
+        # determine if there are any blog posts to show yet:
+        posts_present = get_all_posts()
+
+        if (posts_present):
+            posts = ['a', 'b']
+
+        else:
+            posts = [{'title': 'first titlez', 'author': 'first authorz', 'content': 'first contentz'},
+                     {'title': 'second title', 'author': 'second author', 'content': 'second contentz'}]
+
+        # import pdb
+        # pdb.set_trace()
+
+        self.render('front_page.html', user=penname, posts=posts)
 
     def post(self):
         self.response.out.write("bar")

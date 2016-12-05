@@ -30,13 +30,9 @@ class NewUserSignUpTest(unittest.TestCase):
         self.browser.get('http://localhost:8080')
 
         sleep(2)
-
-        import pdb
-        pdb.set_trace()
-
         # Then sees a field for an email input
         try:
-            email_field = self.browser.find_element_by_id('email-input')
+            email_field = self.browser.find_element_by_id('user_id')
 
         except NoSuchElementException:
             email_field = False
@@ -45,7 +41,7 @@ class NewUserSignUpTest(unittest.TestCase):
 
         # Then sees a field for a password input
         try:
-            password_field = self.browser.find_element_by_id('password-input')
+            password_field = self.browser.find_element_by_id('password')
 
         except NoSuchElementException:
             password_field = False
@@ -157,6 +153,59 @@ class NewUserSignUpTest(unittest.TestCase):
         assert_that(penname.text, contains_string('thing'))
 
         # delete_registration('a@a.a')
+
+    def testUserSignIn(self):
+
+        # User visits the blog, which loads successfully
+        self.browser.get('http://localhost:8080')
+
+        sleep(2)
+        # Then sees a field for an email input
+        try:
+            email_field = self.browser.find_element_by_id('user_id')
+
+        except NoSuchElementException:
+            email_field = False
+
+        self.assertTrue(email_field, 'email_field not detected for non-logged in user')
+
+        # Then sees a field for a password input
+        try:
+            password_field = self.browser.find_element_by_id('password')
+
+        except NoSuchElementException:
+            password_field = False
+
+        self.assertTrue(password_field, 'password_field not detected for non-logged in user')
+
+        # Then sees a login button
+        try:
+            login_button = self.browser.find_element_by_name('login-submit')
+
+        except NoSuchElementException:
+            login_button = False
+
+        self.assertTrue(login_button, 'login button not detected for non-logged in user')
+
+        # Then sees a registration link
+        try:
+            register_link = self.browser.find_element_by_xpath("//*/div[@class='signup-link']/a")
+
+        except NoSuchElementException:
+            register_link = False
+
+        self.assertTrue(register_link, 'register link not detected for non-logged in user')
+
+        email_field.send_keys('a@a.a')
+        assert_that(email_field.get_attribute('value'), contains_string('a@a.a'))
+
+        password_field.send_keys('thing')
+        assert_that(password_field.get_attribute('value'), contains_string('thing'))
+
+        login_button.click()
+
+        import pdb
+        pdb.set_trace()
 
 if __name__ == '__main__':
     unittest.main()

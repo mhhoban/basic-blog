@@ -28,6 +28,16 @@ class Users(ndb.Model):
     password = ndb.StringProperty()
     penname = ndb.StringProperty()
 
+class Posts(ndb.Model):
+
+    author = ndb.StringProperty()
+    title = ndb.StringProperty()
+    content = ndb.TextProperty()
+    publish_date = ndb.DateTimeProperty()
+    likes = ndb.IntegerProperty()
+
+
+
 
 
 

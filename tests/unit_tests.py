@@ -259,5 +259,9 @@ class DbTests(unittest.TestCase):
         #
         pass
 
+    def testFrontPageNoPosts(self):
+
+        response = self.testapp.get()
+
 if __name__ == '__main__':
     unittest.main()
