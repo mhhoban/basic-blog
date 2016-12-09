@@ -33,6 +33,7 @@ class DbTests(unittest.TestCase):
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
                                        ('/registration-parse.html', RegisterParse),
+                                       ('/login.html', LoginPage),
                                        ('/login-parse.html', LoginParse),
                                        ])
         # wrap the test app:
@@ -221,14 +222,14 @@ class DbTests(unittest.TestCase):
 
         hashed_cookie = encode_cookie('thing@thing')
 
-        hashed_cookie = hashed_cookie.split(',')
+        hashed_cookie = hashed_cookie.split('-')
         correct_hash = verify_cookie(hashed_cookie)
 
         self.assertEqual(correct_hash, True, 'False Negative on hash decoding')
 
         hashed_cookie = encode_cookie('thingz@thing')
 
-        hashed_cookie = hashed_cookie.split(',')
+        hashed_cookie = hashed_cookie.split('-')
         hashed_cookie[0] = 'blarg'
 
         correct_hash = verify_cookie(hashed_cookie)
@@ -239,11 +240,23 @@ class DbTests(unittest.TestCase):
 
         response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing.thing'})
 
-        assert_that(response.body, contains_string('really incomplete'))
+        self.assertEqual(response.status_int, 302)
+
+        assert_that(response.headers['Location'], contains_string('/login.html?error=incomplete'))
+
+        response = self.testapp.get('/login.html?error=incomplete')
+
+        assert_that(response.body, contains_string('incomplete'))
 
     def testInvalidEmail(self):
 
         response = self.testapp.post('/login-parse.html', {'user_id': 'thingz@thing.thing', 'password': 'blarg'})
+
+        self.assertEqual(response.status_int, 302)
+
+        assert_that(response.headers['Location'], contains_string('/login.html?error=invalid'))
+
+        response = self.testapp.get('/login.html?error=invalid')
 
         assert_that(response.body, contains_string('invalid'))
 
@@ -253,15 +266,33 @@ class DbTests(unittest.TestCase):
 
         response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing', 'password': 'secretz'})
 
-        assert_that(response.body, contains_string('wrong password'))
+        self.assertEqual(response.status_int, 302)
+
+        assert_that(response.headers['Location'], contains_string('/login.html?error=invalid'))
+
+        response = self.testapp.get('/login.html?error=invalid')
+
+        assert_that(response.body, contains_string('invalid'))
 
     def testValidLogin(self):
-        #
-        pass
+
+        registration('thingz@thingz', 'secret', 'thingz')
+
+        response = self.testapp.post('/login-parse.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+
+        self.assertEqual(response.status_int, 302)
+
+        assert_that(response.headers['Location'], contains_string('/'))
+
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('thingz'))
 
     def testFrontPageNoPosts(self):
 
-        response = self.testapp.get()
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('No Posts Yet!'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,7 +9,7 @@ def encode_cookie(user):
     """
 
     hash = hmac.new("arbitrary-secret", user).hexdigest()
-    hashed_cookie = user + ',' + hash
+    hashed_cookie = user + '-' + hash
 
     return hashed_cookie
 
@@ -22,6 +22,9 @@ def verify_cookie(hashed_cookie):
     """
 
     hash = hmac.new('arbitrary-secret', hashed_cookie[0]).hexdigest()
+
+    import pdb
+    pdb.set_trace()
 
     if hash == hashed_cookie[1]:
         return True

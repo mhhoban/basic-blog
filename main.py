@@ -5,6 +5,8 @@ from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import fetch_penname, check_password
 from blog_post_tools import get_all_posts
 from register import registration
+from google.appengine.ext import ndb
+
 
 import os
 import jinja2
@@ -28,6 +30,40 @@ class Handler(webapp2.RequestHandler):
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+
+class TestUser(ndb.Model):
+    name = ndb.StringProperty()
+
+
+class TestUserPage(Handler):
+
+    def get(self):
+
+        test_user_num = TestUser.query()
+
+        if test_user_num.count() < 1:
+            self.write('started with no users ')
+
+        a = TestUser(name='a')
+        a.put()
+
+        import time
+        time.sleep(2)
+
+        test_user_num = TestUser.query()
+
+        if test_user_num.count() < 1:
+            self.write('somehow ended with no users ' + str(test_user_num.count()))
+
+        else:
+            self.write('successfully added a user')
+        b = TestUser(name='b')
+        c = TestUser(name='c')
+
+        # a.put()
+        # b.put()
+        # c.put()
 
 
 class Register(Handler):
@@ -117,7 +153,7 @@ class LoginParse(Handler):
 
         login_parse = login_fields_complete(self.request.POST)
 
-        if (login_parse['complete']):
+        if login_parse['complete']:
 
             valid_user_id = valid_user_id_check(login_parse['user_id'])
 
@@ -164,7 +200,9 @@ class MainPage(Handler):
 
         if user_hash != 'None':
 
-            user_hash = user_hash.split(',')
+            user_hash = user_hash.split('-')
+            import pdb
+            pdb.set_trace()
 
             if verify_cookie(user_hash):
                 user_id = user_hash[0]
@@ -177,11 +215,7 @@ class MainPage(Handler):
             posts = ['a', 'b']
 
         else:
-            posts = [{'title': 'first titlez', 'author': 'first authorz', 'content': 'first contentz'},
-                     {'title': 'second title', 'author': 'second author', 'content': 'second contentz'}]
-
-        # import pdb
-        # pdb.set_trace()
+            posts = []
 
         self.render('front_page.html', user=penname, posts=posts)
 
@@ -193,5 +227,6 @@ app = webapp2.WSGIApplication([
     ('/register.html', Register),
     ('/registration-parse.html', RegisterParse),
     ('/login-parse.html', LoginParse),
-    ('/login.html', LoginPage)
+    ('/login.html', LoginPage),
+    ('/test-key', TestUserPage),
     ], debug=True)
