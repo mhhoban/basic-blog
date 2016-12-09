@@ -1,7 +1,7 @@
 """
-(Kind) Users:
+(Kind) User:
 
-    (Entity): User
+    (Entity): a user
 
         (Field): Name
         (Field): email
@@ -9,9 +9,9 @@
         (ID): email
 
 
-(Kind) Posts:
+(Kind) Post:
 
-    (Entity): Post
+    (Entity): a post
 
         (Field): Title
         (Field): Content
@@ -22,13 +22,14 @@
 from google.appengine.ext import ndb
 
 
-class Users(ndb.Model):
+class User(ndb.Model):
 
     email = ndb.StringProperty()
     password = ndb.StringProperty()
     penname = ndb.StringProperty()
 
-class Posts(ndb.Model):
+
+class Post(ndb.Model):
 
     author = ndb.StringProperty()
     title = ndb.StringProperty()

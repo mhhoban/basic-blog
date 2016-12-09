@@ -222,6 +222,7 @@ class DbTests(unittest.TestCase):
 
         hashed_cookie = encode_cookie('thing@thing')
 
+        # TODO integrate cookie split into function itself to avoid this code all over
         hashed_cookie = hashed_cookie.split('-')
         correct_hash = verify_cookie(hashed_cookie)
 
@@ -229,6 +230,7 @@ class DbTests(unittest.TestCase):
 
         hashed_cookie = encode_cookie('thingz@thing')
 
+        # TODO integrate cookie split into function itself to avoid this code all over
         hashed_cookie = hashed_cookie.split('-')
         hashed_cookie[0] = 'blarg'
 

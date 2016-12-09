@@ -3,7 +3,7 @@ from google.appengine.ext import ndb
 
 def fetch_user(user_id):
 
-    user_key = ndb.Key('Users', user_id)
+    user_key = ndb.Key('User', user_id)
 
     user = user_key.get()
 
@@ -11,7 +11,7 @@ def fetch_user(user_id):
 
 
 def login_exists(email):
-    user.key = ndb.Key('Users', email)
+    user.key = ndb.Key('User', email)
 
     if (user.key.get()):
         return True
