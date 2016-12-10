@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
-from db_schema import Users
+from db_schema import User
 
 
 def login_fields_complete(post_data):
@@ -23,7 +23,7 @@ def login_fields_complete(post_data):
 
 def valid_user_id_check(user_id):
 
-    user_key = ndb.Key('Users', user_id)
+    user_key = ndb.Key('User', user_id)
 
     user = user_key.get()
 

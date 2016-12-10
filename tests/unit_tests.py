@@ -4,15 +4,16 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, RegisterParse, LoginParse, LoginPage
+from main import MainPage, Register, RegisterParse, LoginParse, LoginPage, BlogComposePage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
+from blog_post_tools import blog_data_parser, store_post, get_all_posts
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
-from db_schema import Users
+from db_schema import Post
 
 
 class Thing(ndb.Model):
@@ -34,6 +35,7 @@ class DbTests(unittest.TestCase):
                                        ('/register.html', Register),
                                        ('/registration-parse.html', RegisterParse),
                                        ('/login.html', LoginPage),
+                                       ('/blog-compose.html', BlogComposePage),
                                        ('/login-parse.html', LoginParse),
                                        ])
         # wrap the test app:
@@ -50,7 +52,7 @@ class DbTests(unittest.TestCase):
         # This prevents data from leaking between tests.
         # Alternatively, you could disable caching by
         # using ndb.get_context().set_cache_policy(False)
-        ndb.get_context().clear_cache()
+        #ndb.get_context().clear_cache()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -295,6 +297,54 @@ class DbTests(unittest.TestCase):
         response = self.testapp.get('/')
 
         assert_that(response.body, contains_string('No Posts Yet!'))
+
+    def testPostComposePageLoads(self):
+
+        response = self.testapp.get('/blog-compose.html')
+
+        self.assertEqual(response.status_int, 200)
+
+    def testPostDataParsing(self):
+
+        data = blog_data_parser({'title': 'thing_title', 'content': 'thing_content', 'author': 'thing_author'})
+
+        self.assertEqual(data['valid'], True)
+        self.assertEqual(data['title'], 'thing_title')
+        self.assertEqual(data['content'], 'thing_content')
+        self.assertEqual(data['author'], 'thing_author')
+
+    def testComposePostWorks(self):
+
+        data = store_post({'title': 'thing_title', 'content': 'thing_content', 'author': 'thing_author'})
+        self.assertEqual(data, True)
+
+    def testRetrieveAllPostsWorks(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+        self.assertEqual(data, True)
+        data = get_all_posts()
+        self.assertEqual(data[0].title, 'thingz_title')
+        self.assertEqual(data[0].content, 'thingz_content')
+        self.assertEqual(data[0].author, 'thingz_author')
+
+    def testPostsLoadOnFrontPage(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+        data = store_post({'title': 'thingz_atitle', 'content': 'thingz_acontent', 'author': 'thingz_aauthor'})
+        self.assertEqual(data, True)
+        response = self.testapp.get('/')
+        assert_that(response.body, contains_string('thingz_title'))
+        assert_that(response.body, contains_string('thingz_author'))
+        assert_that(response.body, contains_string('thingz_content'))
+        assert_that(response.body, contains_string('thingz_atitle'))
+        assert_that(response.body, contains_string('thingz_aauthor'))
+        assert_that(response.body, contains_string('thingz_acontent'))
+
+
+
+
+
+
+
+        pass
 
 if __name__ == '__main__':
     unittest.main()

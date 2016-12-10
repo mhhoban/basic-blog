@@ -65,6 +65,14 @@ body {
     margin-left: 25%;
 }
 
+.blog-compose-field {
+    color: white;
+    width: 50%;
+    height: auto;
+    overflow: scroll;
+    margin-top: 1vw;
+    margin-left: 25%;
+}
 
 .content-pane {
     margin-top: 5px;
@@ -89,6 +97,30 @@ body {
     background: black;
 
     padding-bottom: 5px;
+}
+
+.blog-compose-box {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    min-height: 400px;
+    
+    height: 100%;
+    border-style:solid;
+    border-color: black;
+    background: black;
+
+    padding-bottom: 5px;
+}
+
+.blog-content-box {
+
+    height: 25%;
+
 }
 
 .post-title {

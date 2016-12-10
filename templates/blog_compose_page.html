@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block posts_block %}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="blog-compose-box">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="signup-form">
+
+                        <h3> Compose Your Blog Post! </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <form action="blog-compose-parse.html" method="post">
+
+	            <div class="row">
+
+	                <div class="col-md-12">
+
+	                    <div class="signup-form">
+
+	                    	{% if email %}
+
+	                    		<input type="email" class="form-control" name="email" id="email-input" aria-describedby="email-subtext" value=" {{ email }} "> 
+	                    	{% else %}
+	                    	
+								<input type="email" class="form-control" name="email" id="email-input" aria-describedby="email-subtext" placeholder="email">
+
+							{% endif %}
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="signup-form">
+
+							<input type="text" class="form-control" name="blog_title" id="blog_title" placeholder="title">
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		
+
+	            		<div class="blog-compose-field">
+
+							<textarea class="form-control" name="blog_content" id="blog_content" rows="10"> Start Writing! </textarea> 
+
+	            		</div>
+
+
+
+	            	</div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="signup-form">
+
+							<button type="submit" class="btn btn-primary"> Post! </button>
+
+							{% if error %}
+
+								<h3>{{ error }}<h3>
+
+							{% endif %}
+
+	            		</div>
+
+            	</div>
+
+            </div>
+
+        </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

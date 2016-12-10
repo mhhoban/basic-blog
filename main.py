@@ -3,7 +3,7 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import fetch_penname, check_password
-from blog_post_tools import get_all_posts
+from blog_post_tools import get_all_posts, store_post
 from register import registration
 from google.appengine.ext import ndb
 
@@ -64,6 +64,13 @@ class TestUserPage(Handler):
         # a.put()
         # b.put()
         # c.put()
+
+
+class BlogComposeParse(Handler):
+    def post(self):
+
+        blog_data = self.request.POST
+        #transaction = store_post()
 
 
 class Register(Handler):
@@ -189,6 +196,12 @@ class LoginPage(Handler):
         self.render('login_page.html', error=error)
 
 
+class BlogComposePage(Handler):
+    def get(self):
+
+        self.render('blog_compose_page.html')
+
+
 class MainPage(Handler):
     def get(self):
 
@@ -201,21 +214,19 @@ class MainPage(Handler):
         if user_hash != 'None':
 
             user_hash = user_hash.split('-')
-            import pdb
-            pdb.set_trace()
 
             if verify_cookie(user_hash):
                 user_id = user_hash[0]
                 penname = fetch_penname(user_id)
 
         # determine if there are any blog posts to show yet:
-        posts_present = get_all_posts()
+        posts = get_all_posts()
 
-        if (posts_present):
-            posts = ['a', 'b']
-
-        else:
-            posts = []
+        # if len(posts_present) > 1
+        #     posts = ['a', 'b']
+        #
+        # else:
+        #     posts = []
 
         self.render('front_page.html', user=penname, posts=posts)
 
@@ -229,4 +240,6 @@ app = webapp2.WSGIApplication([
     ('/login-parse.html', LoginParse),
     ('/login.html', LoginPage),
     ('/test-key', TestUserPage),
+    ('/blog-compose.html', BlogComposePage),
+    ('/blog-compose-parse.html', BlogComposeParse),
     ], debug=True)

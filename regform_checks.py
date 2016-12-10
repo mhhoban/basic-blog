@@ -4,7 +4,7 @@ functions to validate registraiton data
 
 import re
 from google.appengine.ext import ndb
-from db_schema import Users
+from db_schema import User
 
 
 def all_fields_complete(post_data):
@@ -75,7 +75,7 @@ def duplicate_email_check(email):
     :return:
     """
 
-    query = Users.query(Users.email == email)
+    query = User.query(User.email == email)
 
     if len(query.fetch()) > 0:
         return False
@@ -91,7 +91,7 @@ def nom_de_plume_available(penname):
     :return: True if available, false if not
     """
 
-    query = Users.query(Users.penname == penname)
+    query = User.query(User.penname == penname)
 
     if len(query.fetch()) > 0:
         return False
