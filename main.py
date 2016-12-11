@@ -71,13 +71,23 @@ class BlogComposeParse(Handler):
 
     def post(self):
 
-        blog_data = self.request.POST
-        blog_data['author'] = 'test_author'
-        transaction_success = store_post(blog_data)
-        if transaction_success:
-            self.write('blog storage success')
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = 'test_author'
+            transaction_success = store_post(blog_data)
+            if transaction_success:
+                self.write('blog storage success')
+            else:
+                self.write('blog storage failure')
+
         else:
-            self.write('blog storage failure')
+            self.redirect('/')
 
 
 class Register(Handler):
@@ -215,6 +225,7 @@ class BlogComposePage(Handler):
         else:
 
             self.redirect('/')
+
 
 class MainPage(Handler):
     def get(self):

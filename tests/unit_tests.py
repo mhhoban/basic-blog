@@ -295,6 +295,10 @@ class DbTests(unittest.TestCase):
         assert_that(response.body, contains_string('thingz_acontent'))
 
     def testBlogComposeParse(self):
+        registration('test@user', 'secret', 'testuser')
+        hashed_cookie = encode_cookie('test@user')
+        self.testapp.set_cookie('user-id', hashed_cookie)
+
         response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
         self.assertEqual(response.body, 'blog storage success')
 
@@ -330,8 +334,12 @@ class DbTests(unittest.TestCase):
 
         self.assertEqual(response.status_int, 200)
 
+    def testNewAuthBlogComposeParseNotLoggedIn(self):
 
+        response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
 
+        self.assertEqual(response.status_int, 302)
+        
 
 
 if __name__ == '__main__':
