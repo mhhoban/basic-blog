@@ -59,6 +59,9 @@ def store_post(blog_post_data):
 
     # new_key = db.Key.from_path('Post', new_key_id[0])
 
+    import pdb
+    pdb.set_trace()
+
     new_post = Post(author=blog_post['author'],
                     title=blog_post['title'],
                     content=blog_post['content'])

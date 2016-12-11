@@ -67,10 +67,16 @@ class TestUserPage(Handler):
 
 
 class BlogComposeParse(Handler):
+
     def post(self):
 
         blog_data = self.request.POST
-        #transaction = store_post()
+        blog_data['author'] = 'test_author'
+        transaction_success = store_post(blog_data)
+        if transaction_success:
+            self.write('blog storage success')
+        else:
+            self.write('blog storage failure')
 
 
 class Register(Handler):
@@ -221,12 +227,6 @@ class MainPage(Handler):
 
         # determine if there are any blog posts to show yet:
         posts = get_all_posts()
-
-        # if len(posts_present) > 1
-        #     posts = ['a', 'b']
-        #
-        # else:
-        #     posts = []
 
         self.render('front_page.html', user=penname, posts=posts)
 
