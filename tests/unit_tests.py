@@ -343,5 +343,34 @@ class DbTests(unittest.TestCase):
         response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
         self.assertEqual(response.body, 'blog storage success')
 
+    # def testCookieHashing(self):
+    #     """
+    #     tests that visiting the main page detects cookies appropriately
+    #     :return:
+    #     """
+    #
+    #     self.testapp.set_cookie('user-id', 'test-hash,420ad9ff2d6c88f4782ebbd7a4f03a82')
+    #
+    #     response = self.testapp.get('/')
+    #     assert_that(response.body, contains_string('test-hash'))
+
+    def testNewAuthNotLoggedIn(self):
+
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('Not a Member? Register!'))
+
+    def testNewAuthLoggedIn(self):
+
+        registration('test@user', 'secret', 'testuser')
+
+        hashed_cookie = encode_cookie('test@user')
+
+        self.testapp.set_cookie('user-id', hashed_cookie)
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('testuser'))
+
+
 if __name__ == '__main__':
     unittest.main()

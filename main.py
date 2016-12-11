@@ -1,3 +1,4 @@
+from auth_tools import auth_user
 from cookie_hasher import encode_cookie, verify_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
@@ -212,18 +213,31 @@ class MainPage(Handler):
     def get(self):
 
         # determine if a visitor is logged in
-        user_hash = self.request.cookies.get('user-id', 'None')
+        # user_hash = self.request.cookies.get('user-id', 'None')
+        #
+        # # default visitor to not logged in
+        # penname = 'None'
+        #
+        # if user_hash != 'None':
+        #
+        #     user_hash = user_hash.split('-')
+        #
+        #     if verify_cookie(user_hash):
+        #         user_id = user_hash[0]
+        #         penname = fetch_penname(user_id)
 
-        # default visitor to not logged in
-        penname = 'None'
+        # new determine if a visitor is logged in:
 
-        if user_hash != 'None':
+        auth_check = auth_user(self)
+        #
+        # import pdb
+        # pdb.set_trace()
 
-            user_hash = user_hash.split('-')
+        if auth_check['authorized']:
+            penname = auth_check['penname']
 
-            if verify_cookie(user_hash):
-                user_id = user_hash[0]
-                penname = fetch_penname(user_id)
+        else:
+            penname = 'None'
 
         # determine if there are any blog posts to show yet:
         posts = get_all_posts()
