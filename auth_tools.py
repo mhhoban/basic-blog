@@ -1,0 +1,20 @@
+from cookie_hasher import verify_cookie
+from user_tools import fetch_penname
+
+
+def auth_user(self):
+
+    user_hash = self.request.cookies.get('user-id', 'None')
+
+    if user_hash != 'None':
+        user_hash = user_hash.split('-')
+
+        if verify_cookie(user_hash):
+            user_id = user_hash[0]
+            penname = fetch_penname(user_id)
+            return {'authorized': True, 'user_id': user_id, 'penname': penname}
+
+        else:
+            return {'authorized': False}
+    else:
+        return {'authorized': False}
