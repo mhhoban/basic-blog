@@ -160,45 +160,6 @@ class DbTests(unittest.TestCase):
         assert_that(response.body, contains_string('thing@thing.thing'))
         assert_that(response.body, contains_string('mismatched_passwords'))
 
-
-    # def testThing(self):
-    #
-    #     a_thing = Thing(name='THINGGG')
-    #     a_thing.key = ndb.Key('Thing', 'bert')
-    #     a_thing.put()
-    #
-    #     b = a_thing.key.get()
-    #     assert b.name == 'THINGGG'
-
-    # def testUser(self):
-    #
-    #     a_user = Users(email='blarg@blarg.blarg', password='blargz')
-    #     a_user.key = ndb.Key('Users', a_user.email)
-    #     a_user.put()
-    #
-    #     b_user = Users(email='blargz@blarg.blarg', password='blargzzz')
-    #     b_user.key = ndb.Key('Users', b_user.email)
-    #     b_user.put()
-    #
-    #     # query = Users.query(Users.email == 'blah')
-    #
-    #     query = Users.query()
-    #
-    #     for user in query:
-    #         print ndb.Key('Users', user.email)
-
-
-    # def testCookieHashing(self):
-    #     """
-    #     tests that visiting the main page detects cookies appropriately
-    #     :return:
-    #     """
-    #
-    #     self.testapp.set_cookie('user-id', 'test-hash,420ad9ff2d6c88f4782ebbd7a4f03a82')
-    #
-    #     response = self.testapp.get('/')
-    #     assert_that(response.body, contains_string('test-hash'))
-
     def testDuplicateEmailCheck(self):
 
         registration('thing@thing', 'secret', 'thing')
@@ -299,12 +260,6 @@ class DbTests(unittest.TestCase):
 
         assert_that(response.body, contains_string('No Posts Yet!'))
 
-    def testPostComposePageLoads(self):
-
-        response = self.testapp.get('/blog-compose.html')
-
-        self.assertEqual(response.status_int, 200)
-
     def testPostDataParsing(self):
 
         data = blog_data_parser({'title': 'thing_title', 'content': 'thing_content', 'author': 'thing_author'})
@@ -343,24 +298,13 @@ class DbTests(unittest.TestCase):
         response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
         self.assertEqual(response.body, 'blog storage success')
 
-    # def testCookieHashing(self):
-    #     """
-    #     tests that visiting the main page detects cookies appropriately
-    #     :return:
-    #     """
-    #
-    #     self.testapp.set_cookie('user-id', 'test-hash,420ad9ff2d6c88f4782ebbd7a4f03a82')
-    #
-    #     response = self.testapp.get('/')
-    #     assert_that(response.body, contains_string('test-hash'))
-
-    def testNewAuthNotLoggedIn(self):
+    def testNewAuthIndexNotLoggedIn(self):
 
         response = self.testapp.get('/')
 
         assert_that(response.body, contains_string('Not a Member? Register!'))
 
-    def testNewAuthLoggedIn(self):
+    def testNewAuthIndexLoggedIn(self):
 
         registration('test@user', 'secret', 'testuser')
 
@@ -370,6 +314,24 @@ class DbTests(unittest.TestCase):
         response = self.testapp.get('/')
 
         assert_that(response.body, contains_string('testuser'))
+
+    def testNewAuthBlogComposeNotLoggedIn(self):
+
+        response = self.testapp.get('/blog-compose.html')
+        self.assertEqual(response.status_int, 302)
+
+    def testNewAuthBlogComposeLoggedIn(self):
+
+        registration('test@user', 'secret', 'testuser')
+        hashed_cookie = encode_cookie('test@user')
+        self.testapp.set_cookie('user-id', hashed_cookie)
+
+        response = self.testapp.get('/blog-compose.html')
+
+        self.assertEqual(response.status_int, 200)
+
+
+
 
 
 if __name__ == '__main__':

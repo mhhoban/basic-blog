@@ -206,30 +206,23 @@ class LoginPage(Handler):
 class BlogComposePage(Handler):
     def get(self):
 
-        self.render('blog_compose_page.html')
+        auth_check = auth_user(self)
 
+        if auth_check['authorized']:
+
+            self.render('blog_compose_page.html')
+
+        else:
+
+            self.redirect('/')
 
 class MainPage(Handler):
     def get(self):
 
-        # determine if a visitor is logged in
-        # user_hash = self.request.cookies.get('user-id', 'None')
-        #
-        # # default visitor to not logged in
-        # penname = 'None'
-        #
-        # if user_hash != 'None':
-        #
-        #     user_hash = user_hash.split('-')
-        #
-        #     if verify_cookie(user_hash):
-        #         user_id = user_hash[0]
-        #         penname = fetch_penname(user_id)
-
         # new determine if a visitor is logged in:
 
         auth_check = auth_user(self)
-        #
+
         # import pdb
         # pdb.set_trace()
 
@@ -239,7 +232,7 @@ class MainPage(Handler):
         else:
             penname = 'None'
 
-        # determine if there are any blog posts to show yet:
+        # get blog posts for display
         posts = get_all_posts()
 
         self.render('front_page.html', user=penname, posts=posts)
