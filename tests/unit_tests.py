@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, RegisterParse, LoginParse, LoginPage, BlogComposePage
+from main import MainPage, Register, LoginParse, LoginPage, BlogComposePage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
@@ -33,7 +33,6 @@ class DbTests(unittest.TestCase):
     def setUp(self):
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
-                                       ('/registration-parse.html', RegisterParse),
                                        ('/login.html', LoginPage),
                                        ('/blog-compose.html', BlogComposePage),
                                        ('/login-parse.html', LoginParse),
@@ -81,43 +80,24 @@ class DbTests(unittest.TestCase):
 
         assert_that(response.body, contains_string('Register For Basic Blog!'))
 
-    def testRegistrationConnection(self):
-        """
-        tests that the page that receives and processes signup input is working
-        :return:
-        """
-
-        # test that route to registration-parse is working
-        response = self.testapp.post('/registration-parse.html')
-        assert response
-
     def testRegistrationNoPenNameorPassword(self):
 
         # test that function can handle incomplete form correctly
-        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing'})
+        response = self.testapp.post('/register.html', {'email': 'thing@thing.thing'})
 
-        self.assertEqual(response.status_int, 302)
-        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
-                                                                  '&errors=incomplete'))
-
-        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=incomplete')
-
-        assert_that(response.body, contains_string('thing@thing.thing'))
+        self.assertEqual(response.status_int, 200)
         assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('thing@thing.thing'))
 
     def testRegistrationNoPenName(self):
 
         # test that function can handle incomplete form correctly
-        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing',
+        response = self.testapp.post('/register.html', {'email': 'thing@thing.thing',
                                                                   'password': 'thing',
                                                                   'password_rep': 'thing',
                                                                   })
 
-        self.assertEqual(response.status_int, 302)
-        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
-                                                                  '&errors=incomplete'))
-
-        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=incomplete')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
         assert_that(response.body, contains_string('incomplete'))
@@ -125,36 +105,28 @@ class DbTests(unittest.TestCase):
     def testRegistrationInvalidEmail(self):
 
         # test that registration-parse detects invalid email
-        response = self.testapp.post('/registration-parse.html', {'email': 'thing',
+        response = self.testapp.post('/register.html', {'email': 'thing',
                                                                   'password': 'thing',
                                                                   'password_rep': 'thing',
                                                                   'penname': 'thing'
                                                                   })
 
-        self.assertEqual(response.status_int, 302)
-        assert_that(response.headers['Location'], contains_string('register.html?email=thing' +
-                                                                  '&errors=invalid_email'))
-
-        response = self.testapp.get('/register.html?email=thing&errors=invalid_email')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing'))
         assert_that(response.body, contains_string('invalid_email'))
 
-    def testRegistrationPasswordMisMatch(self):
+    def testRegistrationPasswordMismatch(self):
 
         # test that registration-parse detects mismatched passwords in form
 
-        response = self.testapp.post('/registration-parse.html', {'email': 'thing@thing.thing',
+        response = self.testapp.post('/register.html', {'email': 'thing@thing.thing',
                                                                   'password': 'thing',
                                                                   'password_rep': 'things',
                                                                   'penname': 'thing',
                                                                   })
 
-        self.assertEqual(response.status_int, 302)
-        assert_that(response.headers['Location'], contains_string('register.html?email=thing@thing.thing' +
-                                                                  '&errors=mismatched_passwords'))
-
-        response = self.testapp.get('/register.html?email=thing@thing.thing&errors=mismatched_passwords')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
         assert_that(response.body, contains_string('mismatched_passwords'))

@@ -33,66 +33,6 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
-class TestUser(ndb.Model):
-    name = ndb.StringProperty()
-
-
-class TestUserPage(Handler):
-
-    def get(self):
-
-        test_user_num = TestUser.query()
-
-        if test_user_num.count() < 1:
-            self.write('started with no users ')
-
-        a = TestUser(name='a')
-        a.put()
-
-        import time
-        time.sleep(2)
-
-        test_user_num = TestUser.query()
-
-        if test_user_num.count() < 1:
-            self.write('somehow ended with no users ' + str(test_user_num.count()))
-
-        else:
-            self.write('successfully added a user')
-        b = TestUser(name='b')
-        c = TestUser(name='c')
-
-        # a.put()
-        # b.put()
-        # c.put()
-
-
-# class BlogComposeParse(Handler):
-#
-#     def post(self):
-#
-#         auth_check = auth_user(self)
-#
-#         # import pdb
-#         # pdb.set_trace()
-#
-#         if auth_check['authorized']:
-#
-#             blog_data = self.request.POST
-#             blog_data['author'] = 'test_author'
-#             transaction_success = store_post(blog_data)
-#             # if transaction_success:
-#             #     self.write('blog s')
-#             # else:
-#             #     self.write('blog storage failure')
-#
-#             if transaction_success:
-#                 self.redirect('/')
-#
-#             else:
-#                 self.render('')
-
-
 class Register(Handler):
     def get(self):
 
@@ -115,14 +55,11 @@ class Register(Handler):
         else:
             self.render('registration_page.html')
 
-    def post(self):
-
-        kwargs = self.request.POST
-
-        self.render('registration_page.html', **kwargs)
-
-
-class RegisterParse(Handler):
+    # def post(self):
+    #
+    #     kwargs = self.request.POST
+    #
+    #     self.render('registration_page.html', **kwargs)
 
     def post(self):
 
@@ -131,7 +68,8 @@ class RegisterParse(Handler):
         fields = all_fields_complete(self.request.POST)
 
         if fields['fields_present'] is True:
-
+            email = fields['email']
+            errors = ''
             if valid_email_check(fields['email']):
 
                 if nom_de_plume_available(fields['penname']):
@@ -165,11 +103,68 @@ class RegisterParse(Handler):
 
         else:
 
+            try:
+                email = fields['email']
+            except KeyError:
+                email = ''
+
             errors = 'incomplete'
 
         if len(errors) > 0:
 
-            self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
+            self.render('registration_page.html', email=email, error=errors)
+
+            # self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
+
+
+# class RegisterParse(Handler):
+#
+#     def post(self):
+#
+#         errors = ''
+#
+#         fields = all_fields_complete(self.request.POST)
+#
+#         if fields['fields_present'] is True:
+#
+#             if valid_email_check(fields['email']):
+#
+#                 if nom_de_plume_available(fields['penname']):
+#
+#                     if duplicate_email_check(fields['email']):
+#
+#                         if passwords_match_check(fields['password'], fields['password_rep']):
+#
+#                             registration(fields['email'], fields['password'],
+#                                          fields['penname'])
+#
+#                             # TODO replace with single 'login' function
+#
+#                             user_hash = encode_cookie(fields['email'])
+#                             self.response.set_cookie('user-id', str(user_hash))
+#                             self.redirect('/')
+#
+#                         else:
+#
+#                             errors = 'mismatched_passwords'
+#
+#                     else:
+#                         errors = 'duplicate_email'
+#
+#                 else:
+#                     errors = 'nom de plume taken'
+#
+#             else:
+#
+#                 errors = 'invalid_email'
+#
+#         else:
+#
+#             errors = 'incomplete'
+#
+#         if len(errors) > 0:
+#
+#             self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
 
 
 class LoginParse(Handler):
@@ -284,9 +279,7 @@ class MainPage(Handler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
-    ('/registration-parse.html', RegisterParse),
     ('/login-parse.html', LoginParse),
     ('/login.html', LoginPage),
-    ('/test-key', TestUserPage),
     ('/blog-compose.html', BlogComposePage),
     ], debug=True)
