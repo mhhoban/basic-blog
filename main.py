@@ -114,60 +114,50 @@ class Register(Handler):
 
             self.render('registration_page.html', email=email, error=errors)
 
-            # self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
 
-
-# class RegisterParse(Handler):
-#
+# class LoginParse(Handler):
 #     def post(self):
 #
-#         errors = ''
+#         # import pdb
+#         # pdb.set_trace()
 #
-#         fields = all_fields_complete(self.request.POST)
+#         login_parse = login_fields_complete(self.request.POST)
 #
-#         if fields['fields_present'] is True:
+#         if login_parse['complete']:
 #
-#             if valid_email_check(fields['email']):
+#             valid_user_id = valid_user_id_check(login_parse['user_id'])
 #
-#                 if nom_de_plume_available(fields['penname']):
+#             if valid_user_id:
 #
-#                     if duplicate_email_check(fields['email']):
+#                 correct_password = check_password(login_parse['user_id'], login_parse['password'])
 #
-#                         if passwords_match_check(fields['password'], fields['password_rep']):
-#
-#                             registration(fields['email'], fields['password'],
-#                                          fields['penname'])
-#
-#                             # TODO replace with single 'login' function
-#
-#                             user_hash = encode_cookie(fields['email'])
-#                             self.response.set_cookie('user-id', str(user_hash))
-#                             self.redirect('/')
-#
-#                         else:
-#
-#                             errors = 'mismatched_passwords'
-#
-#                     else:
-#                         errors = 'duplicate_email'
+#                 if correct_password:
+#                     # login
+#                     user_hash = encode_cookie(login_parse['user_id'])
+#                     self.response.set_cookie('user-id', str(user_hash))
+#                     self.redirect('/')
 #
 #                 else:
-#                     errors = 'nom de plume taken'
+#                     self.redirect('/login.html?error=invalid')
 #
 #             else:
-#
-#                 errors = 'invalid_email'
+#                 self.redirect('/login.html?error=invalid')
 #
 #         else:
-#
-#             errors = 'incomplete'
-#
-#         if len(errors) > 0:
-#
-#             self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
+#             self.redirect('/login.html?error=incomplete')
 
 
-class LoginParse(Handler):
+class LoginPage(Handler):
+    def get(self):
+
+        # if len(self.request.get('error')) > 0:
+        #     error = self.request.get('error')
+        #
+        # else:
+        #     error = False
+
+        self.render('login_page.html', error=False)
+
     def post(self):
 
         # import pdb
@@ -190,25 +180,13 @@ class LoginParse(Handler):
                     self.redirect('/')
 
                 else:
-                    self.redirect('/login.html?error=invalid')
+                    self.render('login_page.html', error='invalid')
 
             else:
-                self.redirect('/login.html?error=invalid')
+                self.render('login_page.html', error='invalid')
 
         else:
-            self.redirect('/login.html?error=incomplete')
-
-
-class LoginPage(Handler):
-    def get(self):
-
-        if len(self.request.get('error')) > 0:
-            error = self.request.get('error')
-
-        else:
-            error = False
-
-        self.render('login_page.html', error=error)
+            self.render('login_page.html', error='incomplete')
 
 
 class BlogComposePage(Handler):
@@ -236,10 +214,6 @@ class BlogComposePage(Handler):
             blog_data = self.request.POST
             blog_data['author'] = 'test_author'
             transaction_success = store_post(blog_data)
-            # if transaction_success:
-            #     self.write('blog s')
-            # else:
-            #     self.write('blog storage failure')
 
             if transaction_success:
                 self.redirect('/')
@@ -279,7 +253,6 @@ class MainPage(Handler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
-    ('/login-parse.html', LoginParse),
     ('/login.html', LoginPage),
     ('/blog-compose.html', BlogComposePage),
     ], debug=True)

@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, LoginParse, LoginPage, BlogComposePage
+from main import MainPage, Register, LoginPage, BlogComposePage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
@@ -35,7 +35,6 @@ class DbTests(unittest.TestCase):
                                        ('/register.html', Register),
                                        ('/login.html', LoginPage),
                                        ('/blog-compose.html', BlogComposePage),
-                                       ('/login-parse.html', LoginParse),
                                        ])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
@@ -175,25 +174,17 @@ class DbTests(unittest.TestCase):
 
     def testIncompleteLoginFields(self):
 
-        response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing.thing'})
+        response = self.testapp.post('/login.html', {'user_id': 'thing@thing.thing'})
 
-        self.assertEqual(response.status_int, 302)
-
-        assert_that(response.headers['Location'], contains_string('/login.html?error=incomplete'))
-
-        response = self.testapp.get('/login.html?error=incomplete')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('incomplete'))
 
     def testInvalidEmail(self):
 
-        response = self.testapp.post('/login-parse.html', {'user_id': 'thingz@thing.thing', 'password': 'blarg'})
+        response = self.testapp.post('/login.html', {'user_id': 'thingz@thing.thing', 'password': 'blarg'})
 
-        self.assertEqual(response.status_int, 302)
-
-        assert_that(response.headers['Location'], contains_string('/login.html?error=invalid'))
-
-        response = self.testapp.get('/login.html?error=invalid')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('invalid'))
 
@@ -201,13 +192,9 @@ class DbTests(unittest.TestCase):
 
         registration('thing@thing', 'secret', 'thing')
 
-        response = self.testapp.post('/login-parse.html', {'user_id': 'thing@thing', 'password': 'secretz'})
+        response = self.testapp.post('/login.html', {'user_id': 'thing@thing', 'password': 'secretz'})
 
-        self.assertEqual(response.status_int, 302)
-
-        assert_that(response.headers['Location'], contains_string('/login.html?error=invalid'))
-
-        response = self.testapp.get('/login.html?error=invalid')
+        self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('invalid'))
 
@@ -215,7 +202,7 @@ class DbTests(unittest.TestCase):
 
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login-parse.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
 
