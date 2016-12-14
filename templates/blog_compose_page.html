@@ -22,7 +22,7 @@
 
             </div>
 
-            <form action="blog-compose-parse.html" method="post">
+            <form action="blog-compose.html" method="post">
 
 	            <div class="row">
 
@@ -30,7 +30,15 @@
 
 	            		<div class="signup-form">
 
+	            			{% if title != 'None' %}
+
+	            			<input type="text" class="form-control" name="title" id="blog_title" value="{{ title }}">
+
+	            			{% else %}
+
 							<input type="text" class="form-control" name="title" id="blog_title" placeholder="title">
+
+							{% endif %}
 
 	            		</div>
 

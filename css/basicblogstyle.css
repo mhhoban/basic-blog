@@ -117,11 +117,6 @@ body {
     padding-bottom: 5px;
 }
 
-.blog-content-box {
-
-    height: 25%;
-
-}
 
 .post-title {
 
@@ -159,8 +154,6 @@ body {
     border-radius: 10px;
 
     padding: 5px 5px 5px 5px;
-
-    overflow: scroll;
 
 }
 .footer-content {
