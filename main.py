@@ -1,12 +1,11 @@
 from auth_tools import auth_user
-from cookie_hasher import encode_cookie, verify_cookie
+from cookie_hasher import encode_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
-from user_tools import fetch_penname, check_password
+from user_tools import check_password
 from blog_post_tools import get_all_posts, store_post
 from register import registration
-from google.appengine.ext import ndb
 
 
 import os
@@ -34,34 +33,23 @@ class Handler(webapp2.RequestHandler):
 
 
 class Register(Handler):
+    """
+    Handles displaying registration page and parsing registration input
+    """
     def get(self):
+        """
+        serves registration page
 
-        # start off assuming no arguments
-        email = False
-        errors = False
+        """
 
-        if len(self.request.get('email')) > 0:
-            email = self.request.get('email')
-
-        if len(self.request.get('errors')) > 0:
-            errors = self.request.get('errors')
-
-        if email and errors:
-            self.render('registration_page.html', email=email, error=errors)
-
-        elif errors:
-            self.render('registration_page.html', error=errors)
-
-        else:
-            self.render('registration_page.html')
-
-    # def post(self):
-    #
-    #     kwargs = self.request.POST
-    #
-    #     self.render('registration_page.html', **kwargs)
+        self.render('registration_page.html')
 
     def post(self):
+        """
+        parses data from reg page form and reloads page with data populated if there was an issue
+        with the user input
+        :return:
+        """
 
         errors = ''
 
@@ -115,53 +103,21 @@ class Register(Handler):
             self.render('registration_page.html', email=email, error=errors)
 
 
-# class LoginParse(Handler):
-#     def post(self):
-#
-#         # import pdb
-#         # pdb.set_trace()
-#
-#         login_parse = login_fields_complete(self.request.POST)
-#
-#         if login_parse['complete']:
-#
-#             valid_user_id = valid_user_id_check(login_parse['user_id'])
-#
-#             if valid_user_id:
-#
-#                 correct_password = check_password(login_parse['user_id'], login_parse['password'])
-#
-#                 if correct_password:
-#                     # login
-#                     user_hash = encode_cookie(login_parse['user_id'])
-#                     self.response.set_cookie('user-id', str(user_hash))
-#                     self.redirect('/')
-#
-#                 else:
-#                     self.redirect('/login.html?error=invalid')
-#
-#             else:
-#                 self.redirect('/login.html?error=invalid')
-#
-#         else:
-#             self.redirect('/login.html?error=incomplete')
-
-
 class LoginPage(Handler):
+    """
+    Displays LoginPage and parses login data
+    """
     def get(self):
-
-        # if len(self.request.get('error')) > 0:
-        #     error = self.request.get('error')
-        #
-        # else:
-        #     error = False
+        """
+        Displays Login Page for direct URL requests
+        """
 
         self.render('login_page.html', error=False)
 
     def post(self):
-
-        # import pdb
-        # pdb.set_trace()
+        """
+        Parses login data from form and reloads login-page if there is an issue with user input
+        """
 
         login_parse = login_fields_complete(self.request.POST)
 
@@ -190,7 +146,13 @@ class LoginPage(Handler):
 
 
 class BlogComposePage(Handler):
+    """
+    Serves blog compose page and parses blog compose data
+    """
     def get(self):
+        """
+        serves the blog compose page for a new post
+        """
 
         auth_check = auth_user(self)
 
@@ -203,6 +165,10 @@ class BlogComposePage(Handler):
             self.redirect('/')
 
     def post(self):
+        """
+        parses blog compose data and reloads page if there is an issue with the blog
+        submission data.
+        """
 
         auth_check = auth_user(self)
 
@@ -226,14 +192,14 @@ class BlogComposePage(Handler):
 
 
 class MainPage(Handler):
+    """
+    Displays index page
+    """
     def get(self):
 
         # new determine if a visitor is logged in:
 
         auth_check = auth_user(self)
-
-        # import pdb
-        # pdb.set_trace()
 
         if auth_check['authorized']:
             penname = auth_check['penname']
@@ -246,9 +212,6 @@ class MainPage(Handler):
         posts = get_all_posts()
 
         self.render('front_page.html', user=penname, posts=posts)
-
-    def post(self):
-        self.response.out.write("bar")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),

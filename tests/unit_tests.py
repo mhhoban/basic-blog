@@ -10,10 +10,8 @@ from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
 from blog_post_tools import blog_data_parser, store_post, get_all_posts
 
-from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
-from db_schema import Post
 
 
 class Thing(ndb.Model):
@@ -302,7 +300,6 @@ class DbTests(unittest.TestCase):
 
         self.assertEqual(response.status_int, 302)
         
-
 
 if __name__ == '__main__':
     unittest.main()
