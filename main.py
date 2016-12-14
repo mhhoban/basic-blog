@@ -67,27 +67,30 @@ class TestUserPage(Handler):
         # c.put()
 
 
-class BlogComposeParse(Handler):
-
-    def post(self):
-
-        auth_check = auth_user(self)
-
-        # import pdb
-        # pdb.set_trace()
-
-        if auth_check['authorized']:
-
-            blog_data = self.request.POST
-            blog_data['author'] = 'test_author'
-            transaction_success = store_post(blog_data)
-            if transaction_success:
-                self.write('blog storage success')
-            else:
-                self.write('blog storage failure')
-
-        else:
-            self.redirect('/')
+# class BlogComposeParse(Handler):
+#
+#     def post(self):
+#
+#         auth_check = auth_user(self)
+#
+#         # import pdb
+#         # pdb.set_trace()
+#
+#         if auth_check['authorized']:
+#
+#             blog_data = self.request.POST
+#             blog_data['author'] = 'test_author'
+#             transaction_success = store_post(blog_data)
+#             # if transaction_success:
+#             #     self.write('blog s')
+#             # else:
+#             #     self.write('blog storage failure')
+#
+#             if transaction_success:
+#                 self.redirect('/')
+#
+#             else:
+#                 self.render('')
 
 
 class Register(Handler):
@@ -226,6 +229,32 @@ class BlogComposePage(Handler):
 
             self.redirect('/')
 
+    def post(self):
+
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = 'test_author'
+            transaction_success = store_post(blog_data)
+            # if transaction_success:
+            #     self.write('blog s')
+            # else:
+            #     self.write('blog storage failure')
+
+            if transaction_success:
+                self.redirect('/')
+
+            else:
+                self.render('blog_compose_page.html', title=blog_data['title'], content=blog_data['content'])
+
+        else:
+            self.redirect('/')
+
 
 class MainPage(Handler):
     def get(self):
@@ -244,6 +273,7 @@ class MainPage(Handler):
             penname = 'None'
 
         # get blog posts for display
+        # TODO reverse chronological order
         posts = get_all_posts()
 
         self.render('front_page.html', user=penname, posts=posts)
@@ -259,5 +289,4 @@ app = webapp2.WSGIApplication([
     ('/login.html', LoginPage),
     ('/test-key', TestUserPage),
     ('/blog-compose.html', BlogComposePage),
-    ('/blog-compose-parse.html', BlogComposeParse),
     ], debug=True)

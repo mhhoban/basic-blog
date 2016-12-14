@@ -4,7 +4,14 @@ from user_tools import fetch_penname
 
 def auth_user(self):
 
-    user_hash = self.request.cookies.get('user-id', 'None')
+    try:
+        user_hash = self.request.cookies.get('user-id', 'None')
+
+    except AttributeError:
+        user_hash = self.request.cookies.post('user-id', 'None')
+
+    # import pdb
+    # pdb.set_trace()
 
     if user_hash != 'None':
         user_hash = user_hash.split('-')

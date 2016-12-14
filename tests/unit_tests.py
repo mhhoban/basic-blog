@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, RegisterParse, LoginParse, LoginPage, BlogComposePage, BlogComposeParse
+from main import MainPage, Register, RegisterParse, LoginParse, LoginPage, BlogComposePage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 from cookie_hasher import encode_cookie, verify_cookie
@@ -36,7 +36,6 @@ class DbTests(unittest.TestCase):
                                        ('/registration-parse.html', RegisterParse),
                                        ('/login.html', LoginPage),
                                        ('/blog-compose.html', BlogComposePage),
-                                       ('/blog-compose-parse.html', BlogComposeParse),
                                        ('/login-parse.html', LoginParse),
                                        ])
         # wrap the test app:
@@ -294,13 +293,17 @@ class DbTests(unittest.TestCase):
         assert_that(response.body, contains_string('thingz_aauthor'))
         assert_that(response.body, contains_string('thingz_acontent'))
 
+    # @unittest.expectedFailure
     def testBlogComposeParse(self):
         registration('test@user', 'secret', 'testuser')
         hashed_cookie = encode_cookie('test@user')
         self.testapp.set_cookie('user-id', hashed_cookie)
 
-        response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
-        self.assertEqual(response.body, 'blog storage success')
+        response = self.testapp.post('/blog-compose.html', {'title': 'thing_title', 'content': 'thing_content'})
+        self.assertEqual(response.status_int, 302)
+        response = self.testapp.get('/')
+        assert_that(response.body, contains_string('thing_title'))
+        assert_that(response.body, contains_string('thing_content'))
 
     def testNewAuthIndexNotLoggedIn(self):
 
@@ -336,7 +339,7 @@ class DbTests(unittest.TestCase):
 
     def testNewAuthBlogComposeParseNotLoggedIn(self):
 
-        response = self.testapp.post('/blog-compose-parse.html', {'title': 'thing_title', 'content': 'thing_content'})
+        response = self.testapp.post('/blog-compose.html', {'title': 'thing_title', 'content': 'thing_content'})
 
         self.assertEqual(response.status_int, 302)
         
