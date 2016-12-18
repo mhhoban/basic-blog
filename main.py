@@ -1,5 +1,5 @@
 from auth_tools import auth_user
-from cookie_hasher import encode_cookie
+from hasher import encode_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check

@@ -3,12 +3,14 @@ from hamcrest import assert_that, contains_string
 import unittest
 import webapp2
 import webtest
+import hmac
 
 from main import MainPage, Register, LoginPage, BlogComposePage
 from register import registration, delete_registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
+from hasher import hash_password
 
-from google.appengine.ext import testbed
+from google.appengine.ext import testbed, ndb
 
 
 class RegTests(unittest.TestCase):
@@ -116,3 +118,20 @@ class RegTests(unittest.TestCase):
         self.assertEqual(nom_de_plume_available('thing'), False, 'Not detecting duplicate pennames')
 
         delete_registration('thing@thing')
+
+    def testPasswordHashing(self):
+
+        registration('thing@thing', 'secret', 'thing')
+
+        # hashing function:
+
+        user_key = ndb.Key('User', 'thing@thing')
+        user = user_key.get()
+        hashed_password = user.password
+
+        manual_hash = hmac.new('other-arbitrary-secret', 'secret').hexdigest()
+
+        self.assertEqual(hashed_password, manual_hash)
+
+
+

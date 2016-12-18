@@ -1,4 +1,4 @@
-from cookie_hasher import verify_cookie
+from hasher import verify_cookie
 from user_tools import fetch_penname
 
 

@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from hasher import hash_password
 
 
 def fetch_user(user_id):
@@ -34,6 +35,8 @@ def fetch_penname(user_id):
 def check_password(user_id, password):
 
     user = fetch_user(user_id)
+
+    password = hash_password(password)
 
     if password == user.password:
         return True
