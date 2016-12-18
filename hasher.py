@@ -30,11 +30,14 @@ def verify_cookie(hashed_cookie):
         return False
 
 
-# def verify_password(password):
-#     """
-#     hash the password the user provided to ensure it matches the hash in the database
-#     :param password:
-#     :return:
-#     """
+def hash_password(password):
+    """
+    hashes the plaintext password and returns the hash
 
+    :param password:
+    :return:
+    """
 
+    pass_hash = hmac.new('other-arbitrary-secret', password).hexdigest()
+
+    return pass_hash

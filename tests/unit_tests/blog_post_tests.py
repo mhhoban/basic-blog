@@ -6,7 +6,7 @@ import webtest
 
 from main import MainPage, Register, LoginPage, BlogComposePage
 from register import registration
-from cookie_hasher import encode_cookie
+from hasher import encode_cookie
 from blog_post_tools import blog_data_parser, store_post, get_all_posts
 
 from google.appengine.ext import testbed
