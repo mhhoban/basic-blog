@@ -145,6 +145,25 @@ class LoginPage(Handler):
             self.render('login_page.html', error='incomplete')
 
 
+class LogoutPage(Handler):
+    """
+    Logs out users
+    """
+
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            # destroy cookie
+            self.response.delete_cookie('user-id')
+
+            self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+
 class BlogComposePage(Handler):
     """
     Serves blog compose page and parses blog compose data
@@ -218,4 +237,5 @@ app = webapp2.WSGIApplication([
     ('/register.html', Register),
     ('/login.html', LoginPage),
     ('/blog-compose.html', BlogComposePage),
+    ('/logout.html', LogoutPage),
     ], debug=True)

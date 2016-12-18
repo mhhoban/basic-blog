@@ -4,7 +4,7 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, LoginPage, BlogComposePage
+from main import MainPage, Register, LoginPage, BlogComposePage, LogoutPage
 from register import registration
 from hasher import encode_cookie, verify_cookie
 
@@ -17,6 +17,7 @@ class LoginTests(unittest.TestCase):
         app = webapp2.WSGIApplication([('/', MainPage),
                                        ('/register.html', Register),
                                        ('/login.html', LoginPage),
+                                       ('/logout.html', LogoutPage),
                                        ('/blog-compose.html', BlogComposePage),
                                        ])
         # wrap the test app:
@@ -110,3 +111,37 @@ class LoginTests(unittest.TestCase):
         response = self.testapp.get('/')
 
         assert_that(response.body, contains_string('thingz'))
+
+    def testLogInThenLogout(self):
+        registration('thingz@thingz', 'secret', 'thingz')
+
+        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+
+        self.assertEqual(response.status_int, 302)
+
+        assert_that(response.headers['Location'], contains_string('/'))
+
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('thingz'))
+
+        assert_that(response.body, contains_string('Logout'))
+
+        response = self.testapp.get('/logout.html')
+
+        self.assertEqual(response.status_int, 302)
+
+        user_hash = self.testapp.cookies.get('user-id', 'None')
+
+        self.assertEqual(user_hash, 'None')
+
+    def testNotLoggedInLogOut(self):
+
+        response = self.testapp.get('/logout.html')
+
+        self.assertEqual(response.status_int, 302)
+
+        user_hash = self.testapp.cookies.get('user-id', 'None')
+
+        self.assertEqual(user_hash, 'None')
+
