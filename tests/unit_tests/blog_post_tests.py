@@ -46,6 +46,10 @@ class BlogPostTests(unittest.TestCase):
         assert_that(response.body, contains_string('No Posts Yet!'))
 
     def testComposePostLinkLoggedIn(self):
+        """
+        ensure blog compose link is present for those signed in
+        :return:
+        """
         registration('thingz@thingz', 'secret', 'thingz')
 
         response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
@@ -58,6 +62,10 @@ class BlogPostTests(unittest.TestCase):
         assert_that(response.body, contains_string('Compose Post'))
 
     def testComposePostLinkNotLoggedIn(self):
+        """
+        ensure blog compose link is not present for those not signed in
+        :return:
+        """
 
         response = self.testapp.get('/')
 
@@ -71,6 +79,24 @@ class BlogPostTests(unittest.TestCase):
             link_present = False
 
         self.assertFalse(link_present)
+
+    def testComposePostLinkWorks(self):
+
+        registration('thingz@thingz', 'secret', 'thingz')
+
+        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('/'))
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('thingz'))
+        assert_that(response.body, contains_string('Compose Post'))
+
+        response = self.testapp.get('/blog-compose.html')
+
+        self.assertEqual(response.status_int, 200)
+        assert_that(response.body, contains_string('Compose Your Blog Post!'))
 
     def testPostDataParsing(self):
 
