@@ -45,6 +45,33 @@ class BlogPostTests(unittest.TestCase):
 
         assert_that(response.body, contains_string('No Posts Yet!'))
 
+    def testComposePostLinkLoggedIn(self):
+        registration('thingz@thingz', 'secret', 'thingz')
+
+        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+
+        self.assertEqual(response.status_int, 302)
+        assert_that(response.headers['Location'], contains_string('/'))
+        response = self.testapp.get('/')
+
+        assert_that(response.body, contains_string('thingz'))
+        assert_that(response.body, contains_string('Compose Post'))
+
+    def testComposePostLinkNotLoggedIn(self):
+
+        response = self.testapp.get('/')
+
+        try:
+            assert_that(response.body, contains_string(
+                '<a href = "blog-compose.html" > Compose Post </a>')
+                        )
+            link_present = True
+
+        except AssertionError:
+            link_present = False
+
+        self.assertFalse(link_present)
+
     def testPostDataParsing(self):
 
         data = blog_data_parser({'title': 'thing_title', 'content': 'thing_content', 'author': 'thing_author'})
