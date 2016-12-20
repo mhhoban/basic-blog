@@ -94,4 +94,10 @@ def get_post_author(blog_id):
     return target_post.author
 
 
+def get_post_data(blog_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    return target_post
+
 

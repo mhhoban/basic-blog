@@ -4,7 +4,7 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post
+from blog_post_tools import get_all_posts, store_post, get_post_author
 from register import registration
 
 
@@ -215,7 +215,13 @@ class BlogEditPage(Handler):
 
     def auth_edit_post(self, blog_id, user_name):
 
-        pass
+        blog_author = get_post_author(blog_id)
+
+        if blog_author == user_name:
+            return True
+
+        else:
+            return False
 
     def get(self):
 
@@ -225,10 +231,15 @@ class BlogEditPage(Handler):
             user_name = auth_check['penname']
             blog_id = request.GET['blog_id']
 
-            auth_edit_post(blog_id, user_name)
+            if auth_edit_post(blog_id, user_name):
+
+                self.render('blog_edit_page.html')
+
+            else:
+                self.write('Not Authorized to Edit Post')
 
         else:
-            pass
+            self.redirect('/')
 
 
 class MainPage(Handler):

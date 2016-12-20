@@ -7,7 +7,7 @@ import webtest
 from main import MainPage, Register, LoginPage, BlogComposePage
 from register import registration
 from hasher import encode_cookie
-from blog_post_tools import blog_data_parser, store_post, get_all_posts, get_post_author
+from blog_post_tools import blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data
 from db_schema import Post
 
 from google.appengine.ext import ndb, testbed
@@ -155,6 +155,17 @@ class BlogPostTests(unittest.TestCase):
             blog_author = get_post_author(blog_id)
 
             self.assertEqual(blog_author, 'thingz_author')
+
+    def testGetBlogData(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+
+        if data:
+
+            blog_data = get_post_data(long(1))
+
+            self.assertEqual(blog_data.title, 'thingz_title')
+
 
     def testBlogPostUpdate(self):
 
