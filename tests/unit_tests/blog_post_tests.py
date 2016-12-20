@@ -7,9 +7,10 @@ import webtest
 from main import MainPage, Register, LoginPage, BlogComposePage
 from register import registration
 from hasher import encode_cookie
-from blog_post_tools import blog_data_parser, store_post, get_all_posts
+from blog_post_tools import blog_data_parser, store_post, get_all_posts, get_post_author
+from db_schema import Post
 
-from google.appengine.ext import testbed
+from google.appengine.ext import ndb, testbed
 
 
 class BlogPostTests(unittest.TestCase):
@@ -142,3 +143,20 @@ class BlogPostTests(unittest.TestCase):
         response = self.testapp.get('/')
         assert_that(response.body, contains_string('thing_title'))
         assert_that(response.body, contains_string('thing_content'))
+
+    def testGetBlogPostAuthor(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+
+        if data:
+            blog_data = Post.query().fetch()
+
+            blog_id = blog_data[0].key.id()
+
+            blog_author = get_post_author(blog_id)
+
+            self.assertEqual(blog_author, 'thingz_author')
+
+    def testBlogPostUpdate(self):
+
+        response = self.testapp.get('/')
+        self.assertEqual(response.status_int, 302)

@@ -5,10 +5,10 @@ from db_schema import Post
 
 def get_all_posts():
 
+    all_posts = Post.query().fetch()
+
     # import pdb
     # pdb.set_trace()
-
-    all_posts = Post.query().fetch()
 
     return all_posts
 
@@ -76,7 +76,6 @@ def store_post(blog_post_data):
     else:
          return False
 
-
     # new_user = User(email=username, password=password, penname=penname)
     # new_user.key = ndb.Key('User', new_user.email)
     # new_user.put()
@@ -85,5 +84,14 @@ def store_post(blog_post_data):
     # pdb.set_trace()
     #
     # query = Post.query()
+
+
+def get_post_author(blog_id):
+
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    return target_post.author
+
 
 

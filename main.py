@@ -76,7 +76,6 @@ class Register(Handler):
                             self.redirect('/')
 
                         else:
-
                             errors = 'mismatched_passwords'
 
                     else:
@@ -86,7 +85,6 @@ class Register(Handler):
                     errors = 'nom de plume taken'
 
             else:
-
                 errors = 'invalid_email'
 
         else:
@@ -197,7 +195,7 @@ class BlogComposePage(Handler):
         if auth_check['authorized']:
 
             blog_data = self.request.POST
-            blog_data['author'] = 'test_author'
+            blog_data['author'] = auth_check['penname']
             transaction_success = store_post(blog_data)
 
             if transaction_success:
@@ -208,6 +206,29 @@ class BlogComposePage(Handler):
 
         else:
             self.redirect('/')
+
+
+class BlogEditPage(Handler):
+    """
+    loads blog edit page and reloads page if there is an issue with the blog submission data
+    """
+
+    def auth_edit_post(self, blog_id, user_name):
+
+        pass
+
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            user_name = auth_check['penname']
+            blog_id = request.GET['blog_id']
+
+            auth_edit_post(blog_id, user_name)
+
+        else:
+            pass
 
 
 class MainPage(Handler):
