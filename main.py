@@ -4,9 +4,9 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post, get_post_author
+from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post
 from register import registration
-
+from time import sleep
 
 import os
 import jinja2
@@ -229,14 +229,46 @@ class BlogEditPage(Handler):
 
         if auth_check['authorized']:
             user_name = auth_check['penname']
-            blog_id = request.GET['blog_id']
+            blog_id = long(self.request.GET['blog_id'])
 
-            if auth_edit_post(blog_id, user_name):
+            if self.auth_edit_post(blog_id, user_name):
 
-                self.render('blog_edit_page.html')
+                post_data = get_post_data(blog_id)
+
+                self.render('blog_edit_page.html', content=post_data.content, title=post_data.title,
+                            blog_id=blog_id)
 
             else:
                 self.write('Not Authorized to Edit Post')
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+        """
+        parses blog compose data and reloads page if there is an issue with the blog
+        submission data.
+        """
+
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = auth_check['penname']
+            transaction_success = update_post(blog_data)
+
+            if transaction_success:
+                self.write('Blog Updated Successfully!')
+                sleep(1)
+                self.redirect('/')
+
+            else:
+                self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
+                            blog_id=blog_data['blog_id'])
 
         else:
             self.redirect('/')
@@ -260,7 +292,17 @@ class MainPage(Handler):
 
         # get blog posts for display
         # TODO reverse chronological order
-        posts = get_all_posts()
+        entries = get_all_posts()
+
+        posts = []
+
+        for entry in entries:
+
+            posts.append({'title': entry.title,
+                          'id': entry.key.id(),
+                          'author': entry.author,
+                          'content': entry.content,
+                          })
 
         self.render('front_page.html', user=penname, posts=posts)
 
@@ -269,5 +311,6 @@ app = webapp2.WSGIApplication([
     ('/register.html', Register),
     ('/login.html', LoginPage),
     ('/blog-compose.html', BlogComposePage),
+    ('/blog-edit.html', BlogEditPage),
     ('/logout.html', LogoutPage),
     ], debug=True)

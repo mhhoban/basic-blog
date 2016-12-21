@@ -86,6 +86,26 @@ def store_post(blog_post_data):
     # query = Post.query()
 
 
+def update_post(blog_post_data):
+
+    import pdb
+    pdb.set_trace()
+
+    target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))
+    target_post = target_post_key.get()
+
+    target_post.title = blog_post_data['title']
+    target_post.content = blog_post_data['content']
+
+    if target_post.put():
+
+        return True
+
+    else:
+
+        return False
+
+
 def get_post_author(blog_id):
 
     target_post_key = ndb.Key('Post', blog_id)
