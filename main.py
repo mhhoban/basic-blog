@@ -274,6 +274,15 @@ class BlogEditPage(Handler):
             self.redirect('/')
 
 
+class LikePost(Handler):
+    def get(self):
+
+        import pdb
+        pdb.set_trace()
+
+        self.write('moar')
+
+
 class MainPage(Handler):
     """
     Displays index page
@@ -313,4 +322,5 @@ app = webapp2.WSGIApplication([
     ('/blog-compose.html', BlogComposePage),
     ('/blog-edit.html', BlogEditPage),
     ('/logout.html', LogoutPage),
+    ('/like.html', LikePost),
     ], debug=True)

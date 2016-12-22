@@ -79,6 +79,9 @@
 
 	{% if posts|length > 0 %}
 
+	<!-- fetch JS source -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 	{% for post in posts %}
 
 	<div class="row">
@@ -126,13 +129,77 @@
 
 	            </div>
 
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            			{% if user != 'None' %}
+	            				<span id='likes{{ post["id"] }}'> Likes: jack, other random people </span> <br>
+
+	            				<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-success">Like!</button></span>
+
+	            			{% else %}
+
+	            				<a href="login.html"> Like! </a>
+
+	            			{% endif %}
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
 	        </div>
 
 	    </div>
 
 	</div>
 
+	<!--
+
+	Begin Javascript "Like"
+	Adapted from "https://developer.mozilla.org/en-US/docs/AJAX/Getting_Started"
+		-->
+
+	<script type="text/javascript">
+
+		(function() {
+			var httpRequest;
+  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {
+
+    			httpRequest = new XMLHttpRequest();
+
+    			httpRequest.onreadystatechange = function() {
+	  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
+	      			if (httpRequest.status === 200) {
+	        		//alert(httpRequest.responseText);
+	        		var old_like_text = document.getElementById('likes{{ post["id"] }}').innerText;
+	        
+	        		var new_text = old_like_text.concat(httpRequest.responseText);
+	        		document.getElementById('likes{{ post["id"] }}').text = new_text;
+	        		$('#likes{{ post["id"] }}').text(new_text);
+	      			} 
+	      			else {
+	        			alert('There was a problem with the request.');
+	      				}
+	    			}
+	    		}
+
+    			httpRequest.open('GET', 'like.html');
+    			httpRequest.send();
+  			}
+
+  			
+
+		})();
+
+	</script>
+
 	{% endfor %}
+
 
 	{% else %}
 
@@ -177,6 +244,18 @@
 	                    </div>
 
 	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            		</div>
+
+	            	</div>
 
 	            </div>
 

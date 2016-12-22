@@ -88,9 +88,6 @@ def store_post(blog_post_data):
 
 def update_post(blog_post_data):
 
-    import pdb
-    pdb.set_trace()
-
     target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))
     target_post = target_post_key.get()
 
