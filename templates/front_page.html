@@ -168,11 +168,19 @@
 
 		(function() {
 			var httpRequest;
-  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {
+  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {makeRequest();};
 
-    			httpRequest = new XMLHttpRequest();
 
-    			httpRequest.onreadystatechange = function() {
+    			function makeRequest(){
+  					httpRequest = new XMLHttpRequest();
+    				httpRequest.onreadystatechange = add_like;
+
+    				httpRequest.open('GET', 'like.html');
+    				httpRequest.send();
+  			}
+
+
+  			function add_like(){
 	  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	      			if (httpRequest.status === 200) {
 	        		//alert(httpRequest.responseText);
@@ -187,10 +195,6 @@
 	      				}
 	    			}
 	    		}
-
-    			httpRequest.open('GET', 'like.html');
-    			httpRequest.send();
-  			}
 
   			
 

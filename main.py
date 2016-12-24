@@ -277,9 +277,6 @@ class BlogEditPage(Handler):
 class LikePost(Handler):
     def get(self):
 
-        import pdb
-        pdb.set_trace()
-
         self.write('moar')
 
 
