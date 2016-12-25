@@ -175,7 +175,7 @@
   					httpRequest = new XMLHttpRequest();
     				httpRequest.onreadystatechange = add_like;
 
-    				httpRequest.open('GET', 'like.html');
+    				httpRequest.open('GET', 'like.html?title_id={{ post["id"] }}');
     				httpRequest.send();
   			}
 
@@ -195,8 +195,6 @@
 	      				}
 	    			}
 	    		}
-
-  			
 
 		})();
 

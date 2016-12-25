@@ -277,7 +277,18 @@ class BlogEditPage(Handler):
 class LikePost(Handler):
     def get(self):
 
-        self.write('moar')
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            title_id = self.request.get('title_id')
+
+            self.write(title_id)
+
+        else:
+            self.redirect('/')
+
+
 
 
 class MainPage(Handler):
@@ -298,6 +309,7 @@ class MainPage(Handler):
 
         # get blog posts for display
         # TODO reverse chronological order
+        # TODO separate templates for logged in/vs not-logged-in for front page
         entries = get_all_posts()
 
         posts = []
