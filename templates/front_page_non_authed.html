@@ -7,9 +7,57 @@
 
 	<div class="user-greeting">
 
-		<h3> {{ user }} </h3>
-		<a href="logout.html"> Logout </a>
-		<a href="blog-compose.html"> Compose Post </a>
+		<form action="login.html" method="post">
+
+			<div class="row">
+
+				<div class="col-md-6">
+
+					<div class="login-form">
+						<label for="user_id"> email: </label>
+						<input type="email" class="form-control" name="user_id" id="user_id" aria-describedby="email-subtext" placeholder="email">
+
+					</div>
+
+				</div>
+
+				<div class="col-md-6">
+
+					<div class="login-form">
+					<label for="password"> password: </label>
+					<input type="password" class="form-control" name="password" id="password" placeholder="password">
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="col-md-4">
+
+					<div class="login-form">
+
+						<button name ="login-submit" type="submit" class="btn btn-primary"> Submit! </button>
+
+					</div>
+
+				</div>
+
+				<div class="col-md-8">
+
+					<div class="signup-link">
+
+						<a href="register.html"> Not a Member? Register! </a>
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+		</form>
 
 	</div>
 
