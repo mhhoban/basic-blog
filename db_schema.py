@@ -35,7 +35,7 @@ class Post(ndb.Model):
     title = ndb.StringProperty()
     content = ndb.TextProperty()
     publish_date = ndb.DateTimeProperty()
-    likes = ndb.IntegerProperty()
+    likes = ndb.JsonProperty()
 
 
 

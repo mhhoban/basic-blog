@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
-
+import json
 from db_schema import Post
 
 
@@ -62,9 +62,13 @@ def store_post(blog_post_data):
     # import pdb
     # pdb.set_trace()
 
+    post_likes = {}
+    post_likes = json.dumps(post_likes)
+
     new_post = Post(author=blog_post['author'],
                     title=blog_post['title'],
-                    content=blog_post['content'])
+                    content=blog_post['content'],
+                    likes=post_likes)
 
     new_post.put()
 
@@ -118,3 +122,30 @@ def get_post_data(blog_id):
     return target_post
 
 
+def get_post_likes(blog_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_likes = target_post.likes
+    likes = json.loads(json_likes)
+
+    return likes
+
+
+def add_post_like(blog_id, liker):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_likes = target_post.likes
+    likes = json.loads(json_likes)
+    likes[liker] = True
+    json_likes = json.dumps(likes)
+    target_post.likes = json_likes
+
+    if target_post.put():
+
+        return True
+
+    else:
+
+        return False

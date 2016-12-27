@@ -4,7 +4,7 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post
+from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like
 from register import registration
 from time import sleep
 
@@ -281,9 +281,30 @@ class LikePost(Handler):
 
         if auth_check['authorized']:
 
-            title_id = self.request.get('title_id')
+            title_id = long(self.request.get('title_id'))
 
-            self.write(title_id)
+            if get_post_data(title_id):
+
+                post_author = get_post_author(title_id)
+                current_user = auth_check['penname']
+
+                if post_author != current_user:
+
+                    likes = get_post_likes(title_id)
+
+                    try:
+                        test_author = likes[current_user]
+                        self.write('already liked')
+
+                    except KeyError:
+                        if add_post_like(title_id, current_user):
+                            self.write('new like added!')
+
+                else:
+                    self.write('cannot like own post')
+
+            else:
+                self.write('no such post')
 
         else:
             self.redirect('/')
