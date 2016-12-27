@@ -136,7 +136,7 @@
 	            		<div class="post-likes">
 
 	            			{% if user != 'None' %}
-	            				<span id='likes{{ post["id"] }}'> Likes: jack, other random people </span> <br>
+	            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
 
 	            				<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-success">Like!</button></span>
 
@@ -183,12 +183,15 @@
   			function add_like(){
 	  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
 	      			if (httpRequest.status === 200) {
-	        		//alert(httpRequest.responseText);
+	      			if (httpRequest.responseText === 'Success'){
+	        		
 	        		var old_like_text = document.getElementById('likes{{ post["id"] }}').innerText;
-	        
-	        		var new_text = old_like_text.concat(httpRequest.responseText);
+	        		var you_text = ' you, '
+	        		var new_text = you_text.concat(old_like_text);
 	        		document.getElementById('likes{{ post["id"] }}').text = new_text;
 	        		$('#likes{{ post["id"] }}').text(new_text);
+	        		}
+	        		// else here maybe?
 	      			} 
 	      			else {
 	        			alert('There was a problem with the request.');

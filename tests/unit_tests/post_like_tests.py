@@ -108,14 +108,14 @@ class PostLikeTests(unittest.TestCase):
         self.subjectPostGeneratorA()
 
         response = self.testapp.get('/like.html?title_id=1')
-        self.assertEqual(response.body, 'new like added!')
+        self.assertEqual(response.body, 'Success')
 
     def testRecognizeNewLiker(self):
         self.generateLoggedInUserB()
         self.subjectPostGeneratorA()
 
         response = self.testapp.get('/like.html?title_id=1')
-        self.assertEqual(response.body, 'new like added!')
+        self.assertEqual(response.body, 'Success')
 
     def testRejectExistingLiker(self):
         self.generateLoggedInUserB()
@@ -130,4 +130,4 @@ class PostLikeTests(unittest.TestCase):
         self.subjectPostGeneratorA()
         add_post_like(1, 'testuseri')
         response = self.testapp.get('/like.html?title_id=1')
-        self.assertEqual(response.body, 'new like added!')
+        self.assertEqual(response.body, 'Success')

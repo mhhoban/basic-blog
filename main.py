@@ -298,7 +298,7 @@ class LikePost(Handler):
 
                     except KeyError:
                         if add_post_like(title_id, current_user):
-                            self.write('new like added!')
+                            self.write('Success')
 
                 else:
                     self.write('cannot like own post')
@@ -308,8 +308,6 @@ class LikePost(Handler):
 
         else:
             self.redirect('/')
-
-
 
 
 class MainPage(Handler):
@@ -337,10 +335,21 @@ class MainPage(Handler):
 
         for entry in entries:
 
+            likes = get_post_likes(entry.key.id())
+            post_likes = ''
+            if len(likes) < 1:
+                post_likes = 'No Likes Yet!'
+
+            else:
+                post_likes = 'This post is liked by:'
+                for like in likes.keys():
+                    post_likes = post_likes + ' ' + like + ','
+
             posts.append({'title': entry.title,
                           'id': entry.key.id(),
                           'author': entry.author,
                           'content': entry.content,
+                          'likes': post_likes,
                           })
 
         self.render('front_page.html', user=penname, posts=posts)
