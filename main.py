@@ -316,19 +316,8 @@ class MainPage(Handler):
     """
     def get(self):
 
-        # new determine if a visitor is logged in:
-
-        auth_check = auth_user(self)
-
-        if auth_check['authorized']:
-            penname = auth_check['penname']
-
-        else:
-            penname = 'None'
-
         # get blog posts for display
         # TODO reverse chronological order
-        # TODO separate templates for logged in/vs not-logged-in for front page
         entries = get_all_posts()
 
         posts = []
@@ -352,7 +341,19 @@ class MainPage(Handler):
                           'likes': post_likes,
                           })
 
-        self.render('front_page.html', user=penname, posts=posts)
+        # new determine if a visitor is logged in:
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            penname = auth_check['penname']
+            self.render('front_page_authed.html', user=penname, posts=posts)
+
+        else:
+            self.render('front_page_non_authed.html', posts=posts)
+
+
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
