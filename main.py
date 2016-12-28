@@ -316,40 +316,74 @@ class MainPage(Handler):
     """
     def get(self):
 
-        # get blog posts for display
-        # TODO reverse chronological order
-        entries = get_all_posts()
-
-        posts = []
-
-        for entry in entries:
-
-            likes = get_post_likes(entry.key.id())
-            post_likes = ''
-            if len(likes) < 1:
-                post_likes = 'No Likes Yet!'
-
-            else:
-                post_likes = 'This post is liked by:'
-                for like in likes.keys():
-                    post_likes = post_likes + ' ' + like + ','
-
-            posts.append({'title': entry.title,
-                          'id': entry.key.id(),
-                          'author': entry.author,
-                          'content': entry.content,
-                          'likes': post_likes,
-                          })
-
         # new determine if a visitor is logged in:
 
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
+
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
+
+            posts = []
+
             penname = auth_check['penname']
+
+            for entry in entries:
+                view_mode = 'like'
+                if entry.author == penname:
+                    view_mode = 'edit'
+
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        if like == penname:
+                            view_mode = 'liked'
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              'view_mode': view_mode
+                              })
+
             self.render('front_page_authed.html', user=penname, posts=posts)
 
         else:
+
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
+
+            posts = []
+
+            for entry in entries:
+
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              })
+
             self.render('front_page_non_authed.html', posts=posts)
 
 
