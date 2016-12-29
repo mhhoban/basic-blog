@@ -274,6 +274,31 @@ class BlogEditPage(Handler):
             self.redirect('/')
 
 
+class ViewPost(Handler):
+    def get(self):
+
+        blog_id = long(self.request.GET['blog_id'])
+        post_data = get_post_data(blog_id)
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            self.render('blog_view_page_authed.html',
+                        user=auth_check['penname'],
+                        content=post_data.content,
+                        title=post_data.title,
+                        blog_id=blog_id)
+
+        else:
+
+            self.render('blog_view_page_non_authed.html',
+                        content=post_data.content,
+                        title=post_data.title,
+                        blog_id=blog_id)
+
+
+
 class LikePost(Handler):
     def get(self):
 
@@ -387,8 +412,6 @@ class MainPage(Handler):
             self.render('front_page_non_authed.html', posts=posts)
 
 
-
-
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
@@ -397,4 +420,5 @@ app = webapp2.WSGIApplication([
     ('/blog-edit.html', BlogEditPage),
     ('/logout.html', LogoutPage),
     ('/like.html', LikePost),
+    ('/view.html', ViewPost),
     ], debug=True)

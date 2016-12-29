@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block login_block %}
+
+	<div class="user-greeting">
+
+		<h3> {{ user }} </h3>
+		<a href="logout.html"> Logout </a>
+		<a href="blog-compose.html"> Compose Post </a>
+
+	</div>
+
+{% endblock %}
+
+{% block posts_block %}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="blog-compose-box">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="signup-form">
+
+                        <h3> {{ title }} </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <form action="blog-edit.html" method="post">
+
+	            <div class="row">
+
+	            	<div class="col-md-12">	
+
+	            		<div class="blog-compose-field">
+
+								{{ content }}
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="signup-form">
+
+	            			<input type="hidden" name="blog_id" value="{{ blog_id }}">
+
+							<button type="submit" class="btn btn-primary"> Update! </button>
+
+							
+
+	            		</div>
+
+            	</div>
+
+            </div>
+
+        </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
