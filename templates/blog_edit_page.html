@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block posts_block %}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="blog-compose-box">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="signup-form">
+
+                        <h3> Edit Your Blog Post </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <form action="blog-edit.html" method="post">
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="signup-form">
+
+	            			{% if title %}
+
+	            			<input type="text" class="form-control" name="title" id="blog_title" value="{{ title }}">
+
+	            			{% else %}
+
+							<input type="text" class="form-control" name="title" id="blog_title" placeholder="title">
+
+							{% endif %}
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		
+
+	            		<div class="blog-compose-field">
+
+	            			{% if content|length > 0 %}
+
+								<textarea class="form-control" name="content" id="blog_content" rows="10"> {{ content }} </textarea> 
+
+							{% else %}
+
+								<textarea class="form-control" name="content" id="blog_content" rows="10"></textarea>
+
+							{% endif %}
+
+	            		</div>
+
+
+
+	            	</div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="signup-form">
+
+	            			<input type="hidden" name="blog_id" value="{{ blog_id }}">
+
+							<button type="submit" class="btn btn-primary"> Update! </button>
+
+							{% if error %}
+
+								<h3>{{ error }}<h3>
+
+							{% endif %}
+
+	            		</div>
+
+            	</div>
+
+            </div>
+
+        </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

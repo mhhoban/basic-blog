@@ -133,7 +133,7 @@
 
 							{% elif post['view_mode'] == 'edit' %}
 
-							<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-primary">Edit!</button></span>
+							<a href='blog-edit.html?blog_id={{ post["id"] }}'><button type="button" class="btn btn-primary">Edit!</button></a>
 
 							{% else %}
 
