@@ -1,12 +1,12 @@
-from cookie_hasher import encode_cookie, verify_cookie
+from auth_tools import auth_user
+from hasher import encode_cookie
 from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
-from user_tools import fetch_penname, check_password
-from blog_post_tools import get_all_posts, store_post
+from user_tools import check_password
+from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like
 from register import registration
-from google.appengine.ext import ndb
-
+from time import sleep
 
 import os
 import jinja2
@@ -32,92 +32,32 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
-class TestUser(ndb.Model):
-    name = ndb.StringProperty()
-
-
-class TestUserPage(Handler):
-
-    def get(self):
-
-        test_user_num = TestUser.query()
-
-        if test_user_num.count() < 1:
-            self.write('started with no users ')
-
-        a = TestUser(name='a')
-        a.put()
-
-        import time
-        time.sleep(2)
-
-        test_user_num = TestUser.query()
-
-        if test_user_num.count() < 1:
-            self.write('somehow ended with no users ' + str(test_user_num.count()))
-
-        else:
-            self.write('successfully added a user')
-        b = TestUser(name='b')
-        c = TestUser(name='c')
-
-        # a.put()
-        # b.put()
-        # c.put()
-
-
-class BlogComposeParse(Handler):
-
-    def post(self):
-
-        blog_data = self.request.POST
-        blog_data['author'] = 'test_author'
-        transaction_success = store_post(blog_data)
-        if transaction_success:
-            self.write('blog storage success')
-        else:
-            self.write('blog storage failure')
-
-
 class Register(Handler):
+    """
+    Handles displaying registration page and parsing registration input
+    """
     def get(self):
+        """
+        serves registration page
 
-        # start off assuming no arguments
-        email = False
-        errors = False
+        """
 
-        if len(self.request.get('email')) > 0:
-            email = self.request.get('email')
-
-        if len(self.request.get('errors')) > 0:
-            errors = self.request.get('errors')
-
-        if email and errors:
-            self.render('registration_page.html', email=email, error=errors)
-
-        elif errors:
-            self.render('registration_page.html', error=errors)
-
-        else:
-            self.render('registration_page.html')
+        self.render('registration_page.html')
 
     def post(self):
-
-        kwargs = self.request.POST
-
-        self.render('registration_page.html', **kwargs)
-
-
-class RegisterParse(Handler):
-
-    def post(self):
+        """
+        parses data from reg page form and reloads page with data populated if there was an issue
+        with the user input
+        :return:
+        """
 
         errors = ''
 
         fields = all_fields_complete(self.request.POST)
 
         if fields['fields_present'] is True:
-
+            email = fields['email']
+            errors = ''
             if valid_email_check(fields['email']):
 
                 if nom_de_plume_available(fields['penname']):
@@ -136,7 +76,6 @@ class RegisterParse(Handler):
                             self.redirect('/')
 
                         else:
-
                             errors = 'mismatched_passwords'
 
                     else:
@@ -146,23 +85,37 @@ class RegisterParse(Handler):
                     errors = 'nom de plume taken'
 
             else:
-
                 errors = 'invalid_email'
 
         else:
+
+            try:
+                email = fields['email']
+            except KeyError:
+                email = ''
 
             errors = 'incomplete'
 
         if len(errors) > 0:
 
-            self.redirect('/register.html?email='+fields['email']+'&errors='+errors)
+            self.render('registration_page.html', email=email, error=errors)
 
 
-class LoginParse(Handler):
+class LoginPage(Handler):
+    """
+    Displays LoginPage and parses login data
+    """
+    def get(self):
+        """
+        Displays Login Page for direct URL requests
+        """
+
+        self.render('login_page.html', error=False)
+
     def post(self):
-
-        # import pdb
-        # pdb.set_trace()
+        """
+        Parses login data from form and reloads login-page if there is an issue with user input
+        """
 
         login_parse = login_fields_complete(self.request.POST)
 
@@ -181,65 +134,267 @@ class LoginParse(Handler):
                     self.redirect('/')
 
                 else:
-                    self.redirect('/login.html?error=invalid')
+                    self.render('login_page.html', error='invalid')
 
             else:
-                self.redirect('/login.html?error=invalid')
+                self.render('login_page.html', error='invalid')
 
         else:
-            self.redirect('/login.html?error=incomplete')
+            self.render('login_page.html', error='incomplete')
 
 
-class LoginPage(Handler):
+class LogoutPage(Handler):
+    """
+    Logs out users
+    """
+
     def get(self):
 
-        if len(self.request.get('error')) > 0:
-            error = self.request.get('error')
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            # destroy cookie
+            self.response.delete_cookie('user-id')
+
+            self.redirect('/')
 
         else:
-            error = False
-
-        self.render('login_page.html', error=error)
+            self.redirect('/')
 
 
 class BlogComposePage(Handler):
+    """
+    Serves blog compose page and parses blog compose data
+    """
+    def get(self):
+        """
+        serves the blog compose page for a new post
+        """
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            self.render('blog_compose_page.html')
+
+        else:
+
+            self.redirect('/')
+
+    def post(self):
+        """
+        parses blog compose data and reloads page if there is an issue with the blog
+        submission data.
+        """
+
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = auth_check['penname']
+            transaction_success = store_post(blog_data)
+
+            if transaction_success:
+                self.redirect('/')
+
+            else:
+                self.render('blog_compose_page.html', title=blog_data['title'], content=blog_data['content'])
+
+        else:
+            self.redirect('/')
+
+
+class BlogEditPage(Handler):
+    """
+    loads blog edit page and reloads page if there is an issue with the blog submission data
+    """
+
+    def auth_edit_post(self, blog_id, user_name):
+
+        blog_author = get_post_author(blog_id)
+
+        if blog_author == user_name:
+            return True
+
+        else:
+            return False
+
     def get(self):
 
-        self.render('blog_compose_page.html')
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            user_name = auth_check['penname']
+            blog_id = long(self.request.GET['blog_id'])
+
+            if self.auth_edit_post(blog_id, user_name):
+
+                post_data = get_post_data(blog_id)
+
+                self.render('blog_edit_page.html', content=post_data.content, title=post_data.title,
+                            blog_id=blog_id)
+
+            else:
+                self.write('Not Authorized to Edit Post')
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+        """
+        parses blog compose data and reloads page if there is an issue with the blog
+        submission data.
+        """
+
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = auth_check['penname']
+            transaction_success = update_post(blog_data)
+
+            if transaction_success:
+                self.write('Blog Updated Successfully!')
+                sleep(1)
+                self.redirect('/')
+
+            else:
+                self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
+                            blog_id=blog_data['blog_id'])
+
+        else:
+            self.redirect('/')
+
+
+class LikePost(Handler):
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            title_id = long(self.request.get('title_id'))
+
+            if get_post_data(title_id):
+
+                post_author = get_post_author(title_id)
+                current_user = auth_check['penname']
+
+                if post_author != current_user:
+
+                    likes = get_post_likes(title_id)
+
+                    try:
+                        test_author = likes[current_user]
+                        self.write('already liked')
+
+                    except KeyError:
+                        if add_post_like(title_id, current_user):
+                            self.write('Success')
+
+                else:
+                    self.write('cannot like own post')
+
+            else:
+                self.write('no such post')
+
+        else:
+            self.redirect('/')
 
 
 class MainPage(Handler):
+    """
+    Displays index page
+    """
     def get(self):
 
-        # determine if a visitor is logged in
-        user_hash = self.request.cookies.get('user-id', 'None')
+        # new determine if a visitor is logged in:
 
-        # default visitor to not logged in
-        penname = 'None'
+        auth_check = auth_user(self)
 
-        if user_hash != 'None':
+        if auth_check['authorized']:
 
-            user_hash = user_hash.split('-')
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
 
-            if verify_cookie(user_hash):
-                user_id = user_hash[0]
-                penname = fetch_penname(user_id)
+            posts = []
 
-        # determine if there are any blog posts to show yet:
-        posts = get_all_posts()
+            penname = auth_check['penname']
 
-        self.render('front_page.html', user=penname, posts=posts)
+            for entry in entries:
+                view_mode = 'like'
+                if entry.author == penname:
+                    view_mode = 'edit'
 
-    def post(self):
-        self.response.out.write("bar")
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        if like == penname:
+                            view_mode = 'liked'
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              'view_mode': view_mode
+                              })
+
+            self.render('front_page_authed.html', user=penname, posts=posts)
+
+        else:
+
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
+
+            posts = []
+
+            for entry in entries:
+
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              })
+
+            self.render('front_page_non_authed.html', posts=posts)
+
+
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
-    ('/registration-parse.html', RegisterParse),
-    ('/login-parse.html', LoginParse),
     ('/login.html', LoginPage),
-    ('/test-key', TestUserPage),
     ('/blog-compose.html', BlogComposePage),
-    ('/blog-compose-parse.html', BlogComposeParse),
+    ('/blog-edit.html', BlogEditPage),
+    ('/logout.html', LogoutPage),
+    ('/like.html', LikePost),
     ], debug=True)

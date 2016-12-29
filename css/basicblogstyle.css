@@ -117,11 +117,6 @@ body {
     padding-bottom: 5px;
 }
 
-.blog-content-box {
-
-    height: 25%;
-
-}
 
 .post-title {
 
@@ -160,8 +155,11 @@ body {
 
     padding: 5px 5px 5px 5px;
 
-    overflow: scroll;
+}
 
+.post-likes {
+    padding: 15px 5px 5px 5px;
+    color: white;
 }
 .footer-content {
 
