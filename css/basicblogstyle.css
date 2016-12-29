@@ -156,6 +156,11 @@ body {
     padding: 5px 5px 5px 5px;
 
 }
+
+.post-likes {
+    padding: 15px 5px 5px 5px;
+    color: white;
+}
 .footer-content {
 
     margin-top: 1%;

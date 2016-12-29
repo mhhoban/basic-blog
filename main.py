@@ -4,9 +4,9 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post
+from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like
 from register import registration
-
+from time import sleep
 
 import os
 import jinja2
@@ -76,7 +76,6 @@ class Register(Handler):
                             self.redirect('/')
 
                         else:
-
                             errors = 'mismatched_passwords'
 
                     else:
@@ -86,7 +85,6 @@ class Register(Handler):
                     errors = 'nom de plume taken'
 
             else:
-
                 errors = 'invalid_email'
 
         else:
@@ -197,7 +195,7 @@ class BlogComposePage(Handler):
         if auth_check['authorized']:
 
             blog_data = self.request.POST
-            blog_data['author'] = 'test_author'
+            blog_data['author'] = auth_check['penname']
             transaction_success = store_post(blog_data)
 
             if transaction_success:
@@ -205,6 +203,108 @@ class BlogComposePage(Handler):
 
             else:
                 self.render('blog_compose_page.html', title=blog_data['title'], content=blog_data['content'])
+
+        else:
+            self.redirect('/')
+
+
+class BlogEditPage(Handler):
+    """
+    loads blog edit page and reloads page if there is an issue with the blog submission data
+    """
+
+    def auth_edit_post(self, blog_id, user_name):
+
+        blog_author = get_post_author(blog_id)
+
+        if blog_author == user_name:
+            return True
+
+        else:
+            return False
+
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            user_name = auth_check['penname']
+            blog_id = long(self.request.GET['blog_id'])
+
+            if self.auth_edit_post(blog_id, user_name):
+
+                post_data = get_post_data(blog_id)
+
+                self.render('blog_edit_page.html', content=post_data.content, title=post_data.title,
+                            blog_id=blog_id)
+
+            else:
+                self.write('Not Authorized to Edit Post')
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+        """
+        parses blog compose data and reloads page if there is an issue with the blog
+        submission data.
+        """
+
+        auth_check = auth_user(self)
+
+        # import pdb
+        # pdb.set_trace()
+
+        if auth_check['authorized']:
+
+            blog_data = self.request.POST
+            blog_data['author'] = auth_check['penname']
+            transaction_success = update_post(blog_data)
+
+            if transaction_success:
+                self.write('Blog Updated Successfully!')
+                sleep(1)
+                self.redirect('/')
+
+            else:
+                self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
+                            blog_id=blog_data['blog_id'])
+
+        else:
+            self.redirect('/')
+
+
+class LikePost(Handler):
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            title_id = long(self.request.get('title_id'))
+
+            if get_post_data(title_id):
+
+                post_author = get_post_author(title_id)
+                current_user = auth_check['penname']
+
+                if post_author != current_user:
+
+                    likes = get_post_likes(title_id)
+
+                    try:
+                        test_author = likes[current_user]
+                        self.write('already liked')
+
+                    except KeyError:
+                        if add_post_like(title_id, current_user):
+                            self.write('Success')
+
+                else:
+                    self.write('cannot like own post')
+
+            else:
+                self.write('no such post')
 
         else:
             self.redirect('/')
@@ -221,21 +321,80 @@ class MainPage(Handler):
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
+
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
+
+            posts = []
+
             penname = auth_check['penname']
 
+            for entry in entries:
+                view_mode = 'like'
+                if entry.author == penname:
+                    view_mode = 'edit'
+
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        if like == penname:
+                            view_mode = 'liked'
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              'view_mode': view_mode
+                              })
+
+            self.render('front_page_authed.html', user=penname, posts=posts)
+
         else:
-            penname = 'None'
 
-        # get blog posts for display
-        # TODO reverse chronological order
-        posts = get_all_posts()
+            # get blog posts for display
+            # TODO reverse chronological order
+            entries = get_all_posts()
 
-        self.render('front_page.html', user=penname, posts=posts)
+            posts = []
+
+            for entry in entries:
+
+                likes = get_post_likes(entry.key.id())
+                post_likes = ''
+                if len(likes) < 1:
+                    post_likes = 'No Likes Yet!'
+
+                else:
+                    post_likes = 'This post is liked by:'
+                    for like in likes.keys():
+                        post_likes = post_likes + ' ' + like + ','
+
+                posts.append({'title': entry.title,
+                              'id': entry.key.id(),
+                              'author': entry.author,
+                              'content': entry.content,
+                              'likes': post_likes,
+                              })
+
+            self.render('front_page_non_authed.html', posts=posts)
+
+
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/register.html', Register),
     ('/login.html', LoginPage),
     ('/blog-compose.html', BlogComposePage),
+    ('/blog-edit.html', BlogEditPage),
     ('/logout.html', LogoutPage),
+    ('/like.html', LikePost),
     ], debug=True)

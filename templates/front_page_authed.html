@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+
+{% block login_block %}
+
+	<div class="user-greeting">
+
+		<h3> {{ user }} </h3>
+		<a href="logout.html"> Logout </a>
+		<a href="blog-compose.html"> Compose Post </a>
+
+	</div>
+
+{% endblock %}
+
+
+
+<!-- Begin Individual Posts -->
+
+{% block posts_block %}
+
+	{% if posts|length > 0 %}
+
+	<!-- fetch JS source -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	{% for post in posts %}
+
+	<div class="row">
+
+	    <div class="col-md-12">
+
+	        <div class="content-box">
+
+	            <div class="row">
+
+	                <div class="col-md-8">
+
+	                    <div class="post-title">
+
+	                        <h3> {{ post['title'] }} </h3>
+	                        <a href="blog-edit.html?blog_id={{ post['id'] }}"> Edit Post! </a>
+
+	                    </div>
+
+	                </div>
+
+	                <div class="col-md-4">
+
+	                    <div class="post-author">
+
+	                        <h3> {{ post['author'] }} </h3>
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	                <div class="col-md-12">
+
+	                    <div class="post-content">
+
+	                         <p> {{ post['content'] }} </p>
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            			
+            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
+
+            				{% if post['view_mode'] == 'like' %}
+
+            				<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-success">Like!</button></span>
+
+            				<!--
+
+							Begin Javascript "Like"
+							Adapted from "https://developer.mozilla.org/en-US/docs/AJAX/Getting_Started"
+								-->
+
+							<script type="text/javascript">
+
+								(function() {
+									var httpRequest;
+						  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {makeRequest();};
+
+
+						    			function makeRequest(){
+						  					httpRequest = new XMLHttpRequest();
+						    				httpRequest.onreadystatechange = add_like;
+
+						    				httpRequest.open('GET', 'like.html?title_id={{ post["id"] }}');
+						    				httpRequest.send();
+						  			}
+
+
+						  			function add_like(){
+							  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
+							      			if (httpRequest.status === 200) {
+							      			if (httpRequest.responseText === 'Success'){
+							        		
+							        		var old_like_text = document.getElementById('likes{{ post["id"] }}').innerText;
+							        		var you_text = ' you, '
+							        		var new_text = you_text.concat(old_like_text);
+							        		document.getElementById('likes{{ post["id"] }}').text = new_text;
+							        		
+							        		$('#like-button{{ post["id"] }}').addClass('btn btn-info').text('Liked!');
+							        		
+							        		}
+							        		// else here maybe?
+							      			} 
+							      			else {
+							        			alert('There was a problem with the request.');
+							      				}
+							    			}
+							    		}
+
+								})();
+
+							</script>
+
+							{% elif post['view_mode'] == 'edit' %}
+
+							<a href='blog-edit.html?blog_id={{ post["id"] }}'><button type="button" class="btn btn-primary">Edit!</button></a>
+
+							{% else %}
+
+							<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-info">Liked</button></span>
+
+							{% endif %}
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+	        </div>
+
+	    </div>
+
+	</div>
+
+	
+
+	{% endfor %}
+
+
+	{% else %}
+
+	<div class="row">
+
+	    <div class="col-md-12">
+
+	        <div class="content-box">
+
+	            <div class="row">
+
+	                <div class="col-md-8">
+
+	                    <div class="post-title">
+
+	                        <h3> Generic Title </h3>
+
+	                    </div>
+
+	                </div>
+
+	                <div class="col-md-4">
+
+	                    <div class="post-author">
+
+	                        <h3> Generic Author </h3>
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	                <div class="col-md-12">
+
+	                    <div class="post-content">
+
+	                         <p> No Posts Yet! </p>
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+	        </div>
+
+	    </div>
+
+	</div>
+
+	{% endif %}
+
+
+
+{% endblock %}
+                    <!-- End Individual Post --> 

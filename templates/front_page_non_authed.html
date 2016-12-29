@@ -3,17 +3,9 @@
 
 {% block login_block %}
 
-	{% if user != 'None' %}
+	
 
-		<div class="user-greeting">
-
-			<h3> {{ user }} </h3>
-			<a href="logout.html"> Logout </a>
-			<a href="blog-compose.html"> Compose Post </a>
-
-		</div>
-
-	{% else %}
+	<div class="user-greeting">
 
 		<form action="login.html" method="post">
 
@@ -67,7 +59,7 @@
 
 		</form>
 
-	{% endif %}
+	</div>
 
 {% endblock %}
 
@@ -94,6 +86,7 @@
 	                    <div class="post-title">
 
 	                        <h3> {{ post['title'] }} </h3>
+	                        
 
 	                    </div>
 
@@ -125,6 +118,23 @@
 
 	            </div>
 
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            			
+            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
+
+            				<a href='login.html'><button type="button" class="btn btn-success">Like!</button></a>
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
 	        </div>
 
 	    </div>
@@ -132,6 +142,7 @@
 	</div>
 
 	{% endfor %}
+
 
 	{% else %}
 
@@ -176,6 +187,18 @@
 	                    </div>
 
 	                </div>
+
+	            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">
+
+	            		<div class="post-likes">
+
+	            		</div>
+
+	            	</div>
 
 	            </div>
 

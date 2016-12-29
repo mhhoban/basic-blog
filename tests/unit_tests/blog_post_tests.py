@@ -4,12 +4,14 @@ import unittest
 import webapp2
 import webtest
 
-from main import MainPage, Register, LoginPage, BlogComposePage
+from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
-from blog_post_tools import blog_data_parser, store_post, get_all_posts
+from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data,
+                             update_post)
+from db_schema import Post
 
-from google.appengine.ext import testbed
+from google.appengine.ext import ndb, testbed
 
 
 class BlogPostTests(unittest.TestCase):
@@ -19,6 +21,7 @@ class BlogPostTests(unittest.TestCase):
                                        ('/register.html', Register),
                                        ('/login.html', LoginPage),
                                        ('/blog-compose.html', BlogComposePage),
+                                       ('/blog-edit.html', BlogEditPage),
                                        ])
         # wrap the test app:
         self.testapp = webtest.TestApp(app)
@@ -142,3 +145,49 @@ class BlogPostTests(unittest.TestCase):
         response = self.testapp.get('/')
         assert_that(response.body, contains_string('thing_title'))
         assert_that(response.body, contains_string('thing_content'))
+
+    def testGetBlogPostAuthor(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+
+        if data:
+            blog_data = Post.query().fetch()
+
+            blog_id = blog_data[0].key.id()
+
+            blog_author = get_post_author(blog_id)
+
+            self.assertEqual(blog_author, 'thingz_author')
+
+    def testGetBlogData(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'thingz_author'})
+
+        if data:
+
+            blog_data = get_post_data(long(1))
+
+            self.assertEqual(blog_data.title, 'thingz_title')
+
+    def testBlogPostUpdateAuth(self):
+        registration('test@user', 'secret', 'testuser')
+        hashed_cookie = encode_cookie('test@user')
+        self.testapp.set_cookie('user-id', hashed_cookie)
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        response = self.testapp.get('/blog-edit.html?blog_id=1')
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.body, 'Not Authorized to Edit Post')
+
+    def testBlogPostUpdate(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        self.assertEqual(test_post.content, 'thingz_content')
+
+        data = update_post({'blog_id': 1, 'title': 'thingz_title', 'content': 'thingzzzz'})
+
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        self.assertEqual(test_post.content, 'thingzzzz')
