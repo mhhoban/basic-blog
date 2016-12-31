@@ -298,7 +298,6 @@ class ViewPost(Handler):
                         blog_id=blog_id)
 
 
-
 class LikePost(Handler):
     def get(self):
 

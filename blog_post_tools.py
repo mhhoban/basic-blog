@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import json
+from datetime import datetime
 from db_schema import Post
 
 
@@ -65,10 +66,14 @@ def store_post(blog_post_data):
     post_likes = {}
     post_likes = json.dumps(post_likes)
 
+    post_comments = []
+    post_comments = json.dumps(post_comments)
+
     new_post = Post(author=blog_post['author'],
                     title=blog_post['title'],
                     content=blog_post['content'],
-                    likes=post_likes)
+                    likes=post_likes,
+                    comments=post_comments)
 
     new_post.put()
 
@@ -143,9 +148,35 @@ def add_post_like(blog_id, liker):
     target_post.likes = json_likes
 
     if target_post.put():
-
         return True
 
     else:
-
         return False
+
+
+def add_comment(blog_id, commenter, comment_content):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+    comment = {}
+    comment['commenter'] = commenter
+    comment['content'] = comment_content
+    comment['timestamp'] = get_timestamp()
+    comments.append(comment)
+    comments = json.dumps(comments)
+    target_post.comments = comments
+
+    if target_post.put():
+        return True
+
+    else:
+        return False
+
+
+def get_timestamp():
+    raw_time = datetime.now()
+    string_time = raw_time.strftime('%H:%M %m/%d/%Y')
+
+    return string_time
