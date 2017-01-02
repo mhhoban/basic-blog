@@ -65,11 +65,25 @@ body {
     margin-left: 25%;
 }
 
+.blog-compose-title {
+    color: white;
+    width: 50%;
+    margin-top: 1vw;
+    margin-left: 25%;
+}
+
 .blog-compose-field {
     color: white;
     width: 50%;
     height: auto;
     overflow: scroll;
+    margin-top: 1vw;
+    margin-left: 25%;
+}
+
+.blog-compose-button {
+    color: white;
+    width: 50%;
     margin-top: 1vw;
     margin-left: 25%;
 }

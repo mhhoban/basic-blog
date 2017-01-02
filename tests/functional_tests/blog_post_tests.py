@@ -48,10 +48,12 @@ class SignupTests(unittest.TestCase):
         self.browser.quit()
         self.test_server.stop_app_server()
 
-    def test_user_signup(self):
+    def test_blog_post(self):
 
         # User visits the blog, which loads successfully
         self.browser.get('http://localhost:8080')
+
+        # ----------------------------------------------------------Verify UI Present
 
         sleep(2)
         # Then sees a field for an email input
@@ -87,6 +89,8 @@ class SignupTests(unittest.TestCase):
 
         except NoSuchElementException:
             register_link = False
+
+        # ---------------------------------------------------------- Register user A
 
         self.assertTrue(register_link, 'register link not detected for non-logged in user')
 
@@ -171,6 +175,8 @@ class SignupTests(unittest.TestCase):
         # successfully completing the sign up process, the user is re-directed to the homepage and is welcomed
         # by their nom de plume
 
+        # ---------------------------------------------------------- Confirm user A registration
+
         try:
             penname = self.browser.find_element_by_xpath("//*/div[@class='user-greeting']/h3")
         except NoSuchElementException:
@@ -178,6 +184,86 @@ class SignupTests(unittest.TestCase):
 
         self.assertTrue(penname, 'User name not showing after registration')
         assert_that(penname.text, contains_string('thing'))
+
+        # ---------------------------------------------------------- Begin Composing Blog Post
+
+        try:
+            compose_link = self.browser.find_element_by_link_text('Compose Post')
+        except NoSuchElementException:
+            compose_link = False
+
+        self.assertTrue(compose_link, 'compose blog link not found')
+
+        compose_link.click()
+
+        sleep(2)
+
+        # ----------------------------------------------------------- Actually Compose Blog Post
+        # confirm title field present:
+
+        try:
+            title_field = self.browser.find_element_by_xpath("//*/div[@class='blog-compose-title']/input")
+
+        except NoSuchElementException:
+            title_field = False
+
+        self.assertTrue(title_field, 'Could not locate Blog Compose Title Field')
+
+        try:
+            content_field = self.browser.find_element_by_xpath("//*/div[@class='blog-compose-field']/textarea")
+
+        except NoSuchElementException:
+            content_field = False
+
+        self.assertTrue(content_field, 'Could not locate Blog Compose Content')
+
+        try:
+            submit_button = self.browser.find_element_by_xpath("//*/div[@class='blog-compose-button']/button")
+
+        except NoSuchElementException:
+            submit_button = False
+
+        self.assertTrue(submit_button, 'Could not locate Blog Compose Submit Button')
+
+        # Compose the post
+        title_field.send_keys('Test Blog Post A')
+        content_field.send_keys('The Body of Blog Post A')
+
+        # Hit submit
+        submit_button.click()
+
+        # ---------------------------------------------------------------- Confirm Blog Post Posted
+        # confirm UI elements present:
+        sleep(3)
+
+        try:
+            blog_title = self.browser.find_element_by_xpath("//*/div[@class='post-title']/h3")
+
+        except NoSuchElementException:
+            blog_title = False
+
+        self.assertTrue(blog_title, 'Could not find Blog Title After posting')
+
+        try:
+            blog_author = self.browser.find_element_by_xpath("//*/div[@class='post-author']/h3")
+
+        except NoSuchElementException:
+            blog_author = False
+
+        self.assertTrue(blog_author, 'Could not find Blog Author After posting')
+
+        try:
+            blog_content = self.browser.find_element_by_xpath("//*/div[@class='post-content']/p")
+
+        except NoSuchElementException:
+            blog_content = False
+
+        self.assertTrue(blog_title, 'Could not find Blog content After posting')
+
+        # confirm content is correct:
+        self.assertEqual(blog_title.text, 'Test Blog Post A')
+        self.assertEqual(blog_author.text, 'thing')
+        self.assertEqual(blog_content.text, 'Start Writing! The Body of Blog Post A')
 
 
 if __name__ == '__main__':
