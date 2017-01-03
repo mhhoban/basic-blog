@@ -34,7 +34,7 @@
 
             </div>
 
-            <form action="blog-edit.html" method="post">
+            
 
 	            <div class="row">
 
@@ -50,30 +50,81 @@
 
 	            </div>
 
-	            <div class="row">
-
-	            	<div class="col-md-12">
-
-	            		<div class="signup-form">
-
-	            			<input type="hidden" name="blog_id" value="{{ blog_id }}">
-
-							<button type="submit" class="btn btn-primary"> Update! </button>
-
-							
-
-	            		</div>
-
-            	</div>
-
-            </div>
-
-        </form>
 
         </div>
 
     </div>
 
 </div>
+
+
+<!-- Add Comment -->
+
+<div class="row">
+	
+		<div class="add-comment-box">
+
+			<div class="row">
+
+				<div class="col-md-2">
+
+					<div class="comment-compose-header">
+
+						<h4> Add a Comment: </h4>
+
+					</div>
+
+				</div>
+
+
+				<div class='col-md-8'>
+
+					<div class="comment-compose-field">
+
+						<textarea rows="2" cols= "120"> </textarea>
+
+					</div>
+
+				</div>
+
+
+				<div class="col-md-2">
+
+					<div class="comment-compose-button">
+
+						<button type="button" class="btn btn-success">Comment</button>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+	
+</div>
+
+
+
+
+<!-- Begin Comments -->
+
+{% for comment in comments %}
+
+<div class="row">
+
+	<div class="col-md-12">
+
+		<div class="blog-comment-box">
+
+
+
+		</div>
+
+	</div>
+
+</div>
+
+{% endfor %}
 
 {% endblock %}

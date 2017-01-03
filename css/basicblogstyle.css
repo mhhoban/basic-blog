@@ -113,7 +113,62 @@ body {
     padding-bottom: 5px;
 }
 
+.comment-box {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    min-height: 150px;
+    max-height: 800px;
+    height: 100%;
+    border-style:solid;
+    border-color: blue;
+    background: blue;
+
+    padding-bottom: 5px;
+}
+
+.add-comment-box {
+
+    border-radius: 10px;
+    background: #0d6ee5;
+    color: black;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    margin-right: 2%;
+    margin-left: 2%;
+    
+    min-height: 75px;
+    max-height: 150px;
+    height: 100%;
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+.comment-compose-header {
+    margin-top: 10%;
+    margin-left: 4%;
+}
+
+.comment-compose-field {
+
+    margin-top: 1.5%;
+    margin-bottom: 1%;
+    
+}
+
+.comment-compose-button {
+    margin-top: 7.5%;
+}
+
 .blog-compose-box {
+
 
     margin-top: 20px;
     margin-right: 2%;
@@ -128,7 +183,7 @@ body {
     border-color: black;
     background: black;
 
-    padding-bottom: 5px;
+    /*padding-bottom: 5px;*/
 }
 
 
