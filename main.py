@@ -284,16 +284,23 @@ class ViewPost(Handler):
         # load and parse comments:
         comments = json.loads(post_data.comments)
 
-
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
+
+            # check if visitor is allowed to edit:
+            if post_data.author == auth_check['penname']:
+                can_comment = False
+
+            else:
+                can_comment = True
 
             self.render('blog_view_page_authed.html',
                         user=auth_check['penname'],
                         content=post_data.content,
                         title=post_data.title,
                         comments=comments,
+                        can_comment=can_comment,
                         blog_id=blog_id)
 
         else:

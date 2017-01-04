@@ -184,16 +184,12 @@ class SignupTests(unittest.TestCase):
 
     def test_blog_comments(self):
 
+        # test setup
         tools = AutoTestTools()
-
         reg_a = tools.register_user_alpha()
-
         self.assertTrue(reg_a, 'could not register user a')
-
         reg_b = tools.register_user_beta()
-
         self.assertTrue(reg_b, 'could not register user b')
-
         tools.gen_post_alpha()
 
         # User visits the blog, which loads successfully
@@ -220,7 +216,7 @@ class SignupTests(unittest.TestCase):
         try:
             comment = self.browser.find_element_by_id('comment')
 
-        except:
+        except NoSuchElementException:
             comment = False
 
         assert_that(comment, is_not(False), 'could not find comment after commenting')
@@ -228,10 +224,38 @@ class SignupTests(unittest.TestCase):
         assert_that(comment.text, contains_string('testing of the comment field'),
                     'comment content incorrect')
 
-        import pdb
-        pdb.set_trace()
+    def test_comment_on_own_post(self):
+
+        # test set-up
+        tools = AutoTestTools()
+        reg_a = tools.register_user_alpha()
+        self.assertTrue(reg_a, 'could not register user a')
+        reg_b = tools.register_user_beta()
+        self.assertTrue(reg_b, 'could not register user b')
+        tools.gen_post_alpha()
+
+        # User visits the blog, which loads successfully
+        self.browser.get('http://localhost:8080')
+
+        sleep(3)
+
+        # log in as same user that has posted
+        tools.log_in_user(self.browser, 'a@a.a', 'thing')
 
         sleep(2)
+
+        tools.view_post(self.browser)
+
+        sleep(2)
+
+        try:
+            comment_button = self.browser.find_element_by_id('add-comment-button')
+
+        except NoSuchElementException:
+            comment_button = False
+
+        self.assertFalse(comment_button, 'user able to comment on their own post')
+
 
 if __name__ == '__main__':
     unittest.main()
