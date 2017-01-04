@@ -39,7 +39,9 @@
 	                    <div class="post-title">
 
 	                        <h3> {{ post['title'] }} </h3>
+	                        {% if post['author'] == user %}
 	                        <a href="blog-edit.html?blog_id={{ post['id'] }}"> Edit Post! </a>
+	                        {% endif %}
 
 	                    </div>
 
@@ -73,7 +75,7 @@
 
 	            <div class="row">
 
-	            	<div class="col-md-12">
+	            	<div class="col-md-4">
 
 	            		<div class="post-likes">
 
@@ -140,6 +142,26 @@
 							<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-info">Liked</button></span>
 
 							{% endif %}
+
+	            		</div>
+
+	            	</div>
+
+	            	<div class="col-md-4">
+
+	            		<div class="read_blog_button">
+
+	            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-secondary">Read More</button></a>
+
+	            		</div>
+
+	            	</div>
+
+	            	<div class="col-md-4">
+
+	            		<div class="blog_comments_button">
+
+	            			<button type="button" class="btn btn-warning"> X Comments </button>
 
 	            		</div>
 

@@ -8,19 +8,7 @@ def get_all_posts():
 
     all_posts = Post.query().fetch()
 
-    # import pdb
-    # pdb.set_trace()
-
     return all_posts
-
-    # posts = []
-
-    # if all_posts.count() > 0:
-    #     return posts
-    #
-    # else:
-    #     # for post in all_posts:
-    #     return False
 
 
 def blog_data_parser(blog_post_data):
@@ -81,18 +69,9 @@ def store_post(blog_post_data):
     # pdb.set_trace()
 
     if new_post.put():
-         return True
+        return True
     else:
-         return False
-
-    # new_user = User(email=username, password=password, penname=penname)
-    # new_user.key = ndb.Key('User', new_user.email)
-    # new_user.put()
-
-    # import pdb
-    # pdb.set_trace()
-    #
-    # query = Post.query()
+        return False
 
 
 def update_post(blog_post_data):

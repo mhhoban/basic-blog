@@ -63,7 +63,7 @@
 <div class="row">
 	
 		<div class="add-comment-box">
-
+		<form action="comment.html" method="post">
 			<div class="row">
 
 				<div class="col-md-2">
@@ -80,8 +80,8 @@
 				<div class='col-md-8'>
 
 					<div class="comment-compose-field">
-
-						<textarea rows="2" cols= "120"> </textarea>
+						<input type="hidden" name="title_id" value="{{ blog_id }}">
+						<textarea name="comment" rows="2" cols= "120"> </textarea>
 
 					</div>
 
@@ -92,19 +92,17 @@
 
 					<div class="comment-compose-button">
 
-						<button type="button" class="btn btn-success">Comment</button>
+						<span id="add-comment-button"><button type="submit" name="comment_button" class="btn btn-info">Comment</button></span>
 
 					</div>
 
 				</div>
 
 			</div>
-
+		</form>
 		</div>
 	
 </div>
-
-
 
 
 <!-- Begin Comments -->
@@ -117,7 +115,11 @@
 
 		<div class="blog-comment-box">
 
+			<div class="blog-comment-text">
 
+				<o id="comment"> {{ comment['content'] }} </o>
+
+			</div>
 
 		</div>
 

@@ -134,7 +134,7 @@ body {
 .add-comment-box {
 
     border-radius: 10px;
-    background: #0d6ee5;
+    background: orange;
     color: black;
     margin-top: 20px;
     margin-bottom: 5px;
@@ -230,6 +230,33 @@ textarea {
     padding: 15px 5px 5px 5px;
     color: white;
 }
+
+.blog-comment-box {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    min-height: 75px;
+    max-height: 150px;
+    height: 100%;
+    border-style:solid;
+    border-color: blue;
+    background: blue;
+
+    padding-bottom: 5px;
+
+}
+
+.blog-comment-text{
+    color: white;
+    margin-top: 1%;
+    margin-left: 1%;
+
+}
+
 .footer-content {
 
     margin-top: 1%;

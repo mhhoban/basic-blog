@@ -4,9 +4,10 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like
+from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like, add_comment
 from register import registration
 from time import sleep
+import json
 
 import os
 import jinja2
@@ -280,6 +281,10 @@ class ViewPost(Handler):
         blog_id = long(self.request.GET['blog_id'])
         post_data = get_post_data(blog_id)
 
+        # load and parse comments:
+        comments = json.loads(post_data.comments)
+
+
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -288,6 +293,7 @@ class ViewPost(Handler):
                         user=auth_check['penname'],
                         content=post_data.content,
                         title=post_data.title,
+                        comments=comments,
                         blog_id=blog_id)
 
         else:
@@ -329,6 +335,42 @@ class LikePost(Handler):
 
             else:
                 self.write('no such post')
+
+        else:
+            self.redirect('/')
+
+
+class AddComment(Handler):
+
+    def post(self):
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            title_id = long(self.request.POST['title_id'])
+            comment_content = self.request.POST['comment']
+
+            if get_post_data(title_id):
+
+                post_author = get_post_author(title_id)
+                current_user = auth_check['penname']
+
+                if post_author != current_user:
+
+                    if add_comment(title_id, current_user, comment_content):
+                        self.render('comment.html', result='success')
+                        sleep(3)
+                        self.redirect('/')
+
+                    else:
+
+                        render('comment.html', result='failure')
+
+                else:
+                    self.write('cannot comment on own post')
+
+            else:
+                self.write('No Such Post')
 
         else:
             self.redirect('/')
@@ -420,4 +462,5 @@ app = webapp2.WSGIApplication([
     ('/logout.html', LogoutPage),
     ('/like.html', LikePost),
     ('/view.html', ViewPost),
+    ('/comment.html', AddComment),
     ], debug=True)
