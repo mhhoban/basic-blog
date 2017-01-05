@@ -1,34 +1,10 @@
 from selenium import webdriver
 from hamcrest import assert_that, contains_string
 from time import sleep
-
-from selenium.webdriver.common.keys import Keys
+from auto_tools import AppServer
 from selenium.common.exceptions import NoSuchElementException
 
 import unittest
-import subprocess
-import os
-import signal
-
-# caps['marionette'] = True
-
-class AppServer:
-
-    def __init__(self):
-        self.server = None
-
-    def start_server(self):
-        try:
-            subprocess.Popen(['rm temp/myapp_test_datastore'], shell=True)
-
-        except:
-            pass
-
-        self.server = subprocess.Popen(['dev_appserver.py --datastore_path=temp/myapp_test_datastore .'], shell=True)
-
-    def stop_app_server(self):
-
-        os.kill(self.server.pid, signal.SIGINT)
 
 
 class SignupTests(unittest.TestCase):
@@ -40,6 +16,7 @@ class SignupTests(unittest.TestCase):
 
         self.browser = webdriver.Chrome(chrome_options=chrome_opts)
         self.browser.set_window_size(1300, 1300)
+
         self.test_server = AppServer()
         self.test_server.start_server()
         sleep(3)
