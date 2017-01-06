@@ -4,6 +4,7 @@ body {
 
 .container-fluid{
     padding-top: 0;
+    width: 100%
 }
 
 
@@ -34,7 +35,6 @@ body {
     background: green;
     height: 9vw;
     
-
 }
 
 .form-control{
@@ -89,8 +89,9 @@ body {
 }
 
 .content-pane {
-    margin-top: 5px;
-    height: 35vw;
+ /*   margin-top: 5px;
+    height: 35vw;*/
+
     overflow: scroll;
 
 }
@@ -98,8 +99,8 @@ body {
 .content-box {
 
     margin-top: 20px;
-    margin-right: 2%;
-    margin-left: 2%;
+/*    margin-right: 2%;
+    margin-left: 2%;*/
     border-radius: 10px;
     color: black;
     font-weight: bold;
@@ -226,9 +227,24 @@ textarea {
 
 }
 
+/* Buttons */
+
 .post-likes {
     padding: 15px 5px 5px 5px;
     color: white;
+}
+
+.read_blog_button {
+
+    margin-left: 10vw;
+    margin-top: 9.5%;
+}
+
+.blog_comments_button {
+
+    margin-left: 21vw;
+    margin-top: 9.5%;
+
 }
 
 .blog-comment-box {

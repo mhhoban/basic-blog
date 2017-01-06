@@ -100,6 +100,41 @@ class CommentTests(unittest.TestCase):
 
         self.assertFalse(comment_button, 'user able to comment on their own post')
 
+    def test_comment_button_total(self):
+
+        tools = AutoTestTools()
+
+        tools.gen_post_alpha()
+        reg_b = tools.register_user_beta()
+        self.assertTrue(reg_b, 'could not register user b')
+        tools.gen_post_alpha()
+
+        self.browser.get('http://localhost:8080')
+
+        sleep(3)
+
+        tools.log_in_user(self.browser, 'a@a.b', 'thing')
+
+        sleep(2)
+
+        tools.view_post(self.browser)
+
+        sleep(2)
+
+        tools.make_comment_alpha(self.browser)
+
+        try:
+            comment_button = self.browser.find_element_by_id('comment_total_button')
+
+        except NoSuchElementException:
+            comment_button = False
+
+        self.assertTrue(comment_button, 'could not find comment button')
+
+        comment_total = int(comment_button.text)
+
+        self.assertEqual(comment_total, 2)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,6 +26,8 @@
 
 	{% for post in posts %}
 
+	<div class="post-entry">
+
 	<div class="row">
 
 	    <div class="col-md-12">
@@ -151,7 +153,7 @@
 
 	            		<div class="read_blog_button">
 
-	            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-secondary">Read More</button></a>
+	            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-default">Read More</button></a>
 
 	            		</div>
 
@@ -161,7 +163,7 @@
 
 	            		<div class="blog_comments_button">
 
-	            			<button type="button" class="btn btn-warning"> X Comments </button>
+	            			<button type="button" id="comment_total_button" class="btn btn-warning"> {{ post['comment_total'] }} Comments </button>
 
 	            		</div>
 
@@ -174,8 +176,6 @@
 	    </div>
 
 	</div>
-
-	
 
 	{% endfor %}
 
@@ -242,6 +242,7 @@
 
 	    </div>
 
+	</div>
 	</div>
 
 	{% endif %}

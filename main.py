@@ -4,10 +4,10 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like, add_comment
+from blog_post_tools import (get_all_posts, store_post, get_post_author, get_post_data, get_post_comment_total,
+                             update_post, get_post_likes, add_post_like, add_comment, get_post_comments)
 from register import registration
 from time import sleep
-import json
 
 import os
 import jinja2
@@ -282,7 +282,7 @@ class ViewPost(Handler):
         post_data = get_post_data(blog_id)
 
         # load and parse comments:
-        comments = json.loads(post_data.comments)
+        comments = get_post_comments(blog_id)
 
         auth_check = auth_user(self)
 
@@ -425,7 +425,8 @@ class MainPage(Handler):
                               'author': entry.author,
                               'content': entry.content,
                               'likes': post_likes,
-                              'view_mode': view_mode
+                              'view_mode': view_mode,
+                              'comment_total': get_post_comment_total(entry.key.id()),
                               })
 
             self.render('front_page_authed.html', user=penname, posts=posts)
@@ -455,6 +456,7 @@ class MainPage(Handler):
                               'author': entry.author,
                               'content': entry.content,
                               'likes': post_likes,
+                              'comment_total': get_post_comment_total(entry.key.id()),
                               })
 
             self.render('front_page_non_authed.html', posts=posts)

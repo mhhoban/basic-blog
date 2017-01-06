@@ -46,11 +46,6 @@ def store_post(blog_post_data):
 
     blog_post = blog_data_parser(blog_post_data)
 
-    # new_key = db.Key.from_path('Post', new_key_id[0])
-    #
-    # import pdb
-    # pdb.set_trace()
-
     post_likes = {}
     post_likes = json.dumps(post_likes)
 
@@ -64,9 +59,6 @@ def store_post(blog_post_data):
                     comments=post_comments)
 
     new_post.put()
-
-    # import pdb
-    # pdb.set_trace()
 
     if new_post.put():
         return True
@@ -114,6 +106,22 @@ def get_post_likes(blog_id):
     likes = json.loads(json_likes)
 
     return likes
+
+
+def get_post_comments(blog_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    return comments
+
+
+def get_post_comment_total(blog_id):
+
+    comments = get_post_comments(blog_id)
+    return len(comments)
 
 
 def add_post_like(blog_id, liker):

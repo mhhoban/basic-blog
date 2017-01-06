@@ -7,9 +7,8 @@ import webtest
 from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
-from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data,
-                             update_post, add_comment)
-from db_schema import Post
+from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_comment_total,
+                             add_comment, get_post_comments)
 import json
 
 from google.appengine.ext import ndb, testbed
@@ -77,6 +76,25 @@ class BlogPostTests(unittest.TestCase):
 
         self.assertEqual(test_comments[0]['content'], 'blarg no like')
         self.assertEqual(test_comments[0]['commenter'], 'blarg')
+
+    def testRetrieveBlogComment(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        add_comment(1, 'blarg', 'blarg no like')
+
+        comments = get_post_comments(1)
+
+        self.assertEqual(comments[0]['content'], 'blarg no like')
+
+    def testRetrieveBlogCommentTotal(self):
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        add_comment(1, 'blarg', 'blarg no like')
+
+        comment_total = get_post_comment_total(1)
+
+        self.assertEqual(comment_total, 1)
+
 
 
 
