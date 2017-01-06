@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import json
+from datetime import datetime
 from db_schema import Post
 
 
@@ -7,19 +8,7 @@ def get_all_posts():
 
     all_posts = Post.query().fetch()
 
-    # import pdb
-    # pdb.set_trace()
-
     return all_posts
-
-    # posts = []
-
-    # if all_posts.count() > 0:
-    #     return posts
-    #
-    # else:
-    #     # for post in all_posts:
-    #     return False
 
 
 def blog_data_parser(blog_post_data):
@@ -57,37 +46,24 @@ def store_post(blog_post_data):
 
     blog_post = blog_data_parser(blog_post_data)
 
-    # new_key = db.Key.from_path('Post', new_key_id[0])
-    #
-    # import pdb
-    # pdb.set_trace()
-
     post_likes = {}
     post_likes = json.dumps(post_likes)
+
+    post_comments = []
+    post_comments = json.dumps(post_comments)
 
     new_post = Post(author=blog_post['author'],
                     title=blog_post['title'],
                     content=blog_post['content'],
-                    likes=post_likes)
+                    likes=post_likes,
+                    comments=post_comments)
 
     new_post.put()
 
-    # import pdb
-    # pdb.set_trace()
-
     if new_post.put():
-         return True
+        return True
     else:
-         return False
-
-    # new_user = User(email=username, password=password, penname=penname)
-    # new_user.key = ndb.Key('User', new_user.email)
-    # new_user.put()
-
-    # import pdb
-    # pdb.set_trace()
-    #
-    # query = Post.query()
+        return False
 
 
 def update_post(blog_post_data):
@@ -132,6 +108,22 @@ def get_post_likes(blog_id):
     return likes
 
 
+def get_post_comments(blog_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    return comments
+
+
+def get_post_comment_total(blog_id):
+
+    comments = get_post_comments(blog_id)
+    return len(comments)
+
+
 def add_post_like(blog_id, liker):
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
@@ -143,9 +135,35 @@ def add_post_like(blog_id, liker):
     target_post.likes = json_likes
 
     if target_post.put():
-
         return True
 
     else:
-
         return False
+
+
+def add_comment(blog_id, commenter, comment_content):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+    comment = {}
+    comment['commenter'] = commenter
+    comment['content'] = comment_content
+    comment['timestamp'] = get_timestamp()
+    comments.append(comment)
+    comments = json.dumps(comments)
+    target_post.comments = comments
+
+    if target_post.put():
+        return True
+
+    else:
+        return False
+
+
+def get_timestamp():
+    raw_time = datetime.now()
+    string_time = raw_time.strftime('%H:%M %m/%d/%Y')
+
+    return string_time

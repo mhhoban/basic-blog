@@ -120,14 +120,33 @@
 
 	            <div class="row">
 
-	            	<div class="col-md-12">
+	            	<div class="col-md-4">
 
 	            		<div class="post-likes">
 
-	            			
             				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
 
             				<a href='login.html'><button type="button" class="btn btn-success">Like!</button></a>
+
+	            		</div>
+
+	            	</div>
+
+	            	<div class="col-md-4">
+
+	            		<div class="read_blog_button">
+
+	            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-default">Read More</button></a>
+
+	            		</div>
+
+	            	</div>
+
+	            	<div class="col-md-4">
+
+	            		<div class="blog_comments_button">
+
+	            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" id="comment_total_button" class="btn btn-warning"> {{ post['comment_total'] }} Comments </button></a>
 
 	            		</div>
 

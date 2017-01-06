@@ -4,7 +4,8 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
                             nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
-from blog_post_tools import get_all_posts, store_post, get_post_author, get_post_data, update_post, get_post_likes, add_post_like
+from blog_post_tools import (get_all_posts, store_post, get_post_author, get_post_data, get_post_comment_total,
+                             update_post, get_post_likes, add_post_like, add_comment, get_post_comments)
 from register import registration
 from time import sleep
 
@@ -274,6 +275,42 @@ class BlogEditPage(Handler):
             self.redirect('/')
 
 
+class ViewPost(Handler):
+    def get(self):
+
+        blog_id = long(self.request.GET['blog_id'])
+        post_data = get_post_data(blog_id)
+
+        # load and parse comments:
+        comments = get_post_comments(blog_id)
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            # check if visitor is allowed to edit:
+            if post_data.author == auth_check['penname']:
+                can_comment = False
+
+            else:
+                can_comment = True
+
+            self.render('blog_view_page_authed.html',
+                        user=auth_check['penname'],
+                        content=post_data.content,
+                        title=post_data.title,
+                        comments=comments,
+                        can_comment=can_comment,
+                        blog_id=blog_id)
+
+        else:
+
+            self.render('blog_view_page_non_authed.html',
+                        content=post_data.content,
+                        title=post_data.title,
+                        blog_id=blog_id)
+
+
 class LikePost(Handler):
     def get(self):
 
@@ -305,6 +342,42 @@ class LikePost(Handler):
 
             else:
                 self.write('no such post')
+
+        else:
+            self.redirect('/')
+
+
+class AddComment(Handler):
+
+    def post(self):
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            title_id = long(self.request.POST['title_id'])
+            comment_content = self.request.POST['comment']
+
+            if get_post_data(title_id):
+
+                post_author = get_post_author(title_id)
+                current_user = auth_check['penname']
+
+                if post_author != current_user:
+
+                    if add_comment(title_id, current_user, comment_content):
+                        self.render('comment.html', result='success')
+                        sleep(3)
+                        self.redirect('/')
+
+                    else:
+
+                        render('comment.html', result='failure')
+
+                else:
+                    self.write('cannot comment on own post')
+
+            else:
+                self.write('No Such Post')
 
         else:
             self.redirect('/')
@@ -352,7 +425,8 @@ class MainPage(Handler):
                               'author': entry.author,
                               'content': entry.content,
                               'likes': post_likes,
-                              'view_mode': view_mode
+                              'view_mode': view_mode,
+                              'comment_total': get_post_comment_total(entry.key.id()),
                               })
 
             self.render('front_page_authed.html', user=penname, posts=posts)
@@ -382,11 +456,10 @@ class MainPage(Handler):
                               'author': entry.author,
                               'content': entry.content,
                               'likes': post_likes,
+                              'comment_total': get_post_comment_total(entry.key.id()),
                               })
 
             self.render('front_page_non_authed.html', posts=posts)
-
-
 
 
 app = webapp2.WSGIApplication([
@@ -397,4 +470,6 @@ app = webapp2.WSGIApplication([
     ('/blog-edit.html', BlogEditPage),
     ('/logout.html', LogoutPage),
     ('/like.html', LikePost),
+    ('/view.html', ViewPost),
+    ('/comment.html', AddComment),
     ], debug=True)
