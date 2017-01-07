@@ -192,6 +192,22 @@ textarea {
     /*padding-bottom: 5px;*/
 }
 
+.blog-content-field {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    min-height: 400px;
+    
+    height: 100%;
+    border-style:solid;
+    border-color: black;
+    background: black;
+}
+
 
 .post-title {
 
