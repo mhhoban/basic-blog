@@ -4,7 +4,7 @@ body {
 
 .container-fluid{
     padding-top: 0;
-    width: 100%
+    /*width: 100%*/
 }
 
 
@@ -93,6 +93,10 @@ body {
     height: 35vw;*/
 
     overflow: scroll;
+    overflow-x: hidden;
+    margin-top: .5vw;
+
+    max-height: 40vw;
 
 }
 
@@ -107,6 +111,7 @@ body {
     min-height: 150px;
     max-height: 800px;
     height: 100%;
+    width: 100%;
     border-style:solid;
     border-color: black;
     background: black;
@@ -117,8 +122,8 @@ body {
 .comment-box {
 
     margin-top: 20px;
-    margin-right: 2%;
-    margin-left: 2%;
+    /*margin-right: 2%;
+    margin-left: 2%;*/
     border-radius: 10px;
     color: black;
     font-weight: bold;
