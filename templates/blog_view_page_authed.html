@@ -132,45 +132,61 @@
 
 <div class="blog-comment-box">
 
+	<div class="row">
 
+		<div class="col-md-6">
 
-<div class="row">
+			<div class="blog-comment-author">
 
-	<div class="col-md-6">
-
-		<div class="blog-comment-author">
-
-			According to <span class="comment-author-text"> {{ comment['commenter'] }}</span>:
-
-		</div>
-
-	</div>
-
-	<div class="col-md-6">
-
-		<div class="blog-comment-date">
-
-		{{ comment['timestamp'] }}
-
-		</div>
-
-	</div>
-
-</div>
-
-<div class="row">
-
-	<div class="col-md-12">
-
-			<div class="blog-comment-text">
-
-				<o id="comment"> {{ comment['content'] }} </o>
+				According to <span class="comment-author-text"> {{ comment['commenter'] }}</span>:
 
 			</div>
 
+		</div>
+
+		<div class="col-md-6">
+
+			<div class="blog-comment-date">
+
+			{{ comment['timestamp'] }}
+
+			</div>
+
+		</div>
+
 	</div>
 
-</div>
+	<div class="row">
+
+		<div class="col-md-12">
+
+				<div class="blog-comment-text">
+
+					<o id="comment"> {{ comment['content'] }} </o>
+
+				</div>
+
+		</div>
+
+	</div>
+
+	{% if comment['commenter'] == user %}
+
+	<div class="row">
+
+		<div class="cold-md-4">
+
+			<div class="comment-edit-button">
+
+				<button class="btn btn-info">Edit</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	{% endif %}
 
 </div>
 
