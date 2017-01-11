@@ -62,63 +62,65 @@
 
 {% block posts_block %}
 
-<div class="row">
+<div class="content-pane-blog-view">
 
-    <div class="col-md-12">
 
-        <div class="blog-compose-box">
+	<div class="row">
 
-            <div class="row">
+	    <div class="col-md-12">
 
-                <div class="col-md-12">
-
-                    <div class="signup-form">
-
-                        <h3> {{ title }} </h3>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <form action="blog-edit.html" method="post">
+	        <div class="blog-compose-box">
 
 	            <div class="row">
 
-	            	<div class="col-md-12">	
+	                <div class="col-md-12">
 
-	            		<div class="blog-compose-field">
+	                    <div class="blog-view-title">
 
-								{{ content }}
+	                        <h3 class="blog-title"> {{ title }} </h3>
 
-	            		</div>
+	                    </div>
 
-	            	</div>
+	                </div>
 
 	            </div>
 
-	            <div class="row">
+	             <div class="row">
 
-	            	<div class="col-md-12">
+            		<div class="col-md-12">
 
-	            		<div class="signup-form">
+            			<div class="blog-author-slot">
 
-	            			<input type="hidden" name="blog_id" value="{{ blog_id }}">
+            				By <span class="blog-author-text">{{ author }}</span>
 
-							<button type="submit" class="btn btn-primary"> Update! </button>
+            			</div>
 
-	            		</div>
+            		</div>
 
             	</div>
 
-            </div>
 
-        </form>
+		            <div class="row">
 
-        </div>
+		            	<div class="col-md-12">	
 
-    </div>
+		            		<div class="blog-content-field">
+
+									{{ content }}
+		            		</div>
+
+		            	</div>
+
+		            </div>
+
+	            </div>
+
+
+	        </div>
+
+	    </div>
+
+	</div>
 
 </div>
 
