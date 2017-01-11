@@ -163,6 +163,16 @@ textarea {
     overflow: auto;
 }
 
+.comment-author-text {
+
+    color:orange;
+}
+
+.blog-comment-date {
+
+    text-align: right;
+}
+
 .comment-compose-header {
     margin-top: 10%;
     margin-left: 4%;

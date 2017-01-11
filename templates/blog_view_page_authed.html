@@ -130,11 +130,37 @@
 
 {% for comment in comments %}
 
+<div class="blog-comment-box">
+
+
+
+<div class="row">
+
+	<div class="col-md-6">
+
+		<div class="blog-comment-author">
+
+			According to <span class="comment-author-text"> {{ comment['commenter'] }}</span>:
+
+		</div>
+
+	</div>
+
+	<div class="col-md-6">
+
+		<div class="blog-comment-date">
+
+		{{ comment['timestamp'] }}
+
+		</div>
+
+	</div>
+
+</div>
+
 <div class="row">
 
 	<div class="col-md-12">
-
-		<div class="blog-comment-box">
 
 			<div class="blog-comment-text">
 
@@ -142,11 +168,12 @@
 
 			</div>
 
-		</div>
-
 	</div>
 
 </div>
+
+</div>
+
 
 {% endfor %}
 
