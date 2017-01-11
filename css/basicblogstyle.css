@@ -232,6 +232,9 @@ textarea {
     word-break: break-all;
 }
 
+.blog-view-nav {
+    text-align: center;
+}
 
 .post-title {
 
