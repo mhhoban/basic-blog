@@ -24,8 +24,10 @@ body {
 
 .user-controls {
 
-    min-height: 75px;
+    min-height: 100px;
     max-height: 225px;
+    max-width: 546px;
+    min-width: 401px;
     margin-top: 2em;
     border-style: solid;
     border-color: green;
