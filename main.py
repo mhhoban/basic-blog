@@ -299,6 +299,7 @@ class ViewPost(Handler):
                         user=auth_check['penname'],
                         content=post_data.content,
                         title=post_data.title,
+                        author=post_data.author,
                         comments=comments,
                         can_comment=can_comment,
                         blog_id=blog_id)
@@ -308,7 +309,8 @@ class ViewPost(Handler):
             self.render('blog_view_page_non_authed.html',
                         content=post_data.content,
                         title=post_data.title,
-                        blog_id=blog_id)
+                        blog_id=blog_id,
+                        author=post_data.author)
 
 
 class LikePost(Handler):

@@ -151,7 +151,31 @@ def add_comment(blog_id, commenter, comment_content):
     comment['commenter'] = commenter
     comment['content'] = comment_content
     comment['timestamp'] = get_timestamp()
+    comment['display'] = True
+    comment['comment_id'] = len(comments) + 1
     comments.append(comment)
+    comments = json.dumps(comments)
+    target_post.comments = comments
+
+    if target_post.put():
+        return True
+
+    else:
+        return False
+
+
+def delete_comment(blog_id, commenter, comment_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            comment['display'] = False
+            break
+
     comments = json.dumps(comments)
     target_post.comments = comments
 

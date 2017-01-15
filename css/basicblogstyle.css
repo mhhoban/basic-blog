@@ -4,7 +4,6 @@ body {
 
 .container-fluid{
     padding-top: 0;
-    width: 100%
 }
 
 
@@ -25,8 +24,10 @@ body {
 
 .user-controls {
 
-    min-height: 75px;
+    min-height: 100px;
     max-height: 225px;
+    max-width: 546px;
+    min-width: 401px;
     margin-top: 2em;
     border-style: solid;
     border-color: green;
@@ -37,10 +38,6 @@ body {
     
 }
 
-.form-control{
-
-
-}
 
 .btn {
 
@@ -89,10 +86,23 @@ body {
 }
 
 .content-pane {
- /*   margin-top: 5px;
-    height: 35vw;*/
 
-    overflow: scroll;
+
+    overflow: auto;
+    overflow-x: hidden;
+    margin-top: .5vw;
+
+    max-height: 20vw;
+
+}
+
+.content-pane-blog-view {
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    margin-top: .5vw;
+
+    max-height: 40vw;
 
 }
 
@@ -107,6 +117,7 @@ body {
     min-height: 150px;
     max-height: 800px;
     height: 100%;
+    width: 100%;
     border-style:solid;
     border-color: black;
     background: black;
@@ -117,8 +128,8 @@ body {
 .comment-box {
 
     margin-top: 20px;
-    margin-right: 2%;
-    margin-left: 2%;
+    /*margin-right: 2%;
+    margin-left: 2%;*/
     border-radius: 10px;
     color: black;
     font-weight: bold;
@@ -152,6 +163,17 @@ textarea {
     overflow: auto;
 }
 
+.comment-author-text {
+
+    color:orange;
+}
+
+.blog-comment-date {
+
+    color: white;
+    text-align: right;
+}
+
 .comment-compose-header {
     margin-top: 10%;
     margin-left: 4%;
@@ -166,6 +188,10 @@ textarea {
 
 .comment-compose-button {
     margin-top: 7.5%;
+}
+
+.comment-edit-button {
+    margin-left: 1vw;
 }
 
 .blog-compose-box {
@@ -187,6 +213,43 @@ textarea {
     /*padding-bottom: 5px;*/
 }
 
+.blog-view-title {
+    color: white;
+    width: 100%;
+    margin-top: 1vw;
+    text-align: center;
+}
+
+
+.blog-author-slot {
+    margin-left: 75vw;
+    color: orange;
+}
+
+.blog-author-text {
+    color: blue;
+}
+
+.blog-content-field {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 5%;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    min-height: 400px;
+    width: 80vw;
+    height: 100%;
+    border-style:solid;
+    border-color: black;
+    background: black
+    word-break: break-all;
+}
+
+.blog-view-nav {
+    text-align: center;
+}
 
 .post-title {
 

@@ -5,8 +5,8 @@
 	<div class="user-greeting">
 
 		<h3> {{ user }} </h3>
-		<a href="logout.html"> Logout </a>
-		<a href="blog-compose.html"> Compose Post </a>
+		<a href="logout.html"><button type="button" class="btn btn-danger"> Logout </button></a>
+		<a href="blog-compose.html"><button type="button" class="btn btn-primary"> Compose Post </button></a>
 
 	</div>
 
@@ -24,7 +24,13 @@
 
                 <div class="col-md-12">
 
-                    <div class="signup-form">
+                	<div class="blog-view-nav">
+
+                		<button type="button" class="btn btn-primary">Back to Main Page</button> <button type="button" class="btn btn-secondary">Edit Post</button>
+
+                	</div>
+
+                    <div class="blog-view-title">
 
                         <h3> {{ title }} </h3>
 
@@ -34,13 +40,25 @@
 
             </div>
 
-            
+            <div class="row">
+
+            	<div class="col-md-12">
+
+            		<div class="blog-author-slot">
+
+            			 By <span class="blog-author-text">{{ author }}</span>
+
+            		</div>
+
+            	</div>
+
+            </div>
 
 	            <div class="row">
 
 	            	<div class="col-md-12">	
 
-	            		<div class="blog-compose-field">
+	            		<div class="blog-content-field">
 
 								{{ content }}
 
@@ -94,7 +112,7 @@
 
 					<div class="comment-compose-button">
 
-						<span id="add-comment-button"><button type="submit" name="comment_button" class="btn btn-info">Comment</button></span>
+						<span id="add-comment-button"><button type="submit" name="comment_button" class="btn btn-primary">Comment</button></span>
 
 					</div>
 
@@ -112,15 +130,25 @@
 
 {% for comment in comments %}
 
-<div class="row">
+<div class="blog-comment-box">
 
-	<div class="col-md-12">
+	<div class="row">
 
-		<div class="blog-comment-box">
+		<div class="col-md-6">
 
-			<div class="blog-comment-text">
+			<div class="blog-comment-author">
 
-				<o id="comment"> {{ comment['content'] }} </o>
+				According to <span class="comment-author-text"> {{ comment['commenter'] }}</span>:
+
+			</div>
+
+		</div>
+
+		<div class="col-md-6">
+
+			<div class="blog-comment-date">
+
+			{{ comment['timestamp'] }}
 
 			</div>
 
@@ -128,7 +156,41 @@
 
 	</div>
 
+	<div class="row">
+
+		<div class="col-md-12">
+
+				<div class="blog-comment-text">
+
+					<o id="comment"> {{ comment['content'] }} </o>
+
+				</div>
+
+		</div>
+
+	</div>
+
+	{% if comment['commenter'] == user %}
+
+	<div class="row">
+
+		<div class="col-md-4">
+
+			<div class="comment-edit-button">
+
+				<button class="btn btn-info">Edit</button>
+				<button class="btn btn-danger">Delete</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	{% endif %}
+
 </div>
+
 
 {% endfor %}
 

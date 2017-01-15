@@ -2,7 +2,6 @@
 
 
 {% block login_block %}
-
 	
 
 	<div class="user-greeting">
@@ -68,6 +67,8 @@
 <!-- Begin Individual Post -->
 
 {% block posts_block %}
+
+<div class="content-pane"> 
 
 	{% if posts|length > 0 %}
 
@@ -229,7 +230,7 @@
 
 	{% endif %}
 
-
+</div>
 
 {% endblock %}
                     <!-- End Individual Post --> 
