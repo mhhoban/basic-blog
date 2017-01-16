@@ -5,7 +5,8 @@ from regform_checks import (all_fields_complete, valid_email_check, passwords_ma
 from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
 from blog_post_tools import (get_all_posts, store_post, get_post_author, get_post_data, get_post_comment_total,
-                             update_post, get_post_likes, add_post_like, add_comment, get_post_comments)
+                             update_post, get_post_likes, add_post_like, add_comment, get_post_comments,
+                             get_comment_author, get_comment_data, delete_comment)
 from register import registration
 from time import sleep
 
@@ -385,6 +386,58 @@ class AddComment(Handler):
             self.redirect('/')
 
 
+class DeleteComment(Handler):
+
+    def get(self):
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            blog_id = long(self.request.GET['blog_id'])
+            comment_id = self.request.GET['comment_id']
+            commenter = get_comment_author(blog_id, comment_id)
+
+            if commenter == auth_check['penname']:
+
+                post_data = get_post_data(blog_id)
+                comment = get_comment_data(blog_id, comment_id)
+
+                self.render('/delete_comment.html',
+                            user=auth_check['penname'],
+                            content=post_data.content,
+                            title=post_data.title,
+                            author=post_data.author,
+                            comment=comment,
+                            comment_id=comment_id,
+                            blog_id=blog_id)
+
+            else:
+                self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            blog_id = long(self.request.POST['blog_id'])
+            comment_id = self.request.POST['comment_id']
+            commenter = get_comment_author(blog_id, comment_id)
+
+            if commenter == auth_check['penname']:
+
+                if delete_comment(blog_id, comment_id):
+                    self.redirect('/view?blog_id='+str(blog_id))
+
+            else:
+                self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+
 class MainPage(Handler):
     """
     Displays index page
@@ -474,4 +527,5 @@ app = webapp2.WSGIApplication([
     ('/like.html', LikePost),
     ('/view.html', ViewPost),
     ('/comment.html', AddComment),
+    ('/delete_comment.html', DeleteComment),
     ], debug=True)

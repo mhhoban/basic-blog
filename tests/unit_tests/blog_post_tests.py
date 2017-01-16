@@ -1,14 +1,15 @@
-from hamcrest import assert_that, contains_string
+from hamcrest import assert_that, contains_string, equal_to
 
 import unittest
 import webapp2
 import webtest
+import json
 
 from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
 from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data,
-                             update_post)
+                             update_post, add_comment, delete_comment)
 from db_schema import Post
 
 from google.appengine.ext import ndb, testbed
@@ -191,3 +192,31 @@ class BlogPostTests(unittest.TestCase):
         test_post_key = ndb.Key('Post', 1)
         test_post = test_post_key.get()
         self.assertEqual(test_post.content, 'thingzzzz')
+
+    def testBlogPostCommentDeletion(self):
+
+        registration('testa@user', 'secret', 'testusera')
+        registration('testb@user', 'secret', 'testuserb')
+        hashed_cookie = encode_cookie('testa@user')
+        self.testapp.set_cookie('user-id', hashed_cookie)
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+        data = add_comment(1, 'testuberb', 'blargz')
+
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        comments = test_post.comments
+        comments = json.loads(comments)
+        assert_that(len(comments), equal_to(1), 'test comment not being written')
+        comment_id = comments[0]['comment_id']
+
+        delete_comment(1, comment_id)
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        comments = test_post.comments
+        comments = json.loads(comments)
+
+        assert_that(len(comments), equal_to(0), 'test comment not being deleted')
+
+
+

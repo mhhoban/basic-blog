@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import json
+import hmac
 from datetime import datetime
 from db_schema import Post
 
@@ -141,18 +142,37 @@ def add_post_like(blog_id, liker):
         return False
 
 
+def gen_comment_id(commenter, comment, post_title, timestamp):
+
+    """
+    Generate ID for comment.
+    :param commenter: string pen name of user leaving comment
+    :param comment: string content of comment
+    :param post_title: string title of comment
+    :param timestamp: datetime timestamp
+    :return:
+    """
+
+    hash_seed = commenter + comment + post_title + timestamp
+    hash_seed = str(hash_seed)
+
+    comment_id = hmac.new(hash_seed).hexdigest()
+
+    return comment_id
+
+
 def add_comment(blog_id, commenter, comment_content):
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
     json_comments = target_post.comments
     comments = json.loads(json_comments)
+    timestamp = get_timestamp()
     comment = {}
     comment['commenter'] = commenter
     comment['content'] = comment_content
-    comment['timestamp'] = get_timestamp()
-    comment['display'] = True
-    comment['comment_id'] = len(comments) + 1
+    comment['timestamp'] = timestamp
+    comment['comment_id'] = gen_comment_id(commenter, comment_content, target_post.title, timestamp)
     comments.append(comment)
     comments = json.dumps(comments)
     target_post.comments = comments
@@ -164,17 +184,55 @@ def add_comment(blog_id, commenter, comment_content):
         return False
 
 
-def delete_comment(blog_id, commenter, comment_id):
+def get_comment_author(blog_id, comment_id):
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
     json_comments = target_post.comments
     comments = json.loads(json_comments)
 
+    post_author = False
+
     for comment in comments:
         if comment['comment_id'] == comment_id:
-            comment['display'] = False
+            post_author = comment['commenter']
+
+    return post_author
+
+
+def get_comment_data(blog_id, comment_id):
+
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    requested_comment = False
+
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            requested_comment = comment
+
+    return requested_comment
+
+
+def delete_comment(blog_id, comment_id):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    # iterate through comments to find index of target comment,
+    # then pop comment from list
+
+    iter = 0
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            comments.pop(iter)
             break
+        iter += 1
 
     comments = json.dumps(comments)
     target_post.comments = comments

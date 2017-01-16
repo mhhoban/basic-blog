@@ -1,4 +1,4 @@
-from hamcrest import assert_that, contains_string
+from hamcrest import assert_that, contains_string, is_not
 
 import unittest
 import webapp2
@@ -8,7 +8,7 @@ from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
 from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_comment_total,
-                             add_comment, get_post_comments)
+                             add_comment, get_post_comments, gen_comment_id, get_timestamp)
 import json
 
 from google.appengine.ext import ndb, testbed
@@ -55,6 +55,20 @@ class BlogPostTests(unittest.TestCase):
         registration('test@user', 'secret', 'testuser')
         hashed_cookie = encode_cookie('test@user')
         self.testapp.set_cookie('user-id', hashed_cookie)
+
+    def testCommentIdGeneration(self):
+
+        timestamp = get_timestamp()
+
+        id = gen_comment_id('a', 'aa', 'title', timestamp)
+
+        if id:
+            id_gen = True
+
+        else:
+            id_gen = False
+
+        assert_that(id_gen, is_not(False))
 
     def testNewBlogPostHasEmptyComments(self):
         data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
