@@ -67,6 +67,24 @@ def store_post(blog_post_data):
         return False
 
 
+def delete_post(blog_id):
+    """
+    Deletes a blog post
+
+    :param blog_id: long id of blog post to be deleted
+    :return: True/False for success of deletion
+    """
+    target_post_key = ndb.Key('Post', blog_id)
+
+    target_post_key.delete()
+
+    if target_post_key.get() is None:
+        return True
+
+    else:
+        return False
+
+
 def update_post(blog_post_data):
 
     target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))

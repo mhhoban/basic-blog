@@ -6,7 +6,7 @@ from login_checks import login_fields_complete, valid_user_id_check
 from user_tools import check_password
 from blog_post_tools import (get_all_posts, store_post, get_post_author, get_post_data, get_post_comment_total,
                              update_post, get_post_likes, add_post_like, add_comment, get_post_comments,
-                             get_comment_author, get_comment_data, delete_comment)
+                             get_comment_author, get_comment_data, delete_comment, delete_post)
 from register import registration
 from time import sleep
 
@@ -276,6 +276,54 @@ class BlogEditPage(Handler):
             self.redirect('/')
 
 
+class DeletePost(Handler):
+
+    def get(self):
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            blog_id = long(self.request.GET['blog_id'])
+            blog_author = get_post_author(blog_id)
+
+            if auth_check['penname'] == blog_author:
+                post_data = get_post_data(blog_id)
+
+                self.render('delete_post.html',
+                            user=auth_check['penname'],
+                            content=post_data.content,
+                            title=post_data.title,
+                            author=post_data.author,
+                            blog_id=blog_id)
+
+            else:
+                self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+    def post(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+
+            blog_id = long(self.request.POST['blog_id'])
+            blog_author = get_post_author(blog_id)
+
+            if auth_check['penname'] == blog_author:
+                post_data = get_post_data(blog_id)
+
+                if delete_post(blog_id):
+                    self.redirect('/')
+
+            else:
+                self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+
 class ViewPost(Handler):
     def get(self):
 
@@ -528,4 +576,5 @@ app = webapp2.WSGIApplication([
     ('/view.html', ViewPost),
     ('/comment.html', AddComment),
     ('/delete_comment.html', DeleteComment),
+    ('/delete-post.html', DeletePost)
     ], debug=True)

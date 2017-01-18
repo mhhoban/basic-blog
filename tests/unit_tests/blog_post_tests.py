@@ -9,7 +9,7 @@ from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
 from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data,
-                             update_post, add_comment, delete_comment)
+                             update_post, add_comment, delete_comment, delete_post)
 from db_schema import Post
 
 from google.appengine.ext import ndb, testbed
@@ -217,6 +217,20 @@ class BlogPostTests(unittest.TestCase):
         comments = json.loads(comments)
 
         assert_that(len(comments), equal_to(0), 'test comment not being deleted')
+
+    def testBlogPostDeletion(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        delete_post(1)
+
+        target_post_key = ndb.Key('Post', 1)
+
+        self.assertEqual(target_post_key.get(), None, 'Post Not Deleted')
+
+
+
+
 
 
 
