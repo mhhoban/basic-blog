@@ -8,7 +8,7 @@ from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
 from register import registration
 from hasher import encode_cookie
 from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_comment_total,
-                             add_comment, get_post_comments, gen_comment_id, get_timestamp)
+                             add_comment, get_post_comments, gen_comment_id, get_timestamp, edit_comment)
 import json
 
 from google.appengine.ext import ndb, testbed
@@ -108,6 +108,28 @@ class BlogPostTests(unittest.TestCase):
         comment_total = get_post_comment_total(1)
 
         self.assertEqual(comment_total, 1)
+
+    def testCommentEdit(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        add_comment(1, 'blarg', 'blarg no like')
+
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        test_comments = json.loads(test_post.comments)
+
+        self.assertEqual(test_comments[0]['content'], 'blarg no like')
+        self.assertEqual(test_comments[0]['commenter'], 'blarg')
+
+        edit_comment(1, test_comments[0]['comment_id'], 'blarg edited!')
+
+        test_post = test_post_key.get()
+        test_comments = json.loads(test_post.comments)
+
+        self.assertEqual(test_comments[0]['content'], 'blarg edited!')
+
+
 
 
 

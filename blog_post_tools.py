@@ -262,6 +262,31 @@ def delete_comment(blog_id, comment_id):
         return False
 
 
+def edit_comment(blog_id, comment_id, comment_content):
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+
+    # iterate through comments to find index of target comment,
+    # then replace its content
+
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            comment['content'] = comment_content
+            break
+
+    comments = json.dumps(comments)
+    target_post.comments = comments
+
+    if target_post.put():
+        return True
+
+    else:
+        return False
+
+
 def get_timestamp():
     raw_time = datetime.now()
     string_time = raw_time.strftime('%H:%M %m/%d/%Y')

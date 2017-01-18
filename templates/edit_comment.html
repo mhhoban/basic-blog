@@ -12,6 +12,7 @@
 
 {% endblock %}
 
+
 {% block posts_block %}
 
 <div class="row">
@@ -23,12 +24,6 @@
             <div class="row">
 
                 <div class="col-md-12">
-
-                	<div class="blog-view-nav">
-
-                		<button type="button" class="btn btn-primary">Back to Main Page</button> <button type="button" class="btn btn-secondary">Edit Post</button>
-
-                	</div>
 
                     <div class="blog-view-title">
 
@@ -76,60 +71,6 @@
 </div>
 
 
-<!-- Add Comment -->
-
-{% if can_comment %}
-
-<div class="row">
-	
-		<div class="add-comment-box">
-		<form action="comment.html" method="post">
-			<div class="row">
-
-				<div class="col-md-2">
-
-					<div class="comment-compose-header">
-
-						<h4> Add a Comment: </h4>
-
-					</div>
-
-				</div>
-
-
-				<div class='col-md-8'>
-
-					<div class="comment-compose-field">
-						<input type="hidden" name="title_id" value="{{ blog_id }}">
-						<textarea name="comment" rows="2" cols= "120"> </textarea>
-
-					</div>
-
-				</div>
-
-
-				<div class="col-md-2">
-
-					<div class="comment-compose-button">
-
-						<span id="add-comment-button"><button type="submit" name="comment_button" class="btn btn-primary">Comment</button></span>
-
-					</div>
-
-				</div>
-
-			</div>
-		</form>
-		</div>
-	
-</div>
-{% endif %}
-
-
-<!-- Begin Comments -->
-
-{% for comment in comments %}
-
 <div class="blog-comment-box">
 
 	<div class="row">
@@ -160,9 +101,11 @@
 
 		<div class="col-md-12">
 
-				<div class="blog-comment-text">
+				<form action="edit-comment.html" method="POST">
 
-					<o id="comment"> {{ comment['content'] }} </o>
+				<div class="comment-compose-field">
+
+					<textarea name="edited-comment" id="comment-edit-area" rows="2" cols= "120"> {{ comment['content'] }} </textarea>
 
 				</div>
 
@@ -170,16 +113,18 @@
 
 	</div>
 
-	{% if comment['commenter'] == user %}
-
 	<div class="row">
 
 		<div class="col-md-4">
 
-			<div class="comment-edit-button">
-
-				<a href="/edit-comment.html?comment_id={{comment['comment_id']}}&blog_id={{blog_id}}"><button class="btn btn-info">Edit</button></a>
-				<a href="/delete-comment.html?comment_id={{comment['comment_id']}}&blog_id={{blog_id}}"><button class="btn btn-danger">Delete</button></a>
+			<div class="comment-delete-confirm">
+			
+				
+					<input type="hidden" value="{{comment_id}}" name="comment_id">
+					<input type="hidden" value="{{blog_id}}" name="blog_id">
+					<button name="edit-choice" value="edit" type="submit" class="btn btn-warning"> Edit Comment </button>
+					<button name="edit-choice" value="cancel" type="submit" class="btn btn-secondary"> Cancel </button>
+				</form>
 
 			</div>
 
@@ -187,11 +132,6 @@
 
 	</div>
 
-	{% endif %}
-
 </div>
-
-
-{% endfor %}
 
 {% endblock %}
