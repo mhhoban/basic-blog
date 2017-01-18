@@ -337,20 +337,12 @@ class ViewPost(Handler):
 
         if auth_check['authorized']:
 
-            # check if visitor is allowed to edit:
-            if post_data.author == auth_check['penname']:
-                can_comment = False
-
-            else:
-                can_comment = True
-
             self.render('blog_view_page_authed.html',
                         user=auth_check['penname'],
                         content=post_data.content,
                         title=post_data.title,
                         author=post_data.author,
                         comments=comments,
-                        can_comment=can_comment,
                         blog_id=blog_id)
 
         else:
