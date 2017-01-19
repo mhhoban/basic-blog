@@ -1,17 +1,15 @@
+from blog_post_tools import (add_comment, edit_comment, gen_comment_id, get_post_comment_total,
+                             get_post_comments, get_timestamp, store_post,)
+from google.appengine.ext import ndb, testbed
 from hamcrest import assert_that, contains_string, is_not
+from hasher import encode_cookie
+from main import BlogComposePage, BlogEditPage, LoginPage, MainPage, Register
+from register import registration
 
+import json
 import unittest
 import webapp2
 import webtest
-
-from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
-from register import registration
-from hasher import encode_cookie
-from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_comment_total,
-                             add_comment, get_post_comments, gen_comment_id, get_timestamp, edit_comment)
-import json
-
-from google.appengine.ext import ndb, testbed
 
 
 class BlogPostTests(unittest.TestCase):
@@ -23,21 +21,12 @@ class BlogPostTests(unittest.TestCase):
                                        ('/blog-compose.html', BlogComposePage),
                                        ('/blog-edit.html', BlogEditPage),
                                        ])
-        # wrap the test app:
-        self.testapp = webtest.TestApp(app)
 
-        # First, create an instance of the Testbed class.
+        self.testapp = webtest.TestApp(app)
         self.testbed = testbed.Testbed()
-        # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
-        # Next, declare which service stubs you want to use.
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
-        # Clear ndb's in-context cache between tests.
-        # This prevents data from leaking between tests.
-        # Alternatively, you could disable caching by
-        # using ndb.get_context().set_cache_policy(False)
-        # ndb.get_context().clear_cache()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -128,12 +117,3 @@ class BlogPostTests(unittest.TestCase):
         test_comments = json.loads(test_post.comments)
 
         self.assertEqual(test_comments[0]['content'], 'blarg edited!')
-
-
-
-
-
-
-
-
-

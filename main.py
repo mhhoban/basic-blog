@@ -1,13 +1,14 @@
 from auth_tools import auth_user
+from blog_post_tools import (add_comment, add_post_like, delete_comment, delete_post, edit_comment,
+                             get_all_posts, get_comment_author, get_comment_data, get_post_author,
+                             get_post_comments, get_post_comment_total, get_post_data,
+                             get_post_likes, store_post, update_post)
 from hasher import encode_cookie
-from regform_checks import (all_fields_complete, valid_email_check, passwords_match_check, duplicate_email_check,
-                            nom_de_plume_available)
 from login_checks import login_fields_complete, valid_user_id_check
-from user_tools import check_password
-from blog_post_tools import (get_all_posts, store_post, get_post_author, get_post_data, get_post_comment_total,
-                             update_post, get_post_likes, add_post_like, add_comment, get_post_comments,
-                             get_comment_author, get_comment_data, delete_comment, delete_post, edit_comment)
+from regform_checks import (all_fields_complete, duplicate_email_check, nom_de_plume_available,
+                            passwords_match_check, valid_email_check)
 from register import registration
+from user_tools import check_password
 from time import sleep
 
 import os
