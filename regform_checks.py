@@ -1,10 +1,9 @@
 """
 functions to validate registraiton data
 """
+from db_schema import User
 
 import re
-from google.appengine.ext import ndb
-from db_schema import User
 
 
 def all_fields_complete(post_data):

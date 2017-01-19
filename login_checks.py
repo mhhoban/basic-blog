@@ -1,5 +1,4 @@
 from google.appengine.ext import ndb
-from db_schema import User
 
 
 def login_fields_complete(post_data):

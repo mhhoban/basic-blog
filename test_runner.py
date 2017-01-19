@@ -1,8 +1,6 @@
 import subprocess
 import sys
 
-# import pdb
-# pdb.set_trace()
 
 if sys.argv[1] == '-unit':
 

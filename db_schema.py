@@ -1,24 +1,3 @@
-"""
-(Kind) User:
-
-    (Entity): a user
-
-        (Field): Name
-        (Field): email
-        (Field): password
-        (ID): email
-
-
-(Kind) Post:
-
-    (Entity): a post
-
-        (Field): Title
-        (Field): Content
-        (Parent): User
-
-
-"""
 from google.appengine.ext import ndb
 
 

@@ -10,9 +10,6 @@ def auth_user(self):
     except AttributeError:
         user_hash = self.request.cookies.post('user-id', 'None')
 
-    # import pdb
-    # pdb.set_trace()
-
     if user_hash != 'None':
         user_hash = user_hash.split('-')
 
