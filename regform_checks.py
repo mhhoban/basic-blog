@@ -62,6 +62,11 @@ def get_reg_fields(post_data):
 
 
 def valid_email_check(email):
+    """
+    checks whether the email provided follows a valid pattern
+    :param email:
+    :return:
+    """
     re_pattern = '[a-zA-Z._]+[@][a-zA-Z]+[.][a-zA-z]+'
     valid = re.match(re_pattern, email)
     return valid
@@ -100,6 +105,12 @@ def nom_de_plume_available(penname):
 
 
 def passwords_match_check(password, password_rep):
+    """
+    checks whether the twice entered password is the same both times
+    :param password:
+    :param password_rep:
+    :return:
+    """
     if password == password_rep:
         return True
 
