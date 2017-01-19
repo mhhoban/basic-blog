@@ -1,3 +1,7 @@
+"""
+Test runner to run unit or functional automated tests
+"""
+
 import subprocess
 import sys
 
