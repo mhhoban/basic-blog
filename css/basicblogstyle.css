@@ -178,6 +178,12 @@ textarea {
     color: blue;
 }
 
+.login-reg-invitation {
+    color: blue;
+    margin-left: 25%;
+
+}
+
 .comment-compose-header {
     margin-top: 10%;
     margin-left: 4%;
