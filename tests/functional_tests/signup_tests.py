@@ -1,8 +1,8 @@
-from selenium import webdriver
-from hamcrest import assert_that, contains_string
-from time import sleep
 from auto_tools import AppServer
+from hamcrest import assert_that, contains_string
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from time import sleep
 
 import unittest
 
@@ -155,7 +155,3 @@ class SignupTests(unittest.TestCase):
 
         self.assertTrue(penname, 'User name not showing after registration')
         assert_that(penname.text, contains_string('thing'))
-
-
-if __name__ == '__main__':
-    unittest.main()

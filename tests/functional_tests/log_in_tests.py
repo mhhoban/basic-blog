@@ -1,14 +1,10 @@
-from selenium import webdriver
+from auto_tools import AppServer, AutoTestTools
 from hamcrest import assert_that, contains_string
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 
-from selenium.webdriver.common.keys import Keys
-from auto_tools import AppServer, AutoTestTools
-
-from selenium.common.exceptions import NoSuchElementException
-
 import unittest
-
 
 
 class LogInTests(unittest.TestCase):
@@ -83,6 +79,3 @@ class LogInTests(unittest.TestCase):
 
         self.assertTrue(penname, 'User name not showing after Login')
         assert_that(penname.text, contains_string('thing'))
-
-if __name__ == '__main__':
-    unittest.main()

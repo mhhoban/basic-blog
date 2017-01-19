@@ -1,10 +1,10 @@
-import subprocess
+from hamcrest import assert_that, contains_string, is_not
+from hasher import encode_cookie
+import os
 import requests
 from selenium.common.exceptions import NoSuchElementException
-import os
 import signal
-from hasher import encode_cookie
-from hamcrest import assert_that, contains_string, is_not
+import subprocess
 
 
 class AutoTestTools():

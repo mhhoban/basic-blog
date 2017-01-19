@@ -135,6 +135,3 @@ class CommentTests(unittest.TestCase):
 
         self.assertEqual(comment_total, 2)
 
-
-if __name__ == '__main__':
-    unittest.main()

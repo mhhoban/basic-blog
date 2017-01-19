@@ -1,9 +1,7 @@
-from selenium import webdriver
-from hamcrest import assert_that, contains_string
-from time import sleep
 from auto_tools import AppServer, AutoTestTools
-from selenium.webdriver.common.keys import Keys
+from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from time import sleep
 
 import unittest
 
@@ -206,7 +204,3 @@ class SignupTests(unittest.TestCase):
         self.assertEqual(blog_title.text, 'Generic Post of A Edited')
         self.assertEqual(blog_author.text, 'thinga')
         self.assertEqual(blog_content.text, 'Generic general first post of A Edited')
-
-
-if __name__ == '__main__':
-    unittest.main()
