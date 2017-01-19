@@ -35,136 +35,6 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
-class Register(Handler):
-    """
-    Handles displaying registration page and parsing registration input
-    """
-    def get(self):
-        """
-        serves registration page
-
-        """
-
-        self.render('registration_page.html')
-
-    def post(self):
-        """
-        parses data from reg page form and reloads page with data populated if there was an issue
-        with the user input
-        :return:
-        """
-
-        errors = ''
-
-        fields = all_fields_complete(self.request.POST)
-
-        if fields['fields_present'] is True:
-            email = fields['email']
-            errors = ''
-            if valid_email_check(fields['email']):
-
-                if nom_de_plume_available(fields['penname']):
-
-                    if duplicate_email_check(fields['email']):
-
-                        if passwords_match_check(fields['password'], fields['password_rep']):
-
-                            registration(fields['email'], fields['password'],
-                                         fields['penname'])
-
-                            # TODO replace with single 'login' function
-
-                            user_hash = encode_cookie(fields['email'])
-                            self.response.set_cookie('user-id', str(user_hash))
-                            self.redirect('/')
-
-                        else:
-                            errors = 'mismatched_passwords'
-
-                    else:
-                        errors = 'duplicate_email'
-
-                else:
-                    errors = 'nom de plume taken'
-
-            else:
-                errors = 'invalid_email'
-
-        else:
-
-            try:
-                email = fields['email']
-            except KeyError:
-                email = ''
-
-            errors = 'incomplete'
-
-        if len(errors) > 0:
-
-            self.render('registration_page.html', email=email, error=errors)
-
-
-class LoginPage(Handler):
-    """
-    Displays LoginPage and parses login data
-    """
-    def get(self):
-        """
-        Displays Login Page for direct URL requests
-        """
-
-        self.render('login_page.html', error=False)
-
-    def post(self):
-        """
-        Parses login data from form and reloads login-page if there is an issue with user input
-        """
-
-        login_parse = login_fields_complete(self.request.POST)
-
-        if login_parse['complete']:
-
-            valid_user_id = valid_user_id_check(login_parse['user_id'])
-
-            if valid_user_id:
-
-                correct_password = check_password(login_parse['user_id'], login_parse['password'])
-
-                if correct_password:
-                    # login
-                    user_hash = encode_cookie(login_parse['user_id'])
-                    self.response.set_cookie('user-id', str(user_hash))
-                    self.redirect('/')
-
-                else:
-                    self.render('login_page.html', error='invalid')
-
-            else:
-                self.render('login_page.html', error='invalid')
-
-        else:
-            self.render('login_page.html', error='incomplete')
-
-
-class LogoutPage(Handler):
-    """
-    Logs out users
-    """
-
-    def get(self):
-
-        auth_check = auth_user(self)
-
-        if auth_check['authorized']:
-            # destroy cookie
-            self.response.delete_cookie('user-id')
-
-            self.redirect('/')
-
-        else:
-            self.redirect('/')
-
-
 class BlogComposePage(Handler):
     """
     Serves blog compose page and parses blog compose data
@@ -320,6 +190,136 @@ class DeletePost(Handler):
 
             else:
                 self.redirect('/')
+
+        else:
+            self.redirect('/')
+
+
+class Register(Handler):
+    """
+    Handles displaying registration page and parsing registration input
+    """
+    def get(self):
+        """
+        serves registration page
+
+        """
+
+        self.render('registration_page.html')
+
+    def post(self):
+        """
+        parses data from reg page form and reloads page with data populated if there was an issue
+        with the user input
+        :return:
+        """
+
+        errors = ''
+
+        fields = all_fields_complete(self.request.POST)
+
+        if fields['fields_present'] is True:
+            email = fields['email']
+            errors = ''
+            if valid_email_check(fields['email']):
+
+                if nom_de_plume_available(fields['penname']):
+
+                    if duplicate_email_check(fields['email']):
+
+                        if passwords_match_check(fields['password'], fields['password_rep']):
+
+                            registration(fields['email'], fields['password'],
+                                         fields['penname'])
+
+                            # TODO replace with single 'login' function
+
+                            user_hash = encode_cookie(fields['email'])
+                            self.response.set_cookie('user-id', str(user_hash))
+                            self.redirect('/')
+
+                        else:
+                            errors = 'mismatched_passwords'
+
+                    else:
+                        errors = 'duplicate_email'
+
+                else:
+                    errors = 'nom de plume taken'
+
+            else:
+                errors = 'invalid_email'
+
+        else:
+
+            try:
+                email = fields['email']
+            except KeyError:
+                email = ''
+
+            errors = 'incomplete'
+
+        if len(errors) > 0:
+
+            self.render('registration_page.html', email=email, error=errors)
+
+
+class LoginPage(Handler):
+    """
+    Displays LoginPage and parses login data
+    """
+    def get(self):
+        """
+        Displays Login Page for direct URL requests
+        """
+
+        self.render('login_page.html', error=False)
+
+    def post(self):
+        """
+        Parses login data from form and reloads login-page if there is an issue with user input
+        """
+
+        login_parse = login_fields_complete(self.request.POST)
+
+        if login_parse['complete']:
+
+            valid_user_id = valid_user_id_check(login_parse['user_id'])
+
+            if valid_user_id:
+
+                correct_password = check_password(login_parse['user_id'], login_parse['password'])
+
+                if correct_password:
+                    # login
+                    user_hash = encode_cookie(login_parse['user_id'])
+                    self.response.set_cookie('user-id', str(user_hash))
+                    self.redirect('/')
+
+                else:
+                    self.render('login_page.html', error='invalid')
+
+            else:
+                self.render('login_page.html', error='invalid')
+
+        else:
+            self.render('login_page.html', error='incomplete')
+
+
+class LogoutPage(Handler):
+    """
+    Logs out users
+    """
+
+    def get(self):
+
+        auth_check = auth_user(self)
+
+        if auth_check['authorized']:
+            # destroy cookie
+            self.response.delete_cookie('user-id')
+
+            self.redirect('/')
 
         else:
             self.redirect('/')

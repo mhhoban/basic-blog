@@ -6,14 +6,65 @@ import hmac
 import json
 
 
-def get_all_posts():
+def add_comment(blog_id, commenter, comment_content):
+    """
+    add a comment to a blog post
+    :param blog_id:
+    :param commenter:
+    :param comment_content:
+    :return:
+    """
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
 
-    all_posts = Post.query().fetch()
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
+    timestamp = get_timestamp()
+    comment = {}
+    comment['commenter'] = commenter
+    comment['content'] = comment_content
+    comment['timestamp'] = timestamp
+    comment['comment_id'] = gen_comment_id(commenter, comment_content, target_post.title, timestamp)
+    comments.append(comment)
+    comments = json.dumps(comments)
+    target_post.comments = comments
 
-    return all_posts
+    if target_post.put():
+        return True
+
+    else:
+        return False
+
+
+def add_post_like(blog_id, liker):
+    """
+    add a like to a blog post
+    :param blog_id:
+    :param liker:
+    :return:
+    """
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    json_likes = target_post.likes
+    likes = json.loads(json_likes)
+    likes[liker] = True
+    json_likes = json.dumps(likes)
+    target_post.likes = json_likes
+
+    if target_post.put():
+        return True
+
+    else:
+        return False
 
 
 def blog_data_parser(blog_post_data):
+    """
+    breaks down data about a blog post from the POST request for processing
+    :param blog_post_data:
+    :return: dict
+    """
 
     try:
         author = blog_post_data['author']
@@ -44,26 +95,35 @@ def blog_data_parser(blog_post_data):
     return blog_post
 
 
-def store_post(blog_post_data):
+def delete_comment(blog_id, comment_id):
+    """
+    remove a comment from a blog post
+    :param blog_id:
+    :param comment_id:
+    :return:
+    """
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
 
-    blog_post = blog_data_parser(blog_post_data)
+    json_comments = target_post.comments
+    comments = json.loads(json_comments)
 
-    post_likes = {}
-    post_likes = json.dumps(post_likes)
+    # iterate through comments to find index of target comment,
+    # then pop comment from list
 
-    post_comments = []
-    post_comments = json.dumps(post_comments)
+    iter = 0
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            comments.pop(iter)
+            break
+        iter += 1
 
-    new_post = Post(author=blog_post['author'],
-                    title=blog_post['title'],
-                    content=blog_post['content'],
-                    likes=post_likes,
-                    comments=post_comments)
+    comments = json.dumps(comments)
+    target_post.comments = comments
 
-    new_post.put()
-
-    if new_post.put():
+    if target_post.put():
         return True
+
     else:
         return False
 
@@ -86,73 +146,30 @@ def delete_post(blog_id):
         return False
 
 
-def update_post(blog_post_data):
-
-    target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))
-    target_post = target_post_key.get()
-
-    target_post.title = blog_post_data['title']
-    target_post.content = blog_post_data['content']
-
-    if target_post.put():
-
-        return True
-
-    else:
-
-        return False
-
-
-def get_post_author(blog_id):
-
-    target_post_key = ndb.Key('Post', blog_id)
-    target_post = target_post_key.get()
-
-    return target_post.author
-
-
-def get_post_data(blog_id):
-    target_post_key = ndb.Key('Post', blog_id)
-    target_post = target_post_key.get()
-
-    return target_post
-
-
-def get_post_likes(blog_id):
-    target_post_key = ndb.Key('Post', blog_id)
-    target_post = target_post_key.get()
-
-    json_likes = target_post.likes
-    likes = json.loads(json_likes)
-
-    return likes
-
-
-def get_post_comments(blog_id):
+def edit_comment(blog_id, comment_id, comment_content):
+    """
+    edit the content of a comment on a blog post
+    :param blog_id:
+    :param comment_id:
+    :param comment_content:
+    :return:
+    """
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
     json_comments = target_post.comments
     comments = json.loads(json_comments)
 
-    return comments
+    # iterate through comments to find index of target comment,
+    # then replace its content
 
+    for comment in comments:
+        if comment['comment_id'] == comment_id:
+            comment['content'] = comment_content
+            break
 
-def get_post_comment_total(blog_id):
-
-    comments = get_post_comments(blog_id)
-    return len(comments)
-
-
-def add_post_like(blog_id, liker):
-    target_post_key = ndb.Key('Post', blog_id)
-    target_post = target_post_key.get()
-
-    json_likes = target_post.likes
-    likes = json.loads(json_likes)
-    likes[liker] = True
-    json_likes = json.dumps(likes)
-    target_post.likes = json_likes
+    comments = json.dumps(comments)
+    target_post.comments = comments
 
     if target_post.put():
         return True
@@ -180,30 +197,24 @@ def gen_comment_id(commenter, comment, post_title, timestamp):
     return comment_id
 
 
-def add_comment(blog_id, commenter, comment_content):
-    target_post_key = ndb.Key('Post', blog_id)
-    target_post = target_post_key.get()
+def get_all_posts():
+    """
+    returns all posts users have stored thus far
+    :return: all_posts
+    """
 
-    json_comments = target_post.comments
-    comments = json.loads(json_comments)
-    timestamp = get_timestamp()
-    comment = {}
-    comment['commenter'] = commenter
-    comment['content'] = comment_content
-    comment['timestamp'] = timestamp
-    comment['comment_id'] = gen_comment_id(commenter, comment_content, target_post.title, timestamp)
-    comments.append(comment)
-    comments = json.dumps(comments)
-    target_post.comments = comments
+    all_posts = Post.query().fetch()
 
-    if target_post.put():
-        return True
-
-    else:
-        return False
+    return all_posts
 
 
 def get_comment_author(blog_id, comment_id):
+    """
+    returns the author of a specific comment
+    :param blog_id:
+    :param comment_id:
+    :return:
+    """
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
@@ -220,6 +231,12 @@ def get_comment_author(blog_id, comment_id):
 
 
 def get_comment_data(blog_id, comment_id):
+    """
+    get all the data for a specific comment
+    :param blog_id:
+    :param comment_id:
+    :return:
+    """
 
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
@@ -236,60 +253,129 @@ def get_comment_data(blog_id, comment_id):
     return requested_comment
 
 
-def delete_comment(blog_id, comment_id):
+def get_post_author(blog_id):
+    """
+    returns the author of the blog whose id is provided
+    :param blog_id:
+    :return: target_post.author
+    """
+
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
+
+    return target_post.author
+
+
+def get_post_comments(blog_id):
+    """
+    returns list of comments left on specified blog post
+    :param blog_id:
+    :return:
+    """
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
     json_comments = target_post.comments
     comments = json.loads(json_comments)
 
-    # iterate through comments to find index of target comment,
-    # then pop comment from list
-
-    iter = 0
-    for comment in comments:
-        if comment['comment_id'] == comment_id:
-            comments.pop(iter)
-            break
-        iter += 1
-
-    comments = json.dumps(comments)
-    target_post.comments = comments
-
-    if target_post.put():
-        return True
-
-    else:
-        return False
+    return comments
 
 
-def edit_comment(blog_id, comment_id, comment_content):
+def get_post_comment_total(blog_id):
+    """
+    returns integer total of comments left on blog post
+    :param blog_id:
+    :return:
+    """
+
+    comments = get_post_comments(blog_id)
+    return len(comments)
+
+
+def get_post_data(blog_id):
+    """
+    gets all raw data for a blog post whose id is provided
+    :param blog_id:
+    :return:
+    """
     target_post_key = ndb.Key('Post', blog_id)
     target_post = target_post_key.get()
 
-    json_comments = target_post.comments
-    comments = json.loads(json_comments)
+    return target_post
 
-    # iterate through comments to find index of target comment,
-    # then replace its content
 
-    for comment in comments:
-        if comment['comment_id'] == comment_id:
-            comment['content'] = comment_content
-            break
+def get_post_likes(blog_id):
+    """
+    return a list of all the users who have liked the post whose id is provided
+    :param blog_id:
+    :return:
+    """
+    target_post_key = ndb.Key('Post', blog_id)
+    target_post = target_post_key.get()
 
-    comments = json.dumps(comments)
-    target_post.comments = comments
+    json_likes = target_post.likes
+    likes = json.loads(json_likes)
 
-    if target_post.put():
-        return True
-
-    else:
-        return False
+    return likes
 
 
 def get_timestamp():
+    """
+    returns a formatted string for a timestamp when called
+    :return:
+    """
     raw_time = datetime.now()
     string_time = raw_time.strftime('%H:%M %m/%d/%Y')
 
     return string_time
+
+
+def store_post(blog_post_data):
+    """
+    Stores new blog post in db
+    :param blog_post_data:
+    :return: True/False
+    """
+
+    blog_post = blog_data_parser(blog_post_data)
+
+    post_likes = {}
+    post_likes = json.dumps(post_likes)
+
+    post_comments = []
+    post_comments = json.dumps(post_comments)
+
+    new_post = Post(author=blog_post['author'],
+                    title=blog_post['title'],
+                    content=blog_post['content'],
+                    likes=post_likes,
+                    comments=post_comments)
+
+    new_post.put()
+
+    if new_post.put():
+        return True
+    else:
+        return False
+
+
+def update_post(blog_post_data):
+    """
+    updates the data in a blog post
+    :param blog_post_data:
+    :return: True/False
+    """
+
+    target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))
+    target_post = target_post_key.get()
+
+    target_post.title = blog_post_data['title']
+    target_post.content = blog_post_data['content']
+
+    if target_post.put():
+
+        return True
+
+    else:
+
+        return False

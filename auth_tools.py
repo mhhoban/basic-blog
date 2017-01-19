@@ -3,6 +3,11 @@ from user_tools import fetch_penname
 
 
 def auth_user(self):
+    """
+    Authenticates visitor as logged-in user, returns data about user
+    :param self:
+    :return: {'authorized', 'user_id', 'penname'} or {'authorized: false'}
+    """
 
     try:
         user_hash = self.request.cookies.get('user-id', 'None')

@@ -14,6 +14,19 @@ def encode_cookie(user):
     return hashed_cookie
 
 
+def hash_password(password):
+    """
+    hashes the plaintext password and returns the hash
+
+    :param password:
+    :return:
+    """
+
+    pass_hash = hmac.new('other-arbitrary-secret', password).hexdigest()
+
+    return pass_hash
+
+
 def verify_cookie(hashed_cookie):
     """
     verify the hash matches the data.
@@ -28,16 +41,3 @@ def verify_cookie(hashed_cookie):
 
     else:
         return False
-
-
-def hash_password(password):
-    """
-    hashes the plaintext password and returns the hash
-
-    :param password:
-    :return:
-    """
-
-    pass_hash = hmac.new('other-arbitrary-secret', password).hexdigest()
-
-    return pass_hash

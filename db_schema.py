@@ -1,13 +1,6 @@
 from google.appengine.ext import ndb
 
 
-class User(ndb.Model):
-
-    email = ndb.StringProperty()
-    password = ndb.StringProperty()
-    penname = ndb.StringProperty()
-
-
 class Post(ndb.Model):
 
     author = ndb.StringProperty()
@@ -16,6 +9,13 @@ class Post(ndb.Model):
     publish_date = ndb.DateTimeProperty()
     likes = ndb.JsonProperty()
     comments = ndb.JsonProperty()
+
+
+class User(ndb.Model):
+
+    email = ndb.StringProperty()
+    password = ndb.StringProperty()
+    penname = ndb.StringProperty()
 
 
 
