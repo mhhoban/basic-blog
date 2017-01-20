@@ -62,9 +62,6 @@ class BlogComposePage(Handler):
 
         auth_check = auth_user(self)
 
-        # import pdb
-        # pdb.set_trace()
-
         if auth_check['authorized']:
 
             blog_data = self.request.POST
@@ -87,6 +84,12 @@ class BlogEditPage(Handler):
     """
 
     def auth_edit_post(self, blog_id, user_name):
+        """
+        checks that user is allowed to edit a particular post
+        :param blog_id:
+        :param user_name:
+        :return:
+        """
 
         blog_author = get_post_author(blog_id)
 
@@ -97,6 +100,10 @@ class BlogEditPage(Handler):
             return False
 
     def get(self):
+        """
+        responds to get request and serves the interface for editing a blog post
+        :return:
+        """
 
         auth_check = auth_user(self)
 
@@ -125,9 +132,6 @@ class BlogEditPage(Handler):
 
         auth_check = auth_user(self)
 
-        # import pdb
-        # pdb.set_trace()
-
         if auth_check['authorized']:
 
             blog_data = self.request.POST
@@ -148,8 +152,15 @@ class BlogEditPage(Handler):
 
 
 class DeletePost(Handler):
+    """
+    Handles deleting blog posts
+    """
 
     def get(self):
+        """
+        handles get request to serve interface for deleting blog post
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -174,6 +185,10 @@ class DeletePost(Handler):
             self.redirect('/')
 
     def post(self):
+        """
+        Handles post request to actually delete the blog post
+        :return:
+        """
 
         auth_check = auth_user(self)
 
@@ -312,6 +327,10 @@ class LogoutPage(Handler):
     """
 
     def get(self):
+        """
+        handles get request to log out present user
+        :return:
+        """
 
         auth_check = auth_user(self)
 
@@ -326,8 +345,14 @@ class LogoutPage(Handler):
 
 
 class ViewPost(Handler):
+    """
+    methods for viewing a blog post
+    """
     def get(self):
-
+        """
+        handles get request for serving a blog post
+        :return:
+        """
         blog_id = long(self.request.GET['blog_id'])
         post_data = get_post_data(blog_id)
 
@@ -356,7 +381,14 @@ class ViewPost(Handler):
 
 
 class LikePost(Handler):
+    """
+    handles the liking of comments
+    """
     def get(self):
+        """
+        handles actual request to like a comment
+        :return:
+        """
 
         auth_check = auth_user(self)
 
@@ -392,8 +424,15 @@ class LikePost(Handler):
 
 
 class AddComment(Handler):
+    """
+    handles adding comments to blog posts
+    """
 
     def post(self):
+        """
+        handles post request with the data to add the comment
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -428,8 +467,15 @@ class AddComment(Handler):
 
 
 class DeleteComment(Handler):
+    """
+    includes methods for deleting comments
+    """
 
     def get(self):
+        """
+        handles get request for serving interface for deleting a comment
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -459,6 +505,10 @@ class DeleteComment(Handler):
             self.redirect('/')
 
     def post(self):
+        """
+        handles post request that actually removes the comment
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -480,8 +530,15 @@ class DeleteComment(Handler):
 
 
 class EditComment(Handler):
+    """
+    methods for editing comments
+    """
 
     def get(self):
+        """
+        handles get comment for serving interface for editing comments
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -511,6 +568,10 @@ class EditComment(Handler):
             self.redirect('/')
 
     def post(self):
+        """
+        handles post request for editing comment
+        :return:
+        """
         auth_check = auth_user(self)
 
         if auth_check['authorized']:
@@ -542,6 +603,10 @@ class MainPage(Handler):
     Displays index page
     """
     def get(self):
+        """
+        handles get request to provide main page
+        :return:
+        """
 
         # new determine if a visitor is logged in:
 
