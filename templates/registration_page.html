@@ -51,7 +51,15 @@
 
 	            		<div class="signup-form">
 
-							<input type="text" class="form-control" name="penname" id="penname" placeholder="nom de plume">
+	            			{% if penname %}
+
+	            				<input type="text" class="form-control" name="penname" id="penname" aria-describedby="email-subtext" value="{{ penname }}">
+
+	            			{% else %}
+
+								<input type="text" class="form-control" name="penname" id="penname" placeholder="nom de plume">
+
+							{% endif %}
 
 	            		</div>
 

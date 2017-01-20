@@ -235,6 +235,7 @@ class Register(Handler):
 
         if fields['fields_present'] is True:
             email = fields['email']
+            penname = fields['penname']
             errors = ''
             if valid_email_check(fields['email']):
 
@@ -247,36 +248,39 @@ class Register(Handler):
                             registration(fields['email'], fields['password'],
                                          fields['penname'])
 
-                            # TODO replace with single 'login' function
-
                             user_hash = encode_cookie(fields['email'])
                             self.response.set_cookie('user-id', str(user_hash))
                             self.redirect('/')
 
                         else:
-                            errors = 'mismatched_passwords'
+                            errors = 'passwords did not match'
 
                     else:
-                        errors = 'duplicate_email'
+                        errors = 'sorry, email address is already registered'
 
                 else:
-                    errors = 'nom de plume taken'
+                    errors = 'sorry, nom de plume taken'
 
             else:
-                errors = 'invalid_email'
+                errors = 'please enter a valid email'
 
         else:
 
             try:
                 email = fields['email']
             except KeyError:
-                email = ''
+                email = False
 
-            errors = 'incomplete'
+            try:
+                penname = fields['penname']
+            except KeyError:
+                penname = False
+
+            errors = 'Please complete all fields'
 
         if len(errors) > 0:
 
-            self.render('registration_page.html', email=email, error=errors)
+            self.render('registration_page.html', email=email, penname=penname, error=errors)
 
 
 class LoginPage(Handler):
