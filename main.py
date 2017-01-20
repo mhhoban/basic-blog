@@ -316,13 +316,13 @@ class LoginPage(Handler):
                     self.redirect('/')
 
                 else:
-                    self.render('login_page.html', error='invalid')
+                    self.render('login_page.html', error='invalid credentials')
 
             else:
-                self.render('login_page.html', error='invalid')
+                self.render('login_page.html', error='invalid credentials')
 
         else:
-            self.render('login_page.html', error='incomplete')
+            self.render('login_page.html', error='Please enter credentials')
 
 
 class LogoutPage(Handler):

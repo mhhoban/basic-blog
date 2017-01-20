@@ -67,7 +67,7 @@ class LoginTests(unittest.TestCase):
 
         self.assertEqual(response.status_int, 200)
 
-        assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('Please enter credentials'))
 
     def testInvalidEmail(self):
 

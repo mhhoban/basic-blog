@@ -43,7 +43,7 @@ class RegTests(unittest.TestCase):
         response = self.testapp.post('/register.html', {'email': 'thing@thing.thing'})
 
         self.assertEqual(response.status_int, 200)
-        assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('Please complete all fields'))
         assert_that(response.body, contains_string('thing@thing.thing'))
 
     def testRegistrationNoPenName(self):
@@ -57,7 +57,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
-        assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('Please complete all fields'))
 
     def testRegistrationInvalidEmail(self):
 
@@ -71,7 +71,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing'))
-        assert_that(response.body, contains_string('invalid_email'))
+        assert_that(response.body, contains_string('please enter a valid email'))
 
     def testRegistrationPasswordMismatch(self):
 
@@ -86,7 +86,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
-        assert_that(response.body, contains_string('mismatched_passwords'))
+        assert_that(response.body, contains_string('passwords did not match'))
 
     def testDuplicateEmailCheck(self):
 
