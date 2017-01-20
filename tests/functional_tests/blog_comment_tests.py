@@ -72,10 +72,12 @@ class CommentTests(unittest.TestCase):
 
         tools = AutoTestTools()
 
+        reg_a = tools.register_user_alpha()
+        self.assertTrue(reg_a, 'could not register user a')
         tools.gen_post_alpha()
+
         reg_b = tools.register_user_beta()
         self.assertTrue(reg_b, 'could not register user b')
-        tools.gen_post_alpha()
 
         self.browser.get('http://localhost:8080')
 
@@ -91,6 +93,10 @@ class CommentTests(unittest.TestCase):
 
         tools.make_comment_alpha(self.browser)
 
+        sleep(1)
+
+        self.browser.get('http://localhost:8080')
+
         try:
             comment_button = self.browser.find_element_by_id('comment_total_button')
 
@@ -99,7 +105,10 @@ class CommentTests(unittest.TestCase):
 
         self.assertTrue(comment_button, 'could not find comment button')
 
-        comment_total = int(comment_button.text)
+        full_comment_button_text = comment_button.text
+        comment_button_num = full_comment_button_text[0]
 
-        self.assertEqual(comment_total, 2)
+        comment_total = int(comment_button_num)
+
+        self.assertEqual(comment_total, 1)
 

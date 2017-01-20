@@ -99,6 +99,7 @@ class AutoTestTools():
 
         comment_button.click()
 
+
     def log_in_user(self, browser, user_id, password):
 
         # Then sees a field for an email input
