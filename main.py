@@ -446,22 +446,15 @@ class AddComment(Handler):
 
             if get_post_data(title_id):
 
-                post_author = get_post_author(title_id)
                 current_user = auth_check['penname']
 
-                if post_author != current_user:
+                if add_comment(title_id, current_user, comment_content):
 
-                    if add_comment(title_id, current_user, comment_content):
-                        self.render('comment.html', result='success')
-                        sleep(3)
-                        self.redirect('/')
-
-                    else:
-
-                        render('comment.html', result='failure')
+                    self.redirect('/')
 
                 else:
-                    self.write('cannot comment on own post')
+
+                    self.render('view.html?blog_id='+str(title_id))
 
             else:
                 self.write('No Such Post')

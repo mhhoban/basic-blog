@@ -68,38 +68,6 @@ class CommentTests(unittest.TestCase):
         assert_that(comment.text, contains_string('testing of the comment field'),
                     'comment content incorrect')
 
-    def test_comment_on_own_post(self):
-
-        # test set-up
-        tools = AutoTestTools()
-        reg_a = tools.register_user_alpha()
-        self.assertTrue(reg_a, 'could not register user a')
-        reg_b = tools.register_user_beta()
-        self.assertTrue(reg_b, 'could not register user b')
-        tools.gen_post_alpha()
-
-        # User visits the blog, which loads successfully
-        self.browser.get('http://localhost:8080')
-
-        sleep(3)
-
-        # log in as same user that has posted
-        tools.log_in_user(self.browser, 'a@a.a', 'thing')
-
-        sleep(2)
-
-        tools.view_post(self.browser)
-
-        sleep(2)
-
-        try:
-            comment_button = self.browser.find_element_by_id('add-comment-button')
-
-        except NoSuchElementException:
-            comment_button = False
-
-        self.assertFalse(comment_button, 'user able to comment on their own post')
-
     def test_comment_button_total(self):
 
         tools = AutoTestTools()
