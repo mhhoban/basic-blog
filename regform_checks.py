@@ -1,6 +1,8 @@
 """
-functions to validate registraiton data
+functions to validate registration data
 """
+
+from cgi import escape
 from db_schema import User
 
 import re
@@ -39,22 +41,22 @@ def get_reg_fields(post_data):
     # try/except clauses to catch missing input
 
     try:
-        user_email = post_data['email']
+        user_email = escape(post_data['email'], quote=True)
     except KeyError:
         user_email = ''
 
     try:
-        penname = post_data['penname']
+        penname = escape(post_data['penname'], quote=True)
     except KeyError:
         penname = ''
 
     try:
-        password = post_data['password']
+        password = escape(post_data['password'], quote=True)
     except KeyError:
         password = ''
 
     try:
-        password_rep = post_data['password_rep']
+        password_rep = escape(post_data['password_rep'], quote=True)
     except KeyError:
         password_rep = ''
 

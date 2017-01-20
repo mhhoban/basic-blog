@@ -1,7 +1,7 @@
 """
 methods for dealing with blog posts
 """
-
+from cgi import escape
 from datetime import datetime
 from db_schema import Post
 from google.appengine.ext import ndb
@@ -26,7 +26,7 @@ def add_comment(blog_id, commenter, comment_content):
     timestamp = get_timestamp()
     comment = {}
     comment['commenter'] = commenter
-    comment['content'] = comment_content
+    comment['content'] = escape(comment_content, quote=True)
     comment['timestamp'] = timestamp
     comment['comment_id'] = gen_comment_id(commenter, comment_content, target_post.title, timestamp)
     comments.append(comment)
@@ -76,12 +76,12 @@ def blog_data_parser(blog_post_data):
         author = ''
 
     try:
-        title = blog_post_data['title']
+        title = escape(blog_post_data['title'], quote=True)
     except KeyError:
         title = ''
 
     try:
-        content = blog_post_data['content']
+        content = escape(blog_post_data['content'], quote=True)
     except KeyError:
         content = ''
 
@@ -169,7 +169,7 @@ def edit_comment(blog_id, comment_id, comment_content):
 
     for comment in comments:
         if comment['comment_id'] == comment_id:
-            comment['content'] = comment_content
+            comment['content'] = escape(comment_content, quote=True)
             break
 
     comments = json.dumps(comments)
@@ -373,8 +373,8 @@ def update_post(blog_post_data):
     target_post_key = ndb.Key('Post', long(blog_post_data['blog_id']))
     target_post = target_post_key.get()
 
-    target_post.title = blog_post_data['title']
-    target_post.content = blog_post_data['content']
+    target_post.title = escape(blog_post_data['title'], quote=True)
+    target_post.content = escape(blog_post_data['content'])
 
     if target_post.put():
 

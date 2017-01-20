@@ -1,6 +1,7 @@
 """
 Methods for user login
 """
+from cgi import escape
 from google.appengine.ext import ndb
 
 
@@ -12,12 +13,12 @@ def login_fields_complete(post_data):
     """
 
     try:
-        user_id = post_data['user_id']
+        user_id = escape(post_data['user_id'], quote=True)
     except KeyError:
         user_id = False
 
     try:
-        password = post_data['password']
+        password = escape(post_data['password'], quote=True)
     except KeyError:
         password = False
 

@@ -1,7 +1,7 @@
 from google.appengine.ext import ndb, testbed
 from hamcrest import assert_that, contains_string
 from main import BlogComposePage, LoginPage, MainPage, Register
-from register import delete_registration, registration
+from register import registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 
 import hmac
@@ -95,16 +95,12 @@ class RegTests(unittest.TestCase):
         self.assertEqual(duplicate_email_check('thing@thingz'), True, 'False positive detecting duplicate emails')
         self.assertEqual(duplicate_email_check('thing@thing'), False, 'Not detecting duplicate email addresses')
 
-        delete_registration('thing@thing')
-
     def testDuplicatePenName(self):
 
         registration('thing@thing', 'secret', 'thing')
 
         self.assertEqual(nom_de_plume_available('thingz'), True, 'False positive detecting duplicate pennames')
         self.assertEqual(nom_de_plume_available('thing'), False, 'Not detecting duplicate pennames')
-
-        delete_registration('thing@thing')
 
     def testPasswordHashing(self):
 
