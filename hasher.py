@@ -1,3 +1,7 @@
+"""
+Methods for password and cookie hashing
+"""
+
 import hmac
 
 
