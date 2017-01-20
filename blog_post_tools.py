@@ -1,3 +1,7 @@
+"""
+methods for dealing with blog posts
+"""
+
 from datetime import datetime
 from db_schema import Post
 from google.appengine.ext import ndb

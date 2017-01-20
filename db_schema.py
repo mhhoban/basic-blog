@@ -1,3 +1,7 @@
+"""
+Database model declarations
+"""
+
 from google.appengine.ext import ndb
 
 

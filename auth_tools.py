@@ -1,3 +1,7 @@
+"""
+tools for user authentication
+"""
+
 from hasher import verify_cookie
 from user_tools import fetch_penname
 
