@@ -3,6 +3,16 @@ Methods for password and cookie hashing
 """
 
 import hmac
+import json
+
+
+def get_salts():
+    salt_file = open('salts.data', 'r')
+    salts = salt_file.read()
+    salt_file.close()
+    salts = json.loads(salts)
+
+    return salts
 
 
 def encode_cookie(user):
@@ -12,7 +22,9 @@ def encode_cookie(user):
     :return:
     """
 
-    hash = hmac.new("arbitrary-secret", user).hexdigest()
+    salts = get_salts()
+
+    hash = hmac.new(str(salts['cookies']), user).hexdigest()
     hashed_cookie = user + '-' + hash
 
     return hashed_cookie
@@ -26,7 +38,9 @@ def hash_password(password):
     :return:
     """
 
-    pass_hash = hmac.new('other-arbitrary-secret', password).hexdigest()
+    salts = get_salts()
+
+    pass_hash = hmac.new(str(salts['passwords']), password).hexdigest()
 
     return pass_hash
 
@@ -38,7 +52,9 @@ def verify_cookie(hashed_cookie):
     :return:
     """
 
-    hash = hmac.new('arbitrary-secret', hashed_cookie[0]).hexdigest()
+    salts = get_salts()
+
+    hash = hmac.new(str(salts['cookies']), hashed_cookie[0]).hexdigest()
 
     if hash == hashed_cookie[1]:
         return True

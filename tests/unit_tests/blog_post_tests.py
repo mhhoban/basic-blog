@@ -36,7 +36,7 @@ class BlogPostTests(unittest.TestCase):
 
         response = self.testapp.get('/')
 
-        assert_that(response.body, contains_string('No Posts Yet!'))
+        assert_that(response.body, contains_string('Register and make the first post to replace me!'))
 
     def testComposePostLinkLoggedIn(self):
         """

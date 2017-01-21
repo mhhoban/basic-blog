@@ -5,6 +5,7 @@ from register import registration
 from regform_checks import duplicate_email_check, nom_de_plume_available
 
 import hmac
+import json
 import unittest
 import webapp2
 import webtest
@@ -112,6 +113,11 @@ class RegTests(unittest.TestCase):
         user = user_key.get()
         hashed_password = user.password
 
-        manual_hash = hmac.new('other-arbitrary-secret', 'secret').hexdigest()
+        salt_file = open('salts.data', 'r')
+        salts = salt_file.read()
+        salt_file.close()
+        salts = json.loads(salts)
+
+        manual_hash = hmac.new(str(salts['passwords']), 'secret').hexdigest()
 
         self.assertEqual(hashed_password, manual_hash)
