@@ -639,6 +639,7 @@ class MainPage(Handler):
                         if like == penname:
                             view_mode = 'liked'
                         post_likes = post_likes + ' ' + like + ','
+                    post_likes = post_likes[:-1]
 
                 posts.append({'title': entry.title,
                               'id': entry.key.id(),
@@ -670,6 +671,7 @@ class MainPage(Handler):
                     post_likes = 'This post is liked by:'
                     for like in likes.keys():
                         post_likes = post_likes + ' ' + like + ','
+                    post_likes = post_likes[:-1]
 
                 posts.append({'title': entry.title,
                               'id': entry.key.id(),
