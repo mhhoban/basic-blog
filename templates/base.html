@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+<div class="container-fluid">
+
 <html>
 
     <head>
@@ -15,7 +17,7 @@
 
     </head>
 
-<div class="container-fluid">
+
 
     <body>
 
@@ -27,7 +29,7 @@
 
                     <div class="top-logo">
 
-                        <h1> Basic Blog </h1>
+                        <h1> BasicBlog </h1>
 
                     </div>
 
@@ -43,38 +45,33 @@
 
                     </div>
 
-
                 </div>
 
             </div>
 
             <!-- Main Content Pane Starts Here -->
 
+            <div class="content-pane">
 
+                <div class="row">
 
-            <div class="row">
+                <!-- Begin Content Pane Section -->
+                    <div class="col-md-12">
 
-            <!-- Begin Content Pane Section -->
-                <div class="col-md-12">
+                            {% block posts_block %}
 
+                            {% endblock %}
 
-                        {% block posts_block %}
-
-                        {% endblock %}
-
+                    </div>
                 
-
-
                 </div>
 
-            <!-- End Individual Post Entries -->
             </div>
-
+            <!-- End Individual Post Entries -->
 
     </body>
 
     <footer>
-        
 
             <div class="row">
 
