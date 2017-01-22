@@ -36,9 +36,10 @@ python test_runner.py -unit
 
 ###Functional Tests:
 
-The functional tests that come bundled with BasicBlog use selenium and the selenium Chrome
-WebDriver. The project comes with the driver for MacOS, but if you want to run the
-functional tests on other OSes you can download the corresponding webdriver,
+The functional tests that come with BasicBlog use selenium and are written for
+the selenium Chrome WebDriver. The project comes with the driver for MacOS,
+but if you want to run the functional tests on other OSes you can download the
+corresponding Chrome Webdriver,
 (https://sites.google.com/a/chromium.org/chromedriver/downloads) and replace the
 bundled "chromedriver" file with the one you downloaded then rename the downloaded file
 "chromedriver" instead. Make sure you only have one "chromedriver" file in the project's
