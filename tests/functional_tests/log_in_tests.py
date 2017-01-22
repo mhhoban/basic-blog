@@ -56,7 +56,7 @@ class LogInTests(unittest.TestCase):
 
         # Then sees a login button
         try:
-            login_button = self.browser.find_element_by_name('login-submit')
+            login_button = self.browser.find_element_by_id('login-submit')
 
         except NoSuchElementException:
             login_button = False

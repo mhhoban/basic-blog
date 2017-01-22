@@ -45,7 +45,6 @@ class LoginTests(unittest.TestCase):
 
         hashed_cookie = encode_cookie('thing@thing')
 
-        # TODO integrate cookie split into function itself to avoid this code all over
         hashed_cookie = hashed_cookie.split('-')
         correct_hash = verify_cookie(hashed_cookie)
 
@@ -53,7 +52,6 @@ class LoginTests(unittest.TestCase):
 
         hashed_cookie = encode_cookie('thingz@thing')
 
-        # TODO integrate cookie split into function itself to avoid this code all over
         hashed_cookie = hashed_cookie.split('-')
         hashed_cookie[0] = 'blarg'
 
@@ -63,7 +61,7 @@ class LoginTests(unittest.TestCase):
 
     def testIncompleteLoginFields(self):
 
-        response = self.testapp.post('/login.html', {'user_id': 'thing@thing.thing'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thing@thing.thing'})
 
         self.assertEqual(response.status_int, 200)
 
@@ -71,7 +69,8 @@ class LoginTests(unittest.TestCase):
 
     def testInvalidEmail(self):
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thing.thing', 'password': 'blarg'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thing.thing',
+                                                     'password': 'blarg'})
 
         self.assertEqual(response.status_int, 200)
 
@@ -81,7 +80,8 @@ class LoginTests(unittest.TestCase):
 
         registration('thing@thing', 'secret', 'thing')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thing@thing', 'password': 'secretz'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thing@thing',
+                                                     'password': 'secretz'})
 
         self.assertEqual(response.status_int, 200)
 
@@ -91,7 +91,8 @@ class LoginTests(unittest.TestCase):
 
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
 
@@ -104,7 +105,8 @@ class LoginTests(unittest.TestCase):
     def testLogInThenLogout(self):
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
 

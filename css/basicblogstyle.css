@@ -50,15 +50,6 @@ body {
 
 }
 
-.signup-link {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.signup-link a {
-    color: blue;
-}
 
 .signup-form {
     color: white;
@@ -92,7 +83,6 @@ body {
 
 .content-pane {
 
-
     overflow: auto;
     overflow-x: hidden;
     margin-top: .5vw;
@@ -106,7 +96,6 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
     margin-top: .5vw;
-
     max-height: 40vw;
 
 }
@@ -114,8 +103,6 @@ body {
 .content-box {
 
     margin-top: 20px;
-/*    margin-right: 2%;
-    margin-left: 2%;*/
     border-radius: 10px;
     color: black;
     font-weight: bold;
@@ -133,8 +120,6 @@ body {
 .comment-box {
 
     margin-top: 20px;
-    /*margin-right: 2%;
-    margin-left: 2%;*/
     border-radius: 10px;
     color: black;
     font-weight: bold;
@@ -211,7 +196,6 @@ textarea {
 
 .blog-compose-box {
 
-
     margin-top: 20px;
     margin-right: 2%;
     margin-left: 2%;
@@ -219,7 +203,6 @@ textarea {
     color: black;
     font-weight: bold;
     min-height: 400px;
-    
     height: 100%;
     border-style:solid;
     border-color: black;
@@ -335,7 +318,6 @@ textarea {
     border-style:solid;
     border-color: blue;
     background: blue;
-
     padding-bottom: 5px;
 
 }
@@ -352,11 +334,9 @@ textarea {
     margin-top: 1%;
     background: green;
     border-radius: 10px;
-
     min-height: 30px;
     max-height: 100px;
     height: 5vw;
-
     color: white;
 
 }

@@ -30,7 +30,7 @@ class AuthTests(unittest.TestCase):
 
         response = self.testapp.get('/')
 
-        assert_that(response.body, contains_string('Not a Member? Register!'))
+        assert_that(response.body, contains_string('Register'))
 
     def testNewAuthIndexLoggedIn(self):
 

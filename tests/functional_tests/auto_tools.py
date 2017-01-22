@@ -122,7 +122,7 @@ class AutoTestTools():
 
         # Then sees a login button
         try:
-            login_button = browser.find_element_by_name('login-submit')
+            login_button = browser.find_element_by_id('login-submit')
 
         except NoSuchElementException:
             login_button = False

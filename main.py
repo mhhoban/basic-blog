@@ -299,30 +299,34 @@ class LoginPage(Handler):
         Parses login data from form and reloads login-page if there is an issue with user input
         """
 
-        login_parse = login_fields_complete(self.request.POST)
+        if self.request.POST['login-choice'] == 'register':
+            self.redirect('/register.html')
 
-        if login_parse['complete']:
+        else:
+            login_parse = login_fields_complete(self.request.POST)
 
-            valid_user_id = valid_user_id_check(login_parse['user_id'])
+            if login_parse['complete']:
 
-            if valid_user_id:
+                valid_user_id = valid_user_id_check(login_parse['user_id'])
 
-                correct_password = check_password(login_parse['user_id'], login_parse['password'])
+                if valid_user_id:
 
-                if correct_password:
-                    # login
-                    user_hash = encode_cookie(login_parse['user_id'])
-                    self.response.set_cookie('user-id', str(user_hash))
-                    self.redirect('/')
+                    correct_password = check_password(login_parse['user_id'], login_parse['password'])
+
+                    if correct_password:
+                        # login
+                        user_hash = encode_cookie(login_parse['user_id'])
+                        self.response.set_cookie('user-id', str(user_hash))
+                        self.redirect('/')
+
+                    else:
+                        self.render('login_page.html', error='invalid credentials')
 
                 else:
                     self.render('login_page.html', error='invalid credentials')
 
             else:
-                self.render('login_page.html', error='invalid credentials')
-
-        else:
-            self.render('login_page.html', error='Please enter credentials')
+                self.render('login_page.html', error='Please enter credentials')
 
 
 class LogoutPage(Handler):

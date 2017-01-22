@@ -51,7 +51,7 @@ class SignupTests(unittest.TestCase):
 
         # Then sees a login button
         try:
-            login_button = self.browser.find_element_by_name('login-submit')
+            login_button = self.browser.find_element_by_id('login-submit')
 
         except NoSuchElementException:
             login_button = False
@@ -60,7 +60,7 @@ class SignupTests(unittest.TestCase):
 
         # Then sees a registration link
         try:
-            register_link = self.browser.find_element_by_xpath("//*/div[@class='signup-link']/a")
+            register_link = self.browser.find_element_by_id('register-submit')
 
         except NoSuchElementException:
             register_link = False

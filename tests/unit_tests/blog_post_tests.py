@@ -45,7 +45,8 @@ class BlogPostTests(unittest.TestCase):
         """
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
         assert_that(response.headers['Location'], contains_string('/'))
@@ -77,7 +78,8 @@ class BlogPostTests(unittest.TestCase):
 
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
         assert_that(response.headers['Location'], contains_string('/'))
