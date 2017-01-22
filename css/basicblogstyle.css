@@ -14,12 +14,17 @@ body {
     border-color: black;
     border-radius:10px;
     color: white;
+
     background: black;
     height: 9vw;
     min-height: 75px;
     max-height: 225px;
     text-align: center;
 
+}
+
+.top-logo a {
+    color: white;
 }
 
 .user-controls {
@@ -48,7 +53,7 @@ body {
 .signup-link {
     margin-top: 10px;
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 .signup-link a {
@@ -219,8 +224,6 @@ textarea {
     border-style:solid;
     border-color: black;
     background: black;
-
-    /*padding-bottom: 5px;*/
 }
 
 .blog-view-title {
@@ -300,8 +303,6 @@ textarea {
 
 }
 
-/* Buttons */
-
 .post-likes {
     padding: 15px 5px 5px 5px;
     color: white;
@@ -358,5 +359,9 @@ textarea {
 
     color: white;
 
+}
+
+.footer-content a {
+    color: orange;
 }
 
