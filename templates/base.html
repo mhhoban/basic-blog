@@ -2,6 +2,10 @@
 
 <html>
 
+<div class="container-fluid">
+
+
+
     <head>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,11 +13,13 @@
         <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
         <link type="text/css" rel="stylesheet" href="css/basicblogstyle.css">
 
+        {% block header_block %}
+
+        {% endblock %}
+
     </head>
 
     <body>
-
-        <div class="container-fluid">
 
             <div class="row">
 
@@ -21,7 +27,7 @@
 
                     <div class="top-logo">
 
-                        <h1> Basic Blog </h1>
+                        <a href="/"><h1> BasicBlog </h1></a>
 
                     </div>
 
@@ -37,39 +43,33 @@
 
                     </div>
 
-
                 </div>
 
             </div>
 
             <!-- Main Content Pane Starts Here -->
 
+            <div class="content-pane">
 
+                <div class="row">
 
-            <div class="row">
+                <!-- Begin Content Pane Section -->
+                    <div class="col-md-12">
 
-            <!-- Begin Content Pane Section -->
+                            {% block posts_block %}
 
-                <div class="content-pane">
+                            {% endblock %}
 
-                    {% block posts_block %}
-
-                    {% endblock %}
-
-            
-
+                    </div>
+                
                 </div>
 
-            <!-- End Individual Post Entries -->
             </div>
-
-        </div>
+            <!-- End Individual Post Entries -->
 
     </body>
 
     <footer>
-
-        <div class="container-fluid">
 
             <div class="row">
 
@@ -77,7 +77,7 @@
 
                     <div class="footer-content">
 
-                    ending stuff
+                    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />All work on this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
                     </div>
 
@@ -85,8 +85,8 @@
 
             </div>
 
-        </div>
-
     </footer>
+
+</div>
 
 </html>

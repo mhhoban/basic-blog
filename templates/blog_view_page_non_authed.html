@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block header_block %}
+
+<title> Basic Blog: {{title}} </title>
+
+{% endblock %}
+
+{% block login_block %}
+
+<div class="user-greeting">
+
+		<form action="login.html" method="post">
+
+			<div class="row">
+
+				<div class="col-md-6">
+
+					<div class="login-form">
+						<label for="user_id"> email: </label>
+						<input type="email" class="form-control" name="user_id" id="user_id" aria-describedby="email-subtext" placeholder="email">
+
+					</div>
+
+				</div>
+
+				<div class="col-md-6">
+
+					<div class="login-form">
+					<label for="password"> password: </label>
+					<input type="password" class="form-control" name="password" id="password" placeholder="password">
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="col-md-6">
+
+					<div class="login-form">
+
+						<button name ="login-choice" value="login" id="login-submit" type="submit" class="btn btn-primary"> Submit! </button>
+						<a href="register.html"> <button name="login-choice" value="register" id="register-submit" class="btn btn-secondary"> Register </button> </a>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</form>
+
+	</div>
+
+{% endblock %}
+
+{% block posts_block %}
+
+<div class="content-pane-blog-view">
+
+
+	<div class="row">
+
+	    <div class="col-md-12">
+
+	        <div class="blog-compose-box">
+
+	            <div class="row">
+
+	                <div class="col-md-12">
+
+	                   	<div class="blog-view-nav">
+
+                			<a href="/"><button type="button" class="btn btn-success">Back to Main Page</button></a> 
+
+                		</div>
+
+	                    <div class="blog-view-title">
+
+	                        <h3 class="blog-title"> {{ title }} </h3>
+
+	                    </div>
+
+	                </div>
+
+	            </div>
+
+	             <div class="row">
+
+            		<div class="col-md-12">
+
+            			<div class="blog-author-slot">
+
+            				By <span class="blog-author-text">{{ author }}</span>
+
+            			</div>
+
+            		</div>
+
+            	</div>
+
+
+		            <div class="row">
+
+		            	<div class="col-md-12">	
+
+		            		<div class="blog-content-field">
+
+									{{ content }}
+		            		</div>
+
+		            	</div>
+
+		            </div>
+
+	            </div>
+
+
+	        </div>
+
+	    </div>
+
+	</div>
+
+</div>
+
+<!-- Begin Comments -->
+
+{% for comment in comments %}
+
+<div class="blog-comment-box">
+
+
+
+<div class="row">
+
+	<div class="col-md-6">
+
+		<div class="blog-comment-author">
+
+			According to <span class="comment-author-text"> {{ comment['commenter'] }}</span>:
+
+		</div>
+
+	</div>
+
+	<div class="col-md-6">
+
+		<div class="blog-comment-date">
+
+		{{ comment['timestamp'] }}
+
+		</div>
+
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-md-12">
+
+			<div class="blog-comment-text">
+
+				<o id="comment"> {{ comment['content'] }} </o>
+
+			</div>
+
+	</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

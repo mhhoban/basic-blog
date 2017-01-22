@@ -1,17 +1,16 @@
-from hamcrest import assert_that, contains_string
+from blog_post_tools import (add_comment, blog_data_parser, delete_comment, delete_post, get_all_posts,
+                             get_post_author, get_post_data, store_post, update_post)
+from db_schema import Post
+from google.appengine.ext import ndb, testbed
+from hamcrest import assert_that, contains_string, equal_to
+from hasher import encode_cookie
+from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
+from register import registration
 
+import json
 import unittest
 import webapp2
 import webtest
-
-from main import MainPage, Register, LoginPage, BlogComposePage, BlogEditPage
-from register import registration
-from hasher import encode_cookie
-from blog_post_tools import (blog_data_parser, store_post, get_all_posts, get_post_author, get_post_data,
-                             update_post)
-from db_schema import Post
-
-from google.appengine.ext import ndb, testbed
 
 
 class BlogPostTests(unittest.TestCase):
@@ -23,21 +22,12 @@ class BlogPostTests(unittest.TestCase):
                                        ('/blog-compose.html', BlogComposePage),
                                        ('/blog-edit.html', BlogEditPage),
                                        ])
-        # wrap the test app:
-        self.testapp = webtest.TestApp(app)
 
-        # First, create an instance of the Testbed class.
+        self.testapp = webtest.TestApp(app)
         self.testbed = testbed.Testbed()
-        # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
-        # Next, declare which service stubs you want to use.
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
-        # Clear ndb's in-context cache between tests.
-        # This prevents data from leaking between tests.
-        # Alternatively, you could disable caching by
-        # using ndb.get_context().set_cache_policy(False)
-        # ndb.get_context().clear_cache()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -46,7 +36,7 @@ class BlogPostTests(unittest.TestCase):
 
         response = self.testapp.get('/')
 
-        assert_that(response.body, contains_string('No Posts Yet!'))
+        assert_that(response.body, contains_string('Register and make the first post to replace me!'))
 
     def testComposePostLinkLoggedIn(self):
         """
@@ -55,7 +45,8 @@ class BlogPostTests(unittest.TestCase):
         """
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
         assert_that(response.headers['Location'], contains_string('/'))
@@ -87,7 +78,8 @@ class BlogPostTests(unittest.TestCase):
 
         registration('thingz@thingz', 'secret', 'thingz')
 
-        response = self.testapp.post('/login.html', {'user_id': 'thingz@thingz', 'password': 'secret'})
+        response = self.testapp.post('/login.html', {'login-choice': 'login', 'user_id': 'thingz@thingz',
+                                                     'password': 'secret'})
 
         self.assertEqual(response.status_int, 302)
         assert_that(response.headers['Location'], contains_string('/'))
@@ -191,3 +183,38 @@ class BlogPostTests(unittest.TestCase):
         test_post_key = ndb.Key('Post', 1)
         test_post = test_post_key.get()
         self.assertEqual(test_post.content, 'thingzzzz')
+
+    def testBlogPostCommentDeletion(self):
+
+        registration('testa@user', 'secret', 'testusera')
+        registration('testb@user', 'secret', 'testuserb')
+        hashed_cookie = encode_cookie('testa@user')
+        self.testapp.set_cookie('user-id', hashed_cookie)
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+        data = add_comment(1, 'testuberb', 'blargz')
+
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        comments = test_post.comments
+        comments = json.loads(comments)
+        assert_that(len(comments), equal_to(1), 'test comment not being written')
+        comment_id = comments[0]['comment_id']
+
+        delete_comment(1, comment_id)
+        test_post_key = ndb.Key('Post', 1)
+        test_post = test_post_key.get()
+        comments = test_post.comments
+        comments = json.loads(comments)
+
+        assert_that(len(comments), equal_to(0), 'test comment not being deleted')
+
+    def testBlogPostDeletion(self):
+
+        data = store_post({'title': 'thingz_title', 'content': 'thingz_content', 'author': 'testuserz'})
+
+        delete_post(1)
+
+        target_post_key = ndb.Key('Post', 1)
+
+        self.assertEqual(target_post_key.get(), None, 'Post Not Deleted')

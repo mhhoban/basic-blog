@@ -1,16 +1,14 @@
+from google.appengine.ext import ndb, testbed
 from hamcrest import assert_that, contains_string
+from main import BlogComposePage, LoginPage, MainPage, Register
+from register import registration
+from regform_checks import duplicate_email_check, nom_de_plume_available
 
+import hmac
+import json
 import unittest
 import webapp2
 import webtest
-import hmac
-
-from main import MainPage, Register, LoginPage, BlogComposePage
-from register import registration, delete_registration
-from regform_checks import duplicate_email_check, nom_de_plume_available
-from hasher import hash_password
-
-from google.appengine.ext import testbed, ndb
 
 
 class RegTests(unittest.TestCase):
@@ -21,21 +19,11 @@ class RegTests(unittest.TestCase):
                                        ('/login.html', LoginPage),
                                        ('/blog-compose.html', BlogComposePage),
                                        ])
-        # wrap the test app:
         self.testapp = webtest.TestApp(app)
-
-        # First, create an instance of the Testbed class.
         self.testbed = testbed.Testbed()
-        # Then activate the testbed, which prepares the service stubs for use.
         self.testbed.activate()
-        # Next, declare which service stubs you want to use.
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
-        # Clear ndb's in-context cache between tests.
-        # This prevents data from leaking between tests.
-        # Alternatively, you could disable caching by
-        # using ndb.get_context().set_cache_policy(False)
-        # ndb.get_context().clear_cache()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -56,7 +44,7 @@ class RegTests(unittest.TestCase):
         response = self.testapp.post('/register.html', {'email': 'thing@thing.thing'})
 
         self.assertEqual(response.status_int, 200)
-        assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('Please complete all fields'))
         assert_that(response.body, contains_string('thing@thing.thing'))
 
     def testRegistrationNoPenName(self):
@@ -70,7 +58,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
-        assert_that(response.body, contains_string('incomplete'))
+        assert_that(response.body, contains_string('Please complete all fields'))
 
     def testRegistrationInvalidEmail(self):
 
@@ -84,7 +72,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing'))
-        assert_that(response.body, contains_string('invalid_email'))
+        assert_that(response.body, contains_string('please enter a valid email'))
 
     def testRegistrationPasswordMismatch(self):
 
@@ -99,7 +87,7 @@ class RegTests(unittest.TestCase):
         self.assertEqual(response.status_int, 200)
 
         assert_that(response.body, contains_string('thing@thing.thing'))
-        assert_that(response.body, contains_string('mismatched_passwords'))
+        assert_that(response.body, contains_string('passwords did not match'))
 
     def testDuplicateEmailCheck(self):
 
@@ -108,16 +96,12 @@ class RegTests(unittest.TestCase):
         self.assertEqual(duplicate_email_check('thing@thingz'), True, 'False positive detecting duplicate emails')
         self.assertEqual(duplicate_email_check('thing@thing'), False, 'Not detecting duplicate email addresses')
 
-        delete_registration('thing@thing')
-
     def testDuplicatePenName(self):
 
         registration('thing@thing', 'secret', 'thing')
 
         self.assertEqual(nom_de_plume_available('thingz'), True, 'False positive detecting duplicate pennames')
         self.assertEqual(nom_de_plume_available('thing'), False, 'Not detecting duplicate pennames')
-
-        delete_registration('thing@thing')
 
     def testPasswordHashing(self):
 
@@ -129,9 +113,11 @@ class RegTests(unittest.TestCase):
         user = user_key.get()
         hashed_password = user.password
 
-        manual_hash = hmac.new('other-arbitrary-secret', 'secret').hexdigest()
+        salt_file = open('salts.data', 'r')
+        salts = salt_file.read()
+        salt_file.close()
+        salts = json.loads(salts)
+
+        manual_hash = hmac.new(str(salts['passwords']), 'secret').hexdigest()
 
         self.assertEqual(hashed_password, manual_hash)
-
-
-

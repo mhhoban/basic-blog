@@ -1,10 +1,11 @@
 """
-functions to validate registraiton data
+functions to validate registration data
 """
 
-import re
-from google.appengine.ext import ndb
+from cgi import escape
 from db_schema import User
+
+import re
 
 
 def all_fields_complete(post_data):
@@ -40,22 +41,22 @@ def get_reg_fields(post_data):
     # try/except clauses to catch missing input
 
     try:
-        user_email = post_data['email']
+        user_email = escape(post_data['email'], quote=True)
     except KeyError:
         user_email = ''
 
     try:
-        penname = post_data['penname']
+        penname = escape(post_data['penname'], quote=True)
     except KeyError:
         penname = ''
 
     try:
-        password = post_data['password']
+        password = escape(post_data['password'], quote=True)
     except KeyError:
         password = ''
 
     try:
-        password_rep = post_data['password_rep']
+        password_rep = escape(post_data['password_rep'], quote=True)
     except KeyError:
         password_rep = ''
 
@@ -63,6 +64,11 @@ def get_reg_fields(post_data):
 
 
 def valid_email_check(email):
+    """
+    checks whether the email provided follows a valid pattern
+    :param email:
+    :return:
+    """
     re_pattern = '[a-zA-Z._]+[@][a-zA-Z]+[.][a-zA-z]+'
     valid = re.match(re_pattern, email)
     return valid
@@ -101,6 +107,12 @@ def nom_de_plume_available(penname):
 
 
 def passwords_match_check(password, password_rep):
+    """
+    checks whether the twice entered password is the same both times
+    :param password:
+    :param password_rep:
+    :return:
+    """
     if password == password_rep:
         return True
 

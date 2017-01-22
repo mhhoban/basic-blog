@@ -1,32 +1,8 @@
 """
-(Kind) User:
-
-    (Entity): a user
-
-        (Field): Name
-        (Field): email
-        (Field): password
-        (ID): email
-
-
-(Kind) Post:
-
-    (Entity): a post
-
-        (Field): Title
-        (Field): Content
-        (Parent): User
-
-
+Database model declarations
 """
+
 from google.appengine.ext import ndb
-
-
-class User(ndb.Model):
-
-    email = ndb.StringProperty()
-    password = ndb.StringProperty()
-    penname = ndb.StringProperty()
 
 
 class Post(ndb.Model):
@@ -36,6 +12,15 @@ class Post(ndb.Model):
     content = ndb.TextProperty()
     publish_date = ndb.DateTimeProperty()
     likes = ndb.JsonProperty()
+    comments = ndb.JsonProperty()
+
+
+class User(ndb.Model):
+
+    email = ndb.StringProperty()
+    password = ndb.StringProperty()
+    penname = ndb.StringProperty()
+
 
 
 

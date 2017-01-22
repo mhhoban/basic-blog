@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
+{% block header_block %}
+
+<title> Basic Blog! </title>
+
+{% endblock %}
 
 {% block login_block %}
 
 	<div class="user-greeting">
 
 		<h3> {{ user }} </h3>
-		<a href="logout.html"> Logout </a>
-		<a href="blog-compose.html"> Compose Post </a>
+		<a href="logout.html"><button type="button" class="btn btn-danger"> Logout </button></a>
+		<a href="blog-compose.html"><button type="button" class="btn btn-primary"> Compose Post </button></a>
 
 	</div>
 
@@ -26,140 +31,166 @@
 
 	{% for post in posts %}
 
-	<div class="row">
+	<div class="post-entry">
 
-	    <div class="col-md-12">
+		<div class="row">
 
-	        <div class="content-box">
+		    <div class="col-md-12">
 
-	            <div class="row">
+		        <div class="content-box">
 
-	                <div class="col-md-8">
+		            <div class="row">
 
-	                    <div class="post-title">
+		                <div class="col-md-8">
 
-	                        <h3> {{ post['title'] }} </h3>
-	                        <a href="blog-edit.html?blog_id={{ post['id'] }}"> Edit Post! </a>
+		                    <div class="post-title">
 
-	                    </div>
+		                        <h3> {{ post['title'] }} </h3>
+		                        {% if post['author'] == user %}
+		                        <a href="blog-edit.html?blog_id={{ post['id'] }}"> Edit Post! </a>
+		                        {% endif %}
 
-	                </div>
+		                    </div>
 
-	                <div class="col-md-4">
+		                </div>
 
-	                    <div class="post-author">
+		                <div class="col-md-4">
 
-	                        <h3> {{ post['author'] }} </h3>
+		                    <div class="post-author">
 
-	                    </div>
+		                        <h3> {{ post['author'] }} </h3>
 
-	                </div>
+		                    </div>
 
-	            </div>
+		                </div>
 
-	            <div class="row">
+		            </div>
 
-	                <div class="col-md-12">
+		            <div class="row">
 
-	                    <div class="post-content">
+		                <div class="col-md-12">
 
-	                         <p> {{ post['content'] }} </p>
+		                    <div class="post-content">
 
-	                    </div>
+		                         <p> {{ post['content'] }} </p>
 
-	                </div>
+		                    </div>
 
-	            </div>
+		                </div>
 
-	            <div class="row">
+		            </div>
 
-	            	<div class="col-md-12">
+		            <div class="row">
 
-	            		<div class="post-likes">
+		            	<div class="col-md-4">
 
-	            			
-            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
+		            		<div class="post-likes">
 
-            				{% if post['view_mode'] == 'like' %}
+		            			
+	            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
 
-            				<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-success">Like!</button></span>
+	            				{% if post['view_mode'] == 'like' %}
 
-            				<!--
+	            				<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-success">Like!</button></span>
 
-							Begin Javascript "Like"
-							Adapted from "https://developer.mozilla.org/en-US/docs/AJAX/Getting_Started"
-								-->
+	            				<!--
 
-							<script type="text/javascript">
+								Begin Javascript "Like"
+								Adapted from "https://developer.mozilla.org/en-US/docs/AJAX/Getting_Started"
+									-->
 
-								(function() {
-									var httpRequest;
-						  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {makeRequest();};
+								<script type="text/javascript">
 
-
-						    			function makeRequest(){
-						  					httpRequest = new XMLHttpRequest();
-						    				httpRequest.onreadystatechange = add_like;
-
-						    				httpRequest.open('GET', 'like.html?title_id={{ post["id"] }}');
-						    				httpRequest.send();
-						  			}
+									(function() {
+										var httpRequest;
+							  			document.getElementById('like-button{{ post["id"] }}').onclick = function() {makeRequest();};
 
 
-						  			function add_like(){
-							  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
-							      			if (httpRequest.status === 200) {
-							      			if (httpRequest.responseText === 'Success'){
-							        		
-							        		var old_like_text = document.getElementById('likes{{ post["id"] }}').innerText;
-							        		var you_text = ' you, '
-							        		var new_text = you_text.concat(old_like_text);
-							        		document.getElementById('likes{{ post["id"] }}').text = new_text;
-							        		
-							        		$('#like-button{{ post["id"] }}').addClass('btn btn-info').text('Liked!');
-							        		
-							        		}
-							        		// else here maybe?
-							      			} 
-							      			else {
-							        			alert('There was a problem with the request.');
-							      				}
-							    			}
-							    		}
+							    			function makeRequest(){
+							  					httpRequest = new XMLHttpRequest();
+							    				httpRequest.onreadystatechange = add_like;
 
-								})();
+							    				httpRequest.open('GET', 'like.html?title_id={{ post["id"] }}');
+							    				httpRequest.send();
+							  			}
 
-							</script>
 
-							{% elif post['view_mode'] == 'edit' %}
+							  			function add_like(){
+								  				if (httpRequest.readyState === XMLHttpRequest.DONE) {
+								      			if (httpRequest.status === 200) {
+								      			if (httpRequest.responseText === 'Success'){
+								        		
+								        		var old_like_text = document.getElementById('likes{{ post["id"] }}').innerText;
+								        		var you_text = ' you, '
+								        		var new_text = you_text.concat(old_like_text);
+								        		document.getElementById('likes{{ post["id"] }}').text = new_text;
+								        		
+								        		$('#like-button{{ post["id"] }}').addClass('btn btn-info').text('Liked!');
+								        		
+								        		}
+								        		// else here maybe?
+								      			} 
+								      			else {
+								        			alert('There was a problem with the request.');
+								      				}
+								    			}
+								    		}
 
-							<a href='blog-edit.html?blog_id={{ post["id"] }}'><button type="button" class="btn btn-primary">Edit!</button></a>
+									})();
 
-							{% else %}
+								</script>
 
-							<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-info">Liked</button></span>
+								{% elif post['view_mode'] == 'edit' %}
 
-							{% endif %}
+								<a href='blog-edit.html?blog_id={{ post["id"] }}'><button type="button" class="btn btn-primary">Edit!</button></a>
 
-	            		</div>
+								{% else %}
 
-	            	</div>
+								<span id='like-button{{ post["id"] }}'> <button type="button" class="btn btn-info">Liked</button></span>
 
-	            </div>
+								{% endif %}
 
-	        </div>
+		            		</div>
 
-	    </div>
+		            	</div>
+
+		            	<div class="col-md-4">
+
+		            		<div class="read_blog_button">
+
+		            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-default">Read More</button></a>
+
+		            		</div>
+
+		            	</div>
+
+		            	<div class="col-md-4">
+
+		            		<div class="blog_comments_button">
+
+		            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" id="comment_total_button" class="btn btn-warning"> {{ post['comment_total'] }} Comments </button></a>
+
+		            		</div>
+
+		            	</div>
+
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		</div>
 
 	</div>
-
 	
-
 	{% endfor %}
 
 
 	{% else %}
 
+	<div class="post-entry">
+
 	<div class="row">
 
 	    <div class="col-md-12">
@@ -172,7 +203,7 @@
 
 	                    <div class="post-title">
 
-	                        <h3> Generic Title </h3>
+	                        <h3> Hello, World! </h3>
 
 	                    </div>
 
@@ -182,7 +213,7 @@
 
 	                    <div class="post-author">
 
-	                        <h3> Generic Author </h3>
+	                        <h3>The Architect</h3>
 
 	                    </div>
 
@@ -196,31 +227,13 @@
 
 	                    <div class="post-content">
 
-	                         <p> No Posts Yet! </p>
+	                         <p> Register and make the first post to replace me! </p>
 
 	                    </div>
 
 	                </div>
 
 	            </div>
-
-	            <div class="row">
-
-	            	<div class="col-md-12">
-
-	            		<div class="post-likes">
-
-	            		</div>
-
-	            	</div>
-
-	            </div>
-
-	        </div>
-
-	    </div>
-
-	</div>
 
 	{% endif %}
 

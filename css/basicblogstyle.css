@@ -14,6 +14,7 @@ body {
     border-color: black;
     border-radius:10px;
     color: white;
+
     background: black;
     height: 9vw;
     min-height: 75px;
@@ -22,10 +23,16 @@ body {
 
 }
 
+.top-logo a {
+    color: white;
+}
+
 .user-controls {
 
-    min-height: 75px;
+    min-height: 100px;
     max-height: 225px;
+    max-width: 546px;
+    min-width: 401px;
     margin-top: 2em;
     border-style: solid;
     border-color: green;
@@ -34,13 +41,8 @@ body {
     background: green;
     height: 9vw;
     
-
 }
 
-.form-control{
-
-
-}
 
 .btn {
 
@@ -48,17 +50,15 @@ body {
 
 }
 
-.signup-link {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 1.5em;
-}
-
-.signup-link a {
-    color: blue;
-}
 
 .signup-form {
+    color: white;
+    width: 50%;
+    margin-top: 1vw;
+    margin-left: 25%;
+}
+
+.blog-compose-title {
     color: white;
     width: 50%;
     margin-top: 1vw;
@@ -74,18 +74,52 @@ body {
     margin-left: 25%;
 }
 
+.blog-compose-button {
+    color: white;
+    width: 50%;
+    margin-top: 1vw;
+    margin-left: 25%;
+}
+
 .content-pane {
-    margin-top: 5px;
-    height: 35vw;
-    overflow: scroll;
+
+    overflow: auto;
+    overflow-x: hidden;
+    margin-top: .5vw;
+    min-height: 20vw;
+    max-height: 40vw;
+
+}
+
+.content-pane-blog-view {
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    margin-top: .5vw;
+    max-height: 40vw;
 
 }
 
 .content-box {
 
     margin-top: 20px;
-    margin-right: 2%;
-    margin-left: 2%;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    min-height: 150px;
+    max-height: 800px;
+    height: 100%;
+    width: 100%;
+    border-style:solid;
+    border-color: black;
+    background: black;
+
+    padding-bottom: 5px;
+}
+
+.comment-box {
+
+    margin-top: 20px;
     border-radius: 10px;
     color: black;
     font-weight: bold;
@@ -93,10 +127,71 @@ body {
     max-height: 800px;
     height: 100%;
     border-style:solid;
-    border-color: black;
-    background: black;
+    border-color: blue;
+    background: blue;
 
     padding-bottom: 5px;
+}
+
+.add-comment-box {
+
+    border-radius: 10px;
+    background: orange;
+    color: black;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    margin-right: 2%;
+    margin-left: 2%;
+    
+    min-height: 75px;
+    max-height: 150px;
+    height: 100%;
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+.comment-author-text {
+
+    color:orange;
+}
+
+.blog-comment-date {
+
+    color: white;
+    text-align: right;
+}
+
+.delete-post-text {
+    color: blue;
+}
+
+.login-reg-invitation {
+    color: blue;
+    margin-left: 25%;
+
+}
+
+.comment-compose-header {
+    margin-top: 10%;
+    margin-left: 4%;
+}
+
+.comment-compose-field {
+
+    margin-top: 1.5%;
+    margin-bottom: 1%;
+    
+}
+
+.comment-compose-button {
+    margin-top: 7.5%;
+}
+
+.comment-edit-button {
+    margin-left: 1vw;
 }
 
 .blog-compose-box {
@@ -108,15 +203,49 @@ body {
     color: black;
     font-weight: bold;
     min-height: 400px;
-    
     height: 100%;
     border-style:solid;
     border-color: black;
     background: black;
-
-    padding-bottom: 5px;
 }
 
+.blog-view-title {
+    color: white;
+    width: 100%;
+    margin-top: 1vw;
+    text-align: center;
+}
+
+
+.blog-author-slot {
+    margin-left: 75vw;
+    color: orange;
+}
+
+.blog-author-text {
+    color: blue;
+}
+
+.blog-content-field {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 5%;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    min-height: 400px;
+    width: 80vw;
+    height: 100%;
+    border-style:solid;
+    border-color: black;
+    background: black
+    word-break: break-all;
+}
+
+.blog-view-nav {
+    text-align: center;
+}
 
 .post-title {
 
@@ -134,10 +263,9 @@ body {
     border-radius: 10px;
     background: #0d6ee5;
     color: black;
-    margin-top: 0;
     margin-bottom: 5px;
     margin-right: 10px;
-    
+    padding-left: 2px;
     height: 100%;
 
 }
@@ -161,17 +289,58 @@ body {
     padding: 15px 5px 5px 5px;
     color: white;
 }
+
+.read_blog_button {
+
+    margin-left: 10vw;
+    margin-top: 9.5%;
+}
+
+.blog_comments_button {
+
+    margin-left: 21vw;
+    margin-top: 9.5%;
+
+}
+
+.blog-comment-box {
+
+    margin-top: 20px;
+    margin-right: 2%;
+    margin-left: 2%;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    min-height: 75px;
+    max-height: 150px;
+    height: 100%;
+    border-style:solid;
+    border-color: blue;
+    background: blue;
+    padding-bottom: 5px;
+
+}
+
+.blog-comment-text{
+    color: white;
+    margin-top: 1%;
+    margin-left: 1%;
+
+}
+
 .footer-content {
 
     margin-top: 1%;
     background: green;
     border-radius: 10px;
-
     min-height: 30px;
     max-height: 100px;
     height: 5vw;
-
     color: white;
 
+}
+
+.footer-content a {
+    color: orange;
 }
 

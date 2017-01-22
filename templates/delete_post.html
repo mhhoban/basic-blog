@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block login_block %}
+
+	<div class="user-greeting">
+
+		<h3> {{ user }} </h3>
+		<a href="logout.html"><button type="button" class="btn btn-danger"> Logout </button></a>
+		<a href="blog-compose.html"><button type="button" class="btn btn-primary"> Compose Post </button></a>
+
+	</div>
+
+{% endblock %}
+
+
+{% block posts_block %}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="blog-compose-box">
+
+        	<div class="row">
+
+        		<div class="col-md-4">
+
+        			<span class="delete-post-text"><p> Delete Post? </p></span>
+
+        		</div>
+
+        		<div class="col-md-4">
+
+        			<form action="delete-post.html" method="POST">
+
+        				<input type="hidden" name="blog_id" value="{{blog_id}}">
+
+        				<button type="submit" class="btn btn-danger"> Delete </button>
+
+        			</form>
+
+        		</div>
+
+        	</div>
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="blog-view-title">
+
+                        <h3> {{ title }} </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+            	<div class="col-md-12">
+
+            		<div class="blog-author-slot">
+
+            			 By <span class="blog-author-text">{{ author }}</span>
+
+            		</div>
+
+            	</div>
+
+            </div>
+
+	            <div class="row">
+
+	            	<div class="col-md-12">	
+
+	            		<div class="blog-content-field">
+
+								{{ content }}
+
+	            		</div>
+
+	            	</div>
+
+	            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+{% endblock %}

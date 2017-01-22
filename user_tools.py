@@ -1,8 +1,17 @@
+"""
+methods to help with user related operations
+"""
+
 from google.appengine.ext import ndb
 from hasher import hash_password
 
 
 def fetch_user(user_id):
+    """
+    Fetches a user's data from the db based on their key id
+    :param user_id:
+    :return:
+    """
 
     user_key = ndb.Key('User', user_id)
 
@@ -12,9 +21,14 @@ def fetch_user(user_id):
 
 
 def login_exists(email):
+    """
+    Checks whether a user exists.
+    :param email:
+    :return:
+    """
     user.key = ndb.Key('User', email)
 
-    if (user.key.get()):
+    if user.key.get():
         return True
 
     else:
@@ -22,10 +36,11 @@ def login_exists(email):
 
 
 def fetch_penname(user_id):
-
-    # user_key = ndb.Key('Users', email)
-    #
-    # user = user_key.get()
+    """
+    fetches a user's pen name
+    :param user_id:
+    :return:
+    """
 
     user = fetch_user(user_id)
 
@@ -33,6 +48,12 @@ def fetch_penname(user_id):
 
 
 def check_password(user_id, password):
+    """
+    checks whether the user's password is correct
+    :param user_id:
+    :param password:
+    :return:
+    """
 
     user = fetch_user(user_id)
 
@@ -43,8 +64,3 @@ def check_password(user_id, password):
 
     else:
         return False
-
-# def user_login(user_id):
-
-
-

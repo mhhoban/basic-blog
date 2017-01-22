@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
+{% block header_block %}
+
+<title> Basic Blog! </title>
+
+{% endblock %}
 
 {% block login_block %}
-
 	
 
 	<div class="user-greeting">
@@ -34,28 +38,18 @@
 
 			<div class="row">
 
-				<div class="col-md-4">
+				<div class="col-md-6">
 
 					<div class="login-form">
 
-						<button name ="login-submit" type="submit" class="btn btn-primary"> Submit! </button>
-
-					</div>
-
-				</div>
-
-				<div class="col-md-8">
-
-					<div class="signup-link">
-
-						<a href="register.html"> Not a Member? Register! </a>
+						<button name ="login-choice" value="login" id="login-submit" type="submit" class="btn btn-primary"> Submit! </button>
+						<a href="register.html"> <button name="login-choice" value="register" id="register-submit" class="btn btn-secondary"> Register </button> </a>
 
 					</div>
 
 				</div>
 
 			</div>
-
 
 		</form>
 
@@ -69,75 +63,98 @@
 
 {% block posts_block %}
 
+
 	{% if posts|length > 0 %}
 
 	{% for post in posts %}
 
-	<div class="row">
+	<div class="post-entry">
 
-	    <div class="col-md-12">
+		<div class="row">
 
-	        <div class="content-box">
+		    <div class="col-md-12">
 
-	            <div class="row">
+		        <div class="content-box">
 
-	                <div class="col-md-8">
+		            <div class="row">
 
-	                    <div class="post-title">
+		                <div class="col-md-8">
 
-	                        <h3> {{ post['title'] }} </h3>
-	                        
+		                    <div class="post-title">
 
-	                    </div>
+		                        <h3> {{ post['title'] }} </h3>
+		                        
+		                    </div>
 
-	                </div>
+		                </div>
 
-	                <div class="col-md-4">
+		                <div class="col-md-4">
 
-	                    <div class="post-author">
+		                    <div class="post-author">
 
-	                        <h3> {{ post['author'] }} </h3>
+		                        <h3> {{ post['author'] }} </h3>
 
-	                    </div>
+		                    </div>
 
-	                </div>
+		                </div>
 
-	            </div>
+		            </div>
 
-	            <div class="row">
+		            <div class="row">
 
-	                <div class="col-md-12">
+		                <div class="col-md-12">
 
-	                    <div class="post-content">
+		                    <div class="post-content">
 
-	                         <p> {{ post['content'] }} </p>
+		                         <p> {{ post['content'] }} </p>
 
-	                    </div>
+		                    </div>
 
-	                </div>
+		                </div>
 
-	            </div>
+		            </div>
 
-	            <div class="row">
+		            <div class="row">
 
-	            	<div class="col-md-12">
+		            	<div class="col-md-4">
 
-	            		<div class="post-likes">
+		            		<div class="post-likes">
 
-	            			
-            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
+	            				<span id='likes{{ post["id"] }}'> {{ post['likes'] }} </span> <br>
 
-            				<a href='login.html'><button type="button" class="btn btn-success">Like!</button></a>
+	            				<a href='login.html'><button type="button" class="btn btn-success">Like!</button></a>
 
-	            		</div>
+		            		</div>
 
-	            	</div>
+		            	</div>
 
-	            </div>
+		            	<div class="col-md-4">
 
-	        </div>
+		            		<div class="read_blog_button">
 
-	    </div>
+		            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" class="btn btn-default">Read More</button></a>
+
+		            		</div>
+
+		            	</div>
+
+		            	<div class="col-md-4">
+
+		            		<div class="blog_comments_button">
+
+		            			<a href="view.html?blog_id={{ post['id'] }}"><button type="button" id="comment_total_button" class="btn btn-warning"> {{ post['comment_total'] }} Comments </button></a>
+
+		            		</div>
+
+		            	</div>
+
+		            </div>
+
+		        </div>
+
+		    </div>
+
+		</div>
 
 	</div>
 
@@ -146,6 +163,8 @@
 
 	{% else %}
 
+	<div class="post-entry">
+
 	<div class="row">
 
 	    <div class="col-md-12">
@@ -158,7 +177,7 @@
 
 	                    <div class="post-title">
 
-	                        <h3> Generic Title </h3>
+	                        <h3> Hello, World! </h3>
 
 	                    </div>
 
@@ -168,7 +187,7 @@
 
 	                    <div class="post-author">
 
-	                        <h3> Generic Author </h3>
+	                        <h3>The Architect</h3>
 
 	                    </div>
 
@@ -182,7 +201,7 @@
 
 	                    <div class="post-content">
 
-	                         <p> No Posts Yet! </p>
+	                         <p> Register and make the first post to replace me! </p>
 
 	                    </div>
 
@@ -190,26 +209,7 @@
 
 	            </div>
 
-	            <div class="row">
-
-	            	<div class="col-md-12">
-
-	            		<div class="post-likes">
-
-	            		</div>
-
-	            	</div>
-
-	            </div>
-
-	        </div>
-
-	    </div>
-
-	</div>
-
 	{% endif %}
-
 
 
 {% endblock %}
