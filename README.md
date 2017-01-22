@@ -47,6 +47,7 @@ base directory.
 When you have the appropriate WebDriver, you can run the functional tests with:
 ```
 python test_runner.py -functional
+```
 
 Note that selenium can be temperamental at times and you might have to run the tests a second
 time before it begins behaving properly.
