@@ -50,13 +50,13 @@
 
 	            	<div class="col-md-12">
 
-	            		
+
 
 	            		<div class="blog-compose-field">
 
 	            			{% if content|length > 0 %}
 
-								<textarea class="form-control" name="content" id="blog_content" rows="10"> {{ content }} </textarea> 
+								<textarea class="form-control" name="content" id="blog_content" rows="10"> {{ content }} </textarea>
 
 							{% else %}
 
@@ -83,6 +83,8 @@
 							<button type="submit" class="btn btn-primary"> Update! </button>
 
 							<a href="/delete-post.html?blog_id={{blog_id}}"> <button class="btn btn-danger"> Delete Post </button> </a>
+
+              <a href="/view.html?blog_id={{blog_id}}"> <button class="btn btn-secondary"> Cancel </button> </a>
 
 							{% if error %}
 
