@@ -25,11 +25,4 @@ salt_file.close()
 print "Thanks! Now we'll just install the necessary packages and have your environment ready" \
       "in no time!"
 
-time.sleep(3)
-
 subprocess.call("pip install -r requirements.txt", shell=True)
-
-
-
-
-
