@@ -134,18 +134,26 @@ class BlogEditPage(Handler):
 
         if auth_check['authorized']:
 
-            blog_data = self.request.POST
-            blog_data['author'] = auth_check['penname']
-            transaction_success = update_post(blog_data)
+            user_name = auth_check['penname']
+            blog_id = long(self.request.POST['blog_id'])
 
-            if transaction_success:
-                self.write('Blog Updated Successfully!')
-                sleep(1)
-                self.redirect('/')
+            if self.auth_edit_post(blog_id, user_name):
+
+                blog_data = self.request.POST
+
+                transaction_success = update_post(blog_data)
+
+                if transaction_success:
+                    self.write('Blog Updated Successfully!')
+                    sleep(1)
+                    self.redirect('/')
+
+                else:
+                    self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
+                                blog_id=blog_data['blog_id'])
 
             else:
-                self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
-                            blog_id=blog_data['blog_id'])
+                self.redirect('/')
 
         else:
             self.redirect('/')
