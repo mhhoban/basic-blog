@@ -1,12 +1,16 @@
 from auth_tools import auth_user
-from blog_post_tools import (add_comment, add_post_like, delete_comment, delete_post, edit_comment,
-                             get_all_posts, get_comment_author, get_comment_data, get_post_author,
-                             get_post_comments, get_post_comment_total, get_post_data,
-                             get_post_likes, store_post, update_post)
+from blog_post_tools import (add_comment, add_post_like, delete_comment,
+                             delete_post, edit_comment,
+                             get_all_posts, get_comment_author,
+                             get_comment_data, get_post_author,
+                             get_post_comments, get_post_comment_total,
+                             get_post_data, get_post_likes, store_post,
+                             update_post)
 from hasher import encode_cookie
 from login_checks import login_fields_complete, valid_user_id_check
-from regform_checks import (all_fields_complete, duplicate_email_check, nom_de_plume_available,
-                            passwords_match_check, valid_email_check)
+from regform_checks import (all_fields_complete, duplicate_email_check,
+                            nom_de_plume_available, passwords_match_check,
+                            valid_email_check)
 from register import registration
 from user_tools import check_password
 from time import sleep
@@ -56,8 +60,8 @@ class BlogComposePage(Handler):
 
     def post(self):
         """
-        parses blog compose data and reloads page if there is an issue with the blog
-        submission data.
+        parses blog compose data and reloads page if there is an issue with
+        the blog submission data.
         """
 
         auth_check = auth_user(self)
@@ -72,7 +76,8 @@ class BlogComposePage(Handler):
                 self.redirect('/')
 
             else:
-                self.render('blog_compose_page.html', title=blog_data['title'], content=blog_data['content'])
+                self.render('blog_compose_page.html', title=blog_data['title'],
+                            content=blog_data['content'])
 
         else:
             self.redirect('/')
@@ -80,7 +85,8 @@ class BlogComposePage(Handler):
 
 class BlogEditPage(Handler):
     """
-    loads blog edit page and reloads page if there is an issue with the blog submission data
+    loads blog edit page and reloads page if there is an issue with the
+    blog submission data
     """
 
     def auth_edit_post(self, blog_id, user_name):
@@ -101,7 +107,8 @@ class BlogEditPage(Handler):
 
     def get(self):
         """
-        responds to get request and serves the interface for editing a blog post
+        responds to get request and serves the interface for editing a
+        blog post
         :return:
         """
 
@@ -115,8 +122,8 @@ class BlogEditPage(Handler):
 
                 post_data = get_post_data(blog_id)
 
-                self.render('blog_edit_page.html', content=post_data.content, title=post_data.title,
-                            blog_id=blog_id)
+                self.render('blog_edit_page.html', content=post_data.content,
+                            title=post_data.title, blog_id=blog_id)
 
             else:
                 self.write('Not Authorized to Edit Post')
@@ -126,7 +133,8 @@ class BlogEditPage(Handler):
 
     def post(self):
         """
-        parses blog compose data and reloads page if there is an issue with the blog
+        parses blog compose data and reloads page if there is an issue with
+        the blog
         submission data.
         """
 
@@ -134,18 +142,28 @@ class BlogEditPage(Handler):
 
         if auth_check['authorized']:
 
-            blog_data = self.request.POST
-            blog_data['author'] = auth_check['penname']
-            transaction_success = update_post(blog_data)
+            user_name = auth_check['penname']
+            blog_id = long(self.request.POST['blog_id'])
 
-            if transaction_success:
-                self.write('Blog Updated Successfully!')
-                sleep(1)
-                self.redirect('/')
+            if self.auth_edit_post(blog_id, user_name):
+
+                blog_data = self.request.POST
+
+                transaction_success = update_post(blog_data)
+
+                if transaction_success:
+                    self.write('Blog Updated Successfully!')
+                    sleep(1)
+                    self.redirect('/')
+
+                else:
+                    self.render('blog_edit_page.html',
+                                title=blog_data['title'],
+                                content=blog_data['content'],
+                                blog_id=blog_data['blog_id'])
 
             else:
-                self.render('blog_edit_page.html', title=blog_data['title'], content=blog_data['content'],
-                            blog_id=blog_data['blog_id'])
+                self.redirect('/')
 
         else:
             self.redirect('/')
@@ -224,8 +242,8 @@ class Register(Handler):
 
     def post(self):
         """
-        parses data from reg page form and reloads page with data populated if there was an issue
-        with the user input
+        parses data from reg page form and reloads page with data populated
+        if there was an issue with the user input
         :return:
         """
 
@@ -243,7 +261,8 @@ class Register(Handler):
 
                     if duplicate_email_check(fields['email']):
 
-                        if passwords_match_check(fields['password'], fields['password_rep']):
+                        if passwords_match_check(fields['password'],
+                                                 fields['password_rep']):
 
                             registration(fields['email'], fields['password'],
                                          fields['penname'])
@@ -280,7 +299,10 @@ class Register(Handler):
 
         if len(errors) > 0:
 
-            self.render('registration_page.html', email=email, penname=penname, error=errors)
+            self.render('registration_page.html',
+                        email=email,
+                        penname=penname,
+                        error=errors)
 
 
 class LoginPage(Handler):
@@ -296,7 +318,8 @@ class LoginPage(Handler):
 
     def post(self):
         """
-        Parses login data from form and reloads login-page if there is an issue with user input
+        Parses login data from form and reloads login-page if there is
+        an issue with user input
         """
 
         if self.request.POST['login-choice'] == 'register':
@@ -311,7 +334,8 @@ class LoginPage(Handler):
 
                 if valid_user_id:
 
-                    correct_password = check_password(login_parse['user_id'], login_parse['password'])
+                    correct_password = check_password(login_parse['user_id'],
+                                                      login_parse['password'])
 
                     if correct_password:
                         # login
@@ -320,13 +344,16 @@ class LoginPage(Handler):
                         self.redirect('/')
 
                     else:
-                        self.render('login_page.html', error='invalid credentials')
+                        self.render('login_page.html',
+                                    error='invalid credentials')
 
                 else:
-                    self.render('login_page.html', error='invalid credentials')
+                    self.render('login_page.html',
+                                error='invalid credentials')
 
             else:
-                self.render('login_page.html', error='Please enter credentials')
+                self.render('login_page.html',
+                            error='Please enter credentials')
 
 
 class LogoutPage(Handler):
@@ -647,7 +674,8 @@ class MainPage(Handler):
                               'content': entry.content,
                               'likes': post_likes,
                               'view_mode': view_mode,
-                              'comment_total': get_post_comment_total(entry.key.id()),
+                              'comment_total': get_post_comment_total(
+                                  entry.key.id()),
                               })
 
             self.render('front_page_authed.html', user=penname, posts=posts)
@@ -678,7 +706,8 @@ class MainPage(Handler):
                               'author': entry.author,
                               'content': entry.content,
                               'likes': post_likes,
-                              'comment_total': get_post_comment_total(entry.key.id()),
+                              'comment_total': get_post_comment_total(
+                                  entry.key.id()),
                               })
 
             self.render('front_page_non_authed.html', posts=posts)

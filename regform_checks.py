@@ -22,13 +22,22 @@ def all_fields_complete(post_data):
     password_rep = reg_fields[2]
     penname = reg_fields[3]
 
-    if len(user_email) > 0 and len(password) > 0 and len(password_rep) > 0 and len(penname) > 0:
-        return {'fields_present': True, 'email': user_email, 'password': password,
-                'password_rep': password_rep, 'penname': penname}
+    if len(user_email) > 0\
+            and len(password) > 0\
+            and len(password_rep) > 0\
+            and len(penname) > 0:
+        return {'fields_present': True,
+                'email': user_email,
+                'password': password,
+                'password_rep': password_rep,
+                'penname': penname}
 
     else:
-        return {'fields_present': False, 'email': user_email, 'password': password,
-                'password_rep': password_rep, 'penname': penname}
+        return {'fields_present': False,
+                'email': user_email,
+                'password': password,
+                'password_rep': password_rep,
+                'penname': penname}
 
 
 def get_reg_fields(post_data):

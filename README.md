@@ -45,7 +45,17 @@ bundled "chromedriver" file with the one you downloaded then rename the download
 "chromedriver" instead. Make sure you only have one "chromedriver" file in the project's
 base directory.
 
-When you have the appropriate WebDriver, you can run the functional tests with:
+When you have the appropriate WebDriver, add a directory called 'temp' to the project's
+base directory and add a blank file called 'myapp_test_datastore' to the new directory.
+On MacOS/Unix you can do this on the command line with:
+
+```
+mkdir temp
+touch temp/myapp_test_datastore
+```
+
+Then, you can run the functional tests with:
+
 ```
 python test_runner.py -functional
 ```
