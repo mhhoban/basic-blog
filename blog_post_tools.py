@@ -28,7 +28,8 @@ def add_comment(blog_id, commenter, comment_content):
     comment['commenter'] = commenter
     comment['content'] = escape(comment_content, quote=True)
     comment['timestamp'] = timestamp
-    comment['comment_id'] = gen_comment_id(commenter, comment_content, target_post.title, timestamp)
+    comment['comment_id'] = gen_comment_id(commenter, comment_content,
+                                           target_post.title, timestamp)
     comments.append(comment)
     comments = json.dumps(comments)
     target_post.comments = comments
