@@ -1,9 +1,9 @@
-#BasicBlog: A Basic Multi-User Blog
+# BasicBlog: A Basic Multi-User Blog
 
 Basic blog is a bare bones multi-user blog system that allows authenticated users to
 write blog posts, like the blog posts of others, and comment on blog posts.
 
-##Requirements:
+## Requirements:
 
 BasicBlog is designed for use with Google App Engine, and running the project in a
 development environment requires having the GAE SDK for python installed locally
@@ -14,7 +14,7 @@ PIP. While running the setup script in a virtual environment is not required, it
 highly recommended.
 
 
-##Setup:
+## Setup:
 
 Run the setup scrip with: `python setup.py`
 
@@ -22,11 +22,11 @@ The script will prompt you to pick two strings to use as salts for password and 
 hashing, and will then use PIP to install the project's necessary packages.
 
 
-##Unit and Functional Tests:
+## Unit and Functional Tests:
 
 BasicBlog comes with unit tests and functional tests.
 
-###Unit Tests:
+### Unit Tests:
 
 You can run the unit tests from the project's base directory with
 
@@ -34,7 +34,7 @@ You can run the unit tests from the project's base directory with
 python test_runner.py -unit
 ```
 
-###Functional Tests:
+### Functional Tests:
 
 The functional tests that come with BasicBlog use selenium and are written for
 the selenium Chrome WebDriver. The project comes with the driver for MacOS,
@@ -64,7 +64,7 @@ Note that selenium can be temperamental at times and you might have to run the t
 time before it begins behaving properly.
 
 
-##License:
+## License:
 
 Project is freely open source under the terms of the
 [MIT License](http://choosealicense.com/licenses/mit/)
